@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include portal *.css
+recursive-include portal *.csv
+recursive-include portal *.html
+recursive-include portal *.ico
+recursive-include portal *.js
+recursive-include portal *.json
+recursive-include portal *.md
+recursive-include portal *.png
+recursive-include portal *.py
+recursive-include portal *.svg
+recursive-include portal *.txt
+recursive-exclude portal *.pyc

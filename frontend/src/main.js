@@ -3,15 +3,54 @@ import './index.css'
 import { createApp } from 'vue'
 import router from './router'
 import App from './App.vue'
+import { session } from './data/session';
 
-import { Button, setConfig, frappeRequest, resourcesPlugin } from 'frappe-ui'
+import {
+	setConfig,
+	frappeRequest,
+	resourcesPlugin,
+	Button,
+	Input,
+	ErrorMessage,
+	Dialog,
+	Alert,
+	Badge,
+} from 'frappe-ui'
 
-let app = createApp(App)
+setConfig('resourceFetcher', frappeRequest);
 
-setConfig('resourceFetcher', frappeRequest)
+// Initialize app with plugins
+let app = createApp(App);
+app.use(router);
+app.use(resourcesPlugin);
 
-app.use(router)
-app.use(resourcesPlugin)
+// Register Global Components
+let globalComponents = {
+	Button,
+	Input,
+	ErrorMessage,
+	Dialog,
+	Alert,
+	Badge,
+};
 
-app.component('Button', Button)
-app.mount('#app')
+for (let component in globalComponents) {
+	app.component(component, globalComponents[component]);
+}
+
+// Register Global Properties
+app.config.globalProperties.$session = session;
+
+// Redirect to Login Page
+if (!session.isLoggedIn) {
+	router.push({ name: 'Login' });
+}
+
+// Mount to DOM
+app.mount('#app');
+
+// Dev Env Vars
+if (import.meta.env.DEV) {
+	window.$session = session;
+	window.$router = router;
+}

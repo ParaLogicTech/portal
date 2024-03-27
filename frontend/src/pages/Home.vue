@@ -1,6 +1,11 @@
 <template>
-	<div class="max-w-5xl mx-auto">
-		<ItemList/>
+	<div class="h-screen overflow-hidden">
+		<div class="flex h-full">
+			<div class="flex-none w-[350px] border-r border-gray-400 py-2 px-3">
+				Cart Component
+			</div>
+			<ItemList class="h-full w-full"/>
+		</div>
 	</div>
 </template>
 
@@ -18,9 +23,9 @@ export default {
 		ItemList,
 	},
 	pageMeta() {
-        return {
-            title: 'Home Page Title',
-        }
-    },
+		return {
+				title: 'Home Page Title',
+		}
+	},
 }
 </script>

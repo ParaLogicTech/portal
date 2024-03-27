@@ -1,11 +1,10 @@
 <template>
-	<div class="max-w-3xl py-12 mx-auto">
+	<div class="max-w-5xl mx-auto">
 		<ItemList/>
 	</div>
 </template>
 
 <script>
-import { Dialog } from 'frappe-ui'
 import ItemList from '@/components/ItemList/ItemList.vue'
 
 export default {
@@ -15,14 +14,13 @@ export default {
 			showDialog: false,
 		}
 	},
-	resources: {
-		ping: {
-			url: 'ping',
-		},
-	},
 	components: {
-		Dialog,
 		ItemList,
 	},
+	pageMeta() {
+        return {
+            title: 'Home Page Title',
+        }
+    },
 }
 </script>

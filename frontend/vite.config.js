@@ -1,27 +1,29 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import path from 'path'
-import { getProxyOptions } from 'frappe-ui/src/utils/vite-dev-server'
-import { webserver_port } from '../../../sites/common_site_config.json'
+import frappeui from 'frappe-ui/vite'
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue()],
-  server: {
-    port: 8080,
-    proxy: getProxyOptions({ port: webserver_port }),
-  },
+  plugins: [
+    frappeui(),
+    vue(),
+  ],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
+      'tailwind.config.js': path.resolve(__dirname, 'tailwind.config.js'),
     },
+  },
+  optimizeDeps: {
+    include: ['frappe-ui > feather-icons', 'showdown', 'engine.io-client'],
   },
   build: {
     outDir: `../${path.basename(path.resolve('..'))}/public/frontend`,
     emptyOutDir: true,
-    target: 'es2015',
-  },
-  optimizeDeps: {
-    include: ['frappe-ui > feather-icons', 'showdown', 'engine.io-client'],
+    commonjsOptions: {
+      include: [/tailwind.config.js/, /node_modules/],
+    },
+    target: 'es2021',
+    sourcemap: true,
   },
 })

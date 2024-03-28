@@ -80,15 +80,15 @@ export let brand_list = createListResource({
 });
 
 export let get_item = (item_code) => {
-	return item_list.data.find((d) => d.name.toString() === item_code.toString())
+	return (item_list.data || []).find((d) => d.name.toString() === item_code.toString())
 }
 
 export let get_item_group = (item_group) => {
-	return item_group_list.data.find((d) => d.name.toString() === item_group.toString())
+	return (item_group_list.data || []).find((d) => d.name.toString() === item_group.toString())
 }
 
 export let get_brand = (brand) => {
-	return brand_list.data.find((d) => d.name.toString() === brand.toString())
+	return (brand_list.data || []).find((d) => d.name.toString() === brand.toString())
 }
 
 export let reload_items_data = () => {

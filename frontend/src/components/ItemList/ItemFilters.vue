@@ -74,7 +74,8 @@ export default {
 
 	computed: {
 		item_group_options() {
-			return item_group_list.data.map(d => {
+			let item_groups = item_group_list.data;
+			return (item_groups || []).map(d => {
 				return {
 					label: d.name,
 					value: d.name,
@@ -83,7 +84,8 @@ export default {
 		},
 
 		brand_options() {
-			return brand_list.data.map(d => {
+			let brands = brand_list.data;
+			return (brands || []).map(d => {
 				return {
 					label: d.name,
 					value: d.name,

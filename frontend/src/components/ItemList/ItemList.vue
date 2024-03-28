@@ -37,7 +37,7 @@ export default {
 
 	computed: {
 		filtered_items() {
-			let items = item_list.data;
+			let items = item_list.data || [];
 
 			if (this.filters.item_group?.value) {
 				items = items.filter(d => d.item_group === this.filters.item_group.value);

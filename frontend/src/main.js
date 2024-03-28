@@ -25,6 +25,7 @@ import {
 	Alert,
 	Badge,
 	Autocomplete,
+	Spinner,
 	FeatherIcon,
 } from 'frappe-ui'
 
@@ -47,6 +48,7 @@ let globalComponents = {
 	Badge,
 	Autocomplete,
 	FeatherIcon,
+	Spinner,
 };
 
 for (let component in globalComponents) {

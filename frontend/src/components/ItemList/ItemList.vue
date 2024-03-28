@@ -1,7 +1,7 @@
 <template>
 	<div class="flex flex-col h-full">
 		<ItemFilters :filters="filters" class="border-b border-gray-400 shadow-sm" />
-		<ItemGrid :items="filtered_items" class="h-full" />
+		<ItemGrid :items="filtered_items" :loading="item_list.list.loading" class="h-full" />
 	</div>
 </template>
 
@@ -25,6 +25,7 @@ export default {
 				item_group: null,
 				brand: null,
 			},
+			item_list: item_list,
 		}
 	},
 

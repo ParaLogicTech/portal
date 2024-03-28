@@ -1,8 +1,13 @@
 <template>
 	<div class="@container p-3 overflow-y-scroll">
+		<div v-if="loading" class="h-full flex items-center justify-center text-gray-700 text-xl">
+			<Spinner class="w-5 mr-2" />
+			<span>Loading Items...</span>
+		</div>
+
 		<div
-			v-if="!items || !items.length"
-			class="min-h-[80px] flex items-center justify-center text-gray-500 text-xl text-bold"
+			v-else-if="!items || !items.length"
+			class="h-full flex items-center justify-center text-gray-400 text-xl font-medium"
 		>
 			<FeatherIcon
 				name="x"
@@ -13,9 +18,7 @@
 		</div>
 
 		<div v-else class="grid @md:grid-cols-2 @3xl:grid-cols-3 @5xl:grid-cols-4 @8xl:grid-cols-5 gap-3">
-			<div v-for="item in items">
-				<ItemCard :item="item" />
-			</div>
+			<ItemCard v-for="item in items" :key="item.name" :item="item" />
 		</div>
 	</div>
 </template>
@@ -32,6 +35,7 @@ export default {
 
 	props: {
 		items: Array,
+		loading: Boolean,
 	},
 }
 </script>

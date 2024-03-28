@@ -14,17 +14,14 @@ import ItemList from '@/components/ItemList/ItemList.vue'
 
 export default {
 	name: 'Home',
-	data() {
-		return {
-			showDialog: false,
-		}
-	},
+
 	components: {
 		ItemList,
 	},
+
 	pageMeta() {
 		return {
-				title: 'Home Page Title',
+			title: 'Home Page Title',
 		}
 	},
 }

@@ -10,6 +10,7 @@
   "dependencies": {
     "feather-icons": "^4.28.0",
     "frappe-ui": "^0.1.45",
+    "fuse.js": "^7.0.0",
     "vue": "^3.2.25",
     "vue-router": "^4.0.12"
   },

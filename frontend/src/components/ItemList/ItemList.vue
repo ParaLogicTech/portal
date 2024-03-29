@@ -1,7 +1,15 @@
 <template>
 	<div class="flex flex-col h-full">
-		<ItemFilters :filters="filters" class="border-b border-gray-400 shadow-sm" />
-		<ItemGrid :items="filtered_items" :loading="item_list.list.loading" class="h-full" />
+		<ItemFilters
+			:filters="filters"
+			class="border-b border-gray-400 shadow-sm"
+		/>
+		<ItemGrid
+			:items="filtered_items"
+			:loading="item_list.list.loading"
+			:matches="fuzzy_matches"
+			class="h-full"
+		/>
 	</div>
 </template>
 
@@ -9,6 +17,7 @@
 import ItemGrid from "@/components/ItemList/ItemGrid.vue";
 import ItemFilters from "@/components/ItemList/ItemFilters.vue";
 import { item_list } from "@/data/items";
+import Fuse from 'fuse.js'
 
 export default {
 	name: "ItemList",
@@ -29,16 +38,9 @@ export default {
 		}
 	},
 
-	methods: {
-		get_clean_txt() {
-			let txt = this.filters.txt || "";
-			return txt.toString().trim();
-		},
-	},
-
 	computed: {
 		filtered_items() {
-			let items = item_list.data || [];
+			let items = this.fuzzy_filtered_items;
 
 			if (this.filters.item_group?.value) {
 				items = items.filter(d => d.item_group === this.filters.item_group.value);
@@ -48,18 +50,52 @@ export default {
 				items = items.filter(d => d.brand === this.filters.brand.value);
 			}
 
-			let txt = this.get_clean_txt();
-			if (txt) {
-				items = items.filter(d => {
-					return (
-						d.item_name.toLowerCase().includes(txt.toLowerCase())
-						|| d.name.toLowerCase().includes(txt.toLowerCase())
-					)
-				});
-			}
-
 			return items;
+		},
+
+		fuzzy_matches() {
+			let out = {};
+			if (this.fuzzy_match_result) {
+				for (let d of this.fuzzy_match_result) {
+					out[d.item.name] = d.matches
+				}
+			}
+			return out;
+		},
+
+		fuzzy_filtered_items() {
+			if (this.fuzzy_match_result) {
+				return this.fuzzy_match_result.map(d => d.item);
+			} else {
+				return this.item_list.data || [];
+			}
+		},
+
+		fuzzy_match_result() {
+			if (this.clean_txt) {
+				return this.fuzzy_search(this.clean_txt);
+			} else {
+				return null;
+			}
+		},
+
+		clean_txt() {
+			let txt = this.filters.txt || "";
+			return txt.toString().trim();
 		}
+	},
+
+	methods: {
+		fuzzy_search(txt) {
+			let items = this.item_list.data || [];
+			let fuse = new Fuse(items, {
+				keys: ['item_name', 'name'],
+				threshold: 0.4,
+				includeMatches: true,
+				minMatchCharLength: 2,
+			});
+			return fuse.search(txt);
+		},
 	},
 }
 </script>

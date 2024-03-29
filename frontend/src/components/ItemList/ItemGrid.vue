@@ -18,7 +18,12 @@
 		</div>
 
 		<div v-else class="grid @md:grid-cols-2 @3xl:grid-cols-3 @5xl:grid-cols-4 @8xl:grid-cols-5 gap-3">
-			<ItemCard v-for="item in items" :key="item.name" :item="item" />
+			<ItemCard
+				v-for="item in items"
+				:key="item.name"
+				:item="item"
+				:matches="get_item_matches(item)"
+			/>
 		</div>
 	</div>
 </template>
@@ -35,7 +40,14 @@ export default {
 
 	props: {
 		items: Array,
+		matches: Object,
 		loading: Boolean,
 	},
+
+	methods: {
+		get_item_matches(item) {
+			return this.matches ? this.matches[item.name] : [];
+		}
+	}
 }
 </script>

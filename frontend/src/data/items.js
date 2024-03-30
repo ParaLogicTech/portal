@@ -70,15 +70,35 @@ export let brand_list = createListResource({
 });
 
 export let get_item = (item_code) => {
-	return (item_list.data || []).find((d) => d.name.toString() === item_code.toString())
+	return (item_list.dataMap || {})[item_code];
 }
 
 export let get_item_group = (item_group) => {
-	return (item_group_list.data || []).find((d) => d.name.toString() === item_group.toString())
+	return (item_group_list.dataMap || {})[item_group];
+}
+
+export let in_item_group = (item_group_item, item_group_filter) => {
+	if (!item_group_filter) {
+		return true;
+	}
+	if (!item_group_item && item_group_filter) {
+		return false;
+	}
+
+	let ig_item = get_item_group(item_group_item);
+	let ig_filter = get_item_group(item_group_filter);
+	if (ig_item && ig_filter) {
+		return (
+			ig_item.lft >= ig_filter.lft
+			&& ig_item.rgt <= ig_filter.rgt
+		);
+	} else {
+		return item_group_item === item_group_filter;
+	}
 }
 
 export let get_brand = (brand) => {
-	return (brand_list.data || []).find((d) => d.name.toString() === brand.toString())
+	return (brand_list.dataMap || {})[brand];
 }
 
 export let reload_items_data = () => {

@@ -3,6 +3,7 @@ import './index.css'
 import { createApp } from 'vue'
 import router from '@/router'
 import App from '@/App.vue'
+import moment from 'moment'
 
 import { session } from '@/data/session';
 import {
@@ -55,6 +56,17 @@ for (let component in globalComponents) {
 	app.component(component, globalComponents[component]);
 }
 
+// Global Variables
+window.moment = moment;
+
+if (import.meta.env.DEV) {
+	window.$session = session;
+	window.$router = router;
+	window.$item_list = item_list;
+	window.$item_group_list = item_group_list;
+	window.$brand_list = brand_list;
+}
+
 // Register Global Properties
 app.config.globalProperties.$session = session;
 
@@ -68,12 +80,3 @@ if (!session.isLoggedIn) {
 
 // Reload Item Data
 reload_items_data();
-
-// Dev Env Vars
-if (import.meta.env.DEV) {
-	window.$session = session;
-	window.$router = router;
-	window.$item_list = item_list;
-	window.$item_group_list = item_group_list;
-	window.$brand_list = brand_list;
-}

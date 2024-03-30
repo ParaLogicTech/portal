@@ -1,3 +1,4 @@
+import { computed } from "vue";
 import { createListResource } from 'frappe-ui'
 
 export let item_list = createListResource({
@@ -5,28 +6,39 @@ export let item_list = createListResource({
 	fields: [
 		'name',
 		'item_name',
+		'image',
 		'item_group',
 		'brand',
 		'stock_uom',
-		'image',
+		'sales_uom',
+		'disabled',
+		'end_of_life',
+		'is_sales_item',
 	],
-	filters: {
-        disabled: 0,
-    },
 	orderBy: 'name',
 	pageLength: 99999,
 	cache: 'Items',
 	transform(items) {
-		return items.map((item) => {
-			item.route = {
+		return items.map((d) => {
+			d.route = {
 				name: 'Item',
 				params: {
-					item_code: item.name,
+					item_code: d.name,
 				},
 			}
-			return item
+
+			d.is_end_of_life = d.end_of_life && moment().isSameOrAfter(moment(d.end_of_life), "date");
+			return d;
 		})
 	},
+});
+
+export let active_items = computed(() => {
+	return (item_list.data || []).filter((d) => {
+		return !d.disabled
+			&& d.is_sales_item
+			&& !d.is_end_of_life
+	})
 });
 
 export let item_group_list = createListResource({
@@ -44,17 +56,6 @@ export let item_group_list = createListResource({
 	orderBy: 'name',
 	pageLength: 99999,
 	cache: 'Item Groups',
-	transform(item_groups) {
-		return item_groups.map((d) => {
-			d.route = {
-				name: 'Item Group',
-				params: {
-					item_group: d.name,
-				},
-			}
-			return d
-		})
-	},
 });
 
 export let brand_list = createListResource({
@@ -66,17 +67,6 @@ export let brand_list = createListResource({
 	orderBy: 'name',
 	pageLength: 99999,
 	cache: 'Brands',
-	transform(brands) {
-		return brands.map((d) => {
-			d.route = {
-				name: 'Brand',
-				params: {
-					brand: d.name,
-				},
-			}
-			return d
-		})
-	},
 });
 
 export let get_item = (item_code) => {

@@ -16,7 +16,7 @@
 <script>
 import ItemGrid from "@/components/ItemList/ItemGrid.vue";
 import ItemFilters from "@/components/ItemList/ItemFilters.vue";
-import { item_list } from "@/data/items";
+import { item_list, active_items } from "@/data/items";
 import Fuse from 'fuse.js'
 
 export default {
@@ -35,6 +35,7 @@ export default {
 				brand: null,
 			},
 			item_list: item_list,
+			active_items: active_items,
 		}
 	},
 
@@ -67,7 +68,7 @@ export default {
 			if (this.fuzzy_match_result) {
 				return this.fuzzy_match_result.map(d => d.item);
 			} else {
-				return this.item_list.data || [];
+				return this.active_items;
 			}
 		},
 
@@ -87,7 +88,7 @@ export default {
 
 	methods: {
 		fuzzy_search(txt) {
-			let items = this.item_list.data || [];
+			let items = this.active_items;
 			let fuse = new Fuse(items, {
 				keys: ['item_name', 'name'],
 				threshold: 0.4,

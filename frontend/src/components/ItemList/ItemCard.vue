@@ -3,10 +3,10 @@
 		<ItemImage :item="item" class="h-[220px]" />
 		<div class="p-3">
 			<h1 class="font-medium text-sm">
-			<HighlightedMatchText
-				:text="item.item_name"
-				:matches="item_name_matches"
-			/>
+				<HighlightedMatchText
+					:text="item.item_name"
+					:matches="item_name_matches"
+				/>
 			</h1>
 		</div>
 	</div>

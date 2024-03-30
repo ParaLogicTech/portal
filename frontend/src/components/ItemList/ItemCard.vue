@@ -1,13 +1,19 @@
 <template>
-	<div class="max-w rounded overflow-hidden shadow border border-gray-400 h-full">
-		<ItemImage :item="item" class="h-[220px]" />
-		<div class="p-3">
-			<h1 class="font-medium text-sm">
+	<div class="flex flex-col rounded shadow border border-gray-400">
+		<ItemImage :item="item" class="h-[220px] flex-shrink-0" />
+
+		<div class="flex flex-col justify-between h-full">
+			<h1 class="text-sm font-medium px-3 py-2.5">
 				<HighlightedMatchText
 					:text="item.item_name"
 					:matches="item_name_matches"
 				/>
 			</h1>
+
+			<div class="flex flex-wrap gap-1 justify-between items-center px-3 py-2.5 border-t">
+				<ItemStock :item="item" class="text-xs" />
+				<ItemPrice :item="item" class="text-md font-bold text-violet-900" />
+			</div>
 		</div>
 	</div>
 </template>
@@ -15,6 +21,8 @@
 <script>
 import ItemImage from "@/components/ItemList/ItemImage.vue";
 import HighlightedMatchText from "@/components/HighlightedMatchText.vue";
+import ItemStock from "@/components/ItemList/ItemStock.vue";
+import ItemPrice from "@/components/ItemList/ItemPrice.vue";
 
 export default {
 	name: "ItemCard",
@@ -22,6 +30,8 @@ export default {
 	components: {
 		ItemImage,
 		HighlightedMatchText,
+		ItemStock,
+		ItemPrice,
 	},
 
 	props: {

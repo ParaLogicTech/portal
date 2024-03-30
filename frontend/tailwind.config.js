@@ -216,6 +216,14 @@ module.exports = {
 					fontWeight: '420',
 				},
 			],
+			md: [
+				'14px',
+				{
+					lineHeight: '1.15',
+					letterSpacing: '0.02em',
+					fontWeight: '400',
+				},
+			],
 			lg: [
 				'16px',
 				{

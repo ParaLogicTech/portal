@@ -10,7 +10,9 @@ import {
 	item_list,
 	item_group_list,
 	brand_list,
-	reload_items_data
+	standard_prices,
+	item_stock,
+	reload_items_data,
 } from "@/data/items";
 
 import {
@@ -65,6 +67,8 @@ if (import.meta.env.DEV) {
 	window.$item_list = item_list;
 	window.$item_group_list = item_group_list;
 	window.$brand_list = brand_list;
+	window.$standard_prices = standard_prices;
+	window.$item_stock = item_stock;
 }
 
 // Register Global Properties

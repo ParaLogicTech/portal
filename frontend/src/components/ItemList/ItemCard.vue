@@ -12,7 +12,7 @@
 
 			<div class="flex flex-wrap gap-1 justify-between items-center px-3 py-2.5 border-t">
 				<ItemStock :item="item" class="text-xs" />
-				<ItemPrice :item="item" class="text-md font-bold text-violet-900" />
+				<ItemPrice :item="item" class="text-md font-semibold text-violet-900" />
 			</div>
 		</div>
 	</div>

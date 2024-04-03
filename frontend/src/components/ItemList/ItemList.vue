@@ -9,6 +9,7 @@
 			:loading="item_list.list.loading"
 			:matches="fuzzy_matches"
 			class="h-full"
+			@item-selected="this.handle_item_selected"
 		/>
 	</div>
 </template>
@@ -51,7 +52,7 @@ export default {
 				items = items.filter(d => in_item_group(d.item_group, this.filters.item_group.value));
 			}
 
-			return items;
+			return items.splice(0, 10);
 		},
 
 		fuzzy_matches() {
@@ -97,6 +98,10 @@ export default {
 			});
 			return fuse.search(txt);
 		},
+
+		handle_item_selected(item) {
+			this.$emit('item-selected', item);
+		}
 	},
 }
 </script>

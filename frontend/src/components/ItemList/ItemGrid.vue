@@ -23,6 +23,7 @@
 				:key="item.name"
 				:item="item"
 				:matches="get_item_matches(item)"
+				@item-selected="this.handle_item_selected"
 			/>
 		</div>
 	</div>
@@ -47,6 +48,10 @@ export default {
 	methods: {
 		get_item_matches(item) {
 			return this.matches ? this.matches[item.name] : [];
+		},
+
+		handle_item_selected(item) {
+			this.$emit('item-selected', item);
 		}
 	}
 }

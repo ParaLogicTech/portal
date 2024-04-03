@@ -56,7 +56,13 @@ export let cart = reactive({
 	},
 
 	has_item(item_code) {
-		return this.doc?.items?.some(item => item.item_code === item_code);
+		return !!this.get_row_by_item(item_code);
+	},
+
+	get_row_by_item(item_code) {
+		return this.doc?.items?.find(item => item.item_code === item_code);
+	}
+});
 	}
 });
 

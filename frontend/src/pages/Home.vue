@@ -1,15 +1,10 @@
 <template>
 	<div class="h-full overflow-hidden">
 		<div class="flex h-full">
-			<div class="flex flex-col flex-shrink-0 w-[360px] border-r border-gray-400 h-full">
-				<div class="p-2 border-b border-gray-400 shadow-sm flex-shrink-0">
-					<CustomerSelection/>
-				</div>
-				<CartSidebar
-					class="h-full"
-					ref="cart-sidebar"
-				/>
-			</div>
+			<CartSidebar
+				class="h-full w-[360px] flex-shrink-0 border-r border-gray-400"
+				ref="cart-sidebar"
+			/>
 			<ItemList
 				class="h-full w-full"
 				@item-selected="this.handle_item_selected"

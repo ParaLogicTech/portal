@@ -1,5 +1,5 @@
 <template>
-<div class="@container py-2 px-3">
+<div class="@container px-3 py-2 flex flex-col justify-center" style="min-height: 48px;">
 	<div class="flex flex-row w-full flex-wrap @xl:flex-nowrap gap-1">
 		<div class="w-full">
 			<TextInput

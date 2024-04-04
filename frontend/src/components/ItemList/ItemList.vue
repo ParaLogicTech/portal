@@ -52,7 +52,11 @@ export default {
 				items = items.filter(d => in_item_group(d.item_group, this.filters.item_group.value));
 			}
 
-			return items.splice(0, 10);
+			if (!this.filters_applied) {
+				items.splice(100);
+			}
+
+			return items;
 		},
 
 		fuzzy_matches() {
@@ -84,7 +88,18 @@ export default {
 		clean_txt() {
 			let txt = this.filters.txt || "";
 			return txt.toString().trim();
-		}
+		},
+
+		filters_applied() {
+			let applied = false;
+			for (let v of Object.values(this.filters)) {
+				if (v) {
+					applied = true;
+					break
+				}
+			}
+			return applied;
+		},
 	},
 
 	methods: {

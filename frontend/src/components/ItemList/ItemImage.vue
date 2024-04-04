@@ -1,5 +1,5 @@
 <template>
-	<div :class="rounded">
+	<div class="bg-white" :class="rounded">
 		<img
 			v-if="item.image"
 			class="w-auto h-full mx-auto object-cover"

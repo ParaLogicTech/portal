@@ -7,6 +7,14 @@ export let _selected_customer = ref(null);
 export let cart = reactive({
 	doc: null,
 
+	get loading() {
+		return cart_queue.running;
+	},
+
+	get promise() {
+		return cart_queue.promise || new Promise((resolve) => resolve());
+	},
+
 	get customer() {
 		return _selected_customer.value;
 	},
@@ -17,26 +25,19 @@ export let cart = reactive({
 
 	set_customer(value) {
 		if (this.customer != value) {
-			_selected_customer.value = value;
-			this.get_customer_cart();
+			return cart_queue.add("set_customer", {
+				customer: value,
+			});
 		}
 	},
 
-	get_customer_cart() {
-		if (this.customer) {
-			return get_cart_resource.fetch({customer: this.customer});
-		} else {
-			set_cart_doc(null);
-		}
-	},
-
-	reload_cart() {
-		if (this.customer || this.cart_id) {
-			return get_cart_resource.fetch({customer: this.customer, cart_id: this.cart_id});
-		} else {
-			set_cart_doc(null);
-		}
-	},
+	// reload_cart() {
+	// 	if (this.customer || this.cart_id) {
+	// 		return get_cart_resource.fetch({customer: this.customer, cart_id: this.cart_id});
+	// 	} else {
+	// 		set_cart_doc(null);
+	// 	}
+	// },
 
 	update_item_qty(item_code, qty, uom=null) {
 		if (!this.customer && !this.cart_id) {
@@ -46,7 +47,7 @@ export let cart = reactive({
 			return;
 		}
 
-		return update_item_qty_resource.fetch({
+		return cart_queue.add("update_item_qty", {
 			item_code: item_code,
 			qty: qty,
 			uom: uom,
@@ -63,10 +64,113 @@ export let cart = reactive({
 		return this.doc?.items?.find(item => item.item_code === item_code);
 	}
 });
+
+export const cart_queue = reactive({
+	running: false,
+	promise: null,
+
+	pending_actions: [],
+	pending_customer_change: null,
+
+	add(action, params) {
+		// Update existing action instead of adding a new one if possible
+		let existing_promise = this.update_existing_action(action, params);
+		if (existing_promise) {
+			return existing_promise;
+		}
+
+		// Prepare Action Object
+		let action_obj = {
+			action: action,
+			params: params,
+		};
+
+		let promise = new Promise((resolve, reject) => {
+			action_obj.resolve = resolve;
+			action_obj.reject = reject;
+		});
+
+		action_obj.promise = promise;
+
+		// Add to queue
+		if (action == "set_customer") {
+			this.pending_customer_change = action_obj;
+		} else {
+			this.pending_actions.push(action_obj);
+		}
+
+		// Run the queue if not already running
+		if (!this.running) {
+			this.promise = this.run();
+		}
+
+		return promise;
+	},
+
+	update_existing_action(action, params) {
+		if (action == "update_item_qty") {
+			let existing_action = this.pending_actions.find(q => (
+				q.action == "update_item_qty"
+				&& q.params.item_code == params.item_code
+				&& q.params.customer == params.customer
+				&& q.params.cart_id == params.cart_id
+			));
+
+			if (existing_action) {
+				existing_action.params.qty = params.qty;
+				existing_action.params.uom = params.uom;
+				return existing_action.promise;
+			}
+		} else if (action == "set_customer") {
+			if (this.pending_customer_change) {
+				this.pending_customer_change.params.customer = params.customer;
+				return this.pending_customer_change.promise;
+			}
+		}
+	},
+
+	async run() {
+		this.running = true;
+
+		while (this.pending_actions.length) {
+			let action_obj = this.pending_actions.shift();
+			await this.run_action(action_obj);
+		}
+
+		if (this.pending_customer_change) {
+			let action_obj = this.pending_customer_change;
+			this.pending_customer_change = null;
+
+			if (action_obj.params.customer) {
+				await this.run_action(action_obj);
+			} else {
+				set_cart_doc(null);
+			}
+		}
+
+		this.running = false;
+	},
+
+	async run_action(action_obj) {
+		try {
+			// console.log('Running', action_obj)
+
+			let resource;
+			if (action_obj.action == "update_item_qty") {
+				resource = update_item_qty_resource;
+			} else if (action_obj.action == "set_customer") {
+				resource = get_cart_resource;
+			}
+
+			action_obj.resolve(await resource.fetch(action_obj.params));
+		} catch (e) {
+			action_obj.reject(e);
+			console.error(e);
+		}
 	}
 });
 
-export const get_cart_resource = createResource({
+const get_cart_resource = createResource({
 	url: 'portal.api.cart.get_cart',
 	method: 'GET',
 	makeParams({ customer, cart_id }) {
@@ -83,7 +187,7 @@ export const get_cart_resource = createResource({
 	},
 });
 
-export const update_item_qty_resource = createResource({
+const update_item_qty_resource = createResource({
 	url: 'portal.api.cart.update_item_qty',
 	method: 'POST',
 	makeParams({ item_code, qty, uom, customer, cart_id }) {

@@ -3,7 +3,7 @@
 		<CartSidebarItem
 			v-for="row in doc.items || []"
 			:row="row"
-			@qty-changed="this.handle_qty_changed"
+			:key="row.name || row.item_code"
 			@select-next-row="this.select_next_row"
 			@select-previous-row="this.select_previous_row"
 			ref="items"
@@ -29,10 +29,6 @@ export default {
 	},
 
 	methods: {
-		handle_qty_changed(row) {
-			this.$emit('qty-changed', row);
-		},
-
 		select_item(item_code) {
 			let component = this.$refs["items"].find(d => d.row.item_code === item_code);
 			if (component) {

@@ -15,29 +15,16 @@
 			<div class="text-sm font-semibold">{{ row.item_name }}</div>
 			<div class="flex justify-between gap-0.5">
 				<div class="w-[55%] self-end">
-					<div class="text-md h-[30px]">
-						<input
-							v-model="row.qty"
-							class="h-full w-[50px] px-0.5 py-0 remove-arrow text-sm font-medium text-center rounded-sm border-gray-400"
-							@change="this.handle_qty_change"
-							@keydown="this.handle_qty_keydown"
-							@input="this.handle_qty_input"
-							@focus="this.handle_qty_focus"
-							@blur="this.handle_qty_blur"
-							type="number"
-							inputmode="numeric"
-							pattern="[0-9]+([\.,][0-9]+)?"
-							ref="qty_input"
-							min="0"
-						/>
-						<select
-							v-model="row.uom"
-							class="h-full w-[60px] px-1 py-0 remove-arrow text-xs font-medium ml-0.5 rounded-sm border-gray-400 text-gray-800"
-							disabled="disabled"
-						>
-							<option>{{ row.uom }}</option>
-						</select>
-					</div>
+					<QtyField
+						v-model="qty_model"
+						class="h-[30px]"
+						ref="qty_field"
+						@arrow-up="this.handle_arrow_up"
+						@arrow-down="this.handle_arrow_down"
+						@focus="this.handle_qty_focused"
+						@blur="this.handle_qty_blurred"
+						@update:modelValue="this.handle_qty_change"
+					/>
 				</div>
 				<div class="w-[22%]">
 					<div class="text-2xs font-semibold text-gray-600">Rate</div>
@@ -53,13 +40,15 @@
 </template>
 
 <script>
-import {item_list} from "@/data/items";
 import ItemImage from "@/components/ItemList/ItemImage.vue";
-import {debounce} from "frappe-ui";
+import QtyField from "@/components/Fields/QtyField.vue";
+import {item_list} from "@/data/items";
+import {cart} from "@/data/cart";
 
 export default {
 	name: "CartSidebarItem",
-	components: {ItemImage},
+
+	components: {QtyField, ItemImage},
 
 	props: {
 		row: Object,
@@ -67,63 +56,46 @@ export default {
 
 	data() {
 		return {
-			qty_change_timeout: null,
+			qty_model: {
+				qty: this.row.qty,
+				uom: this.row.uom,
+			},
+
 			selected: false,
 		}
 	},
 
 	methods: {
-		handle_qty_change() {
-			this.debounced_qty_changed(250);
-		},
-
-		handle_qty_input() {
-			this.debounced_qty_changed(1000);
-		},
-
-		handle_qty_keydown(e) {
-			if (e.code == "ArrowUp") {
-				e.preventDefault();
-				this.$emit("select-previous-row", this.row);
-			} else if (e.code == "ArrowDown") {
-				e.preventDefault();
-				this.$emit("select-next-row", this.row);
-			}
-		},
-
-		debounced_qty_changed(wait) {
-			wait = wait || 250;
-			this.clear_timeout();
-			this.qty_change_timeout = setTimeout(this.trigger_qty_changed, wait || 250);
-		},
-
-		trigger_qty_changed() {
-			this.clear_timeout();
-			this.$emit('qty-changed', this.row);
-		},
-
-		clear_timeout() {
-			if (this.qty_change_timeout) {
-				clearTimeout(this.qty_change_timeout);
-				this.qty_change_timeout = null;
-			}
-		},
-
 		select_row() {
-			this.$refs.qty_input?.focus();
+			this.$el.scrollIntoView({behavior: "instant", block: "center"});
+			this.$refs.qty_field?.focus();
 		},
 
-		handle_qty_focus() {
-			this.select_qty_input();
+		handle_arrow_up() {
+			this.$emit("select-previous-row", this.row);
+		},
+
+		handle_arrow_down() {
+			this.$emit("select-next-row", this.row);
+		},
+
+		handle_qty_focused() {
 			this.selected = true;
 		},
 
-		handle_qty_blur() {
+		handle_qty_blurred() {
 			this.selected = false;
 		},
 
-		select_qty_input() {
-			this.$refs.qty_input?.select();
+		handle_qty_change() {
+			cart.update_item_qty(this.row.item_code, this.qty_model.qty, this.qty_model.uom);
+			cart.promise.finally(() => this.reset_qty_model());
+		},
+
+		reset_qty_model() {
+			this.qty_model.qty = this.row.qty;
+			this.qty_model.uom = this.row.uom;
+			this.$refs.qty_field.refresh();
 		},
 	},
 
@@ -134,19 +106,7 @@ export default {
 
 		selected_class() {
 			return this.selected ? "bg-yellow-100" : "";
-		}
+		},
 	},
 }
 </script>
-
-<style scoped>
-	.remove-arrow::-webkit-inner-spin-button,
-	.remove-arrow::-webkit-outer-spin-button {
-		appearance: none;
-		margin: 0;
-	}
-	.remove-arrow {
-		appearance: none;
-		background-position: right 0.1rem center;
-	}
-</style>

@@ -8,7 +8,6 @@
 				<CartSidebar
 					class="h-full"
 					ref="cart-sidebar"
-					@qty-changed="this.handle_qty_changed"
 				/>
 			</div>
 			<ItemList
@@ -43,19 +42,15 @@ export default {
 	methods: {
 		async handle_item_selected(item) {
 			if (!cart.has_item(item.item_code)) {
-				await this.cart.update_item_qty(item.item_code, 1);
+				await cart.update_item_qty(item.item_code, 1);
 			}
 			this.$refs["cart-sidebar"].select_item(item.item_code);
 		},
-
-		handle_qty_changed(row) {
-			cart.update_item_qty(row.item_code, row.qty, row.uom);
-		}
 	},
 
 	pageMeta() {
 		return {
-			title: 'Home Page Title',
+			title: 'Order Cart',
 		}
 	},
 }

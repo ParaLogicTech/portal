@@ -6,7 +6,7 @@
 	>
 		<ItemImage
 			:item="item"
-			class="w-[65px] h-[65px] flex-shrink-0 border border-gray-300"
+			class="w-[65px] h-[65px] flex-shrink-0 border border-gray-300 hidden sm:block"
 			rounded="rounded"
 			font="text-md"
 		/>

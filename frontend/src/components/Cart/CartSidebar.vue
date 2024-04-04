@@ -1,6 +1,6 @@
 <template>
 	<div class="flex flex-col h-full">
-		<div class="flex-shrink-0 flex flex-col justify-center px-2 border-b border-gray-400" style="height: 48px;">
+		<div class="flex-shrink-0 flex flex-col justify-center px-2 py-1 border-b border-gray-400" style="min-height: 48px;">
 			<div class="flex justify-between">
 				<h1 class="text-xl font-semibold">
 					<span>Order Cart</span>

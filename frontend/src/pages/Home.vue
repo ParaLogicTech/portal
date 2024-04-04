@@ -2,7 +2,7 @@
 	<div class="h-full overflow-hidden">
 		<div class="flex h-full">
 			<CartSidebar
-				class="h-full w-[360px] flex-shrink-0 border-r border-gray-400"
+				class="h-full w-[300px] sm:w-[360px] flex-shrink-0 border-r border-gray-400"
 				ref="cart-sidebar"
 			/>
 			<ItemList

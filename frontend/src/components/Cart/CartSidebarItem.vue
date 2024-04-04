@@ -95,7 +95,7 @@ export default {
 		reset_qty_model() {
 			this.qty_model.qty = this.row.qty;
 			this.qty_model.uom = this.row.uom;
-			this.$refs.qty_field.refresh();
+			this.$refs.qty_field?.refresh();
 		},
 	},
 

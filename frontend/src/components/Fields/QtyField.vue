@@ -53,7 +53,7 @@ export default {
 
 	methods: {
 		focus() {
-			this.$refs.qty_input.focus();
+			this.$refs.qty_input?.focus();
 		},
 
 		handle_qty_change() {
@@ -61,6 +61,10 @@ export default {
 		},
 
 		handle_qty_input() {
+			if (this.display_value.qty == 0) {
+				this.clear_timeout();
+				return;
+			}
 			this.debounced_qty_change(1000);
 		},
 
@@ -83,7 +87,7 @@ export default {
 		trigger_qty_change() {
 			this.clear_timeout();
 
-			if (this.display_value.qty == null || this.display_value.qty == "") {
+			if (this.display_value.qty == null || this.display_value.qty === "") {
 				return;
 			}
 			if (this.display_value.qty == this.modelValue.qty && this.display_value.uom == this.modelValue.uom) {

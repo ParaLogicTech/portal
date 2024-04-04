@@ -1,6 +1,10 @@
 @import './assets/Inter/inter.css';
 @import 'frappe-ui/src/style.css';
 
+body {
+    overflow: hidden;
+}
+
 ::-webkit-scrollbar {
     width: 6px;
 }

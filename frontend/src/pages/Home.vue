@@ -1,5 +1,5 @@
 <template>
-	<div class="h-screen overflow-hidden">
+	<div class="h-full overflow-hidden">
 		<div class="flex h-full">
 			<div class="flex flex-col flex-shrink-0 w-[360px] border-r border-gray-400 h-full">
 				<div class="p-2 border-b border-gray-400 shadow-sm flex-shrink-0">

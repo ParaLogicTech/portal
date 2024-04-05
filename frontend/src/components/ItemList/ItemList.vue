@@ -53,7 +53,7 @@ export default {
 			}
 
 			if (!this.filters_applied) {
-				items.splice(100);
+				items = items.slice(0, 100);
 			}
 
 			return items;

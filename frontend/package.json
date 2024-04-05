@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build --base=/assets/portal/sales-portal/ && yarn copy-html-entry",
+    "copy-html-entry": "cp ../portal/public/sales-portal/index.html ../portal/www/sales-portal.html",
     "preview": "vite preview"
   },
   "dependencies": {

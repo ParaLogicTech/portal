@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-const base_path = '/frontend'
+const base_path = '/sales-portal'
 
 const routes = [
 	{

@@ -18,7 +18,7 @@ export default defineConfig({
     include: ['frappe-ui > feather-icons', 'showdown', 'engine.io-client'],
   },
   build: {
-    outDir: `../${path.basename(path.resolve('..'))}/public/frontend`,
+    outDir: `../${path.basename(path.resolve('..'))}/public/sales-portal`,
     emptyOutDir: true,
     commonjsOptions: {
       include: [/tailwind.config.js/, /node_modules/],

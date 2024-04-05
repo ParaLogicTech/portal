@@ -3,6 +3,7 @@
 		class="flex border-b border-gray-400 p-2 gap-2 transition-bg duration-100 ease-in-out"
 		:class="selected_class"
 		@click="this.select_row(false)"
+		@focusin="this.handle_focusin"
 	>
 		<ItemImage
 			:item="item"
@@ -68,9 +69,12 @@ export default {
 	methods: {
 		select_row(center=false) {
 			let block = center ? "center" : "nearest";
-			console.log("block " + block)
 			this.$el.scrollIntoView({behavior: "instant", block: block});
 			this.$refs.qty_field?.focus();
+		},
+
+		handle_focusin() {
+			this.$el.scrollIntoView({behavior: "instant", block: "nearest"});
 		},
 
 		handle_arrow_up() {

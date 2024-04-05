@@ -60,11 +60,17 @@ export let get_item = (item_code) => {
 }
 
 export let active_items = computed(() => {
-	return (item_list.data || []).filter((d) => {
+	let active_items = (item_list.data || []).filter((d) => {
 		return !d.disabled
 			&& d.is_sales_item
 			&& !d.is_end_of_life
-	})
+	});
+
+	if (localStorage.getItem('hide_items_without_image')) {
+		active_items = active_items.filter((d) => d.image);
+	}
+
+	return active_items;
 });
 
 // Item Group Data

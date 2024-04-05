@@ -50,7 +50,7 @@ export default {
 		select_item(item_code) {
 			let component = this.$refs["items"].find(d => d.row.item_code === item_code);
 			if (component) {
-				component.select_row();
+				component.select_row(true);
 			}
 		},
 

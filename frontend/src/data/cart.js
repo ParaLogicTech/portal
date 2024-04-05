@@ -16,7 +16,7 @@ export let cart = reactive({
 	},
 
 	get customer() {
-		return _selected_customer.value;
+		return this.doc?.name;
 	},
 
 	get cart_id() {
@@ -213,6 +213,7 @@ const update_item_qty_resource = createResource({
 const set_cart_doc = (doc) => {
 	cart.doc = doc;
 	if (!doc) {
+		_selected_customer.value = null;
 		localStorage.removeItem('last_selected_customer');
 	} else if (doc.customer) {
 		_selected_customer.value = doc.customer;

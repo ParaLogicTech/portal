@@ -50,14 +50,9 @@ app.use(pageMetaPlugin);
 
 // Register Global Components
 let globalComponents = {
-	Button,
-	Input,
-	TextInput,
 	ErrorMessage,
 	Dialog,
 	Alert,
-	Badge,
-	Autocomplete,
 	FeatherIcon,
 	Spinner,
 };

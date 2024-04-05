@@ -9,12 +9,17 @@
 </template>
 
 <script>
+import {Autocomplete} from "frappe-ui";
 import {customer_list} from "@/data/customers";
 import {cart, _selected_customer} from "@/data/cart";
 import {watch} from "vue"
 
 export default {
 	name: "CustomerSelection",
+
+	components: {
+		Autocomplete,
+	},
 
 	data() {
 		let customer = this.get_option_from_name(_selected_customer.value);

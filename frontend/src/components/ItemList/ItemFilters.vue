@@ -48,11 +48,18 @@
 </template>
 
 <script>
+import {Autocomplete, TextInput, Button} from "frappe-ui";
 import {brand_list, item_group_list} from "@/data/items";
 import debounce from "frappe-ui/src/utils/debounce"
 
 export default {
 	name: "ItemFilters",
+
+	components: {
+		Autocomplete,
+		TextInput,
+		Button,
+	},
 
 	props: {
 		filters: Object,

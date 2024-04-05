@@ -1,7 +1,7 @@
 <template>
 	<Autocomplete
 		:options="this.customer_options"
-		v-model="customer"
+		v-model="customer_model"
 		placeholder="Select Customer..."
 		variant="outline",
 		@update:modelValue="this.update_cart_customer"
@@ -22,9 +22,9 @@ export default {
 	},
 
 	data() {
-		let customer = this.get_option_from_name(_selected_customer.value);
+		let customer_model = this.get_option_from_name(_selected_customer.value);
 		return {
-			customer: customer,
+			customer_model: customer_model,
 		}
 	},
 
@@ -59,7 +59,7 @@ export default {
 
 	created() {
 		watch(_selected_customer, (new_customer, old_customer) => {
-			this.customer = this.get_option_from_name(new_customer);
+			this.customer_model = this.get_option_from_name(new_customer);
 		});
 	}
 }

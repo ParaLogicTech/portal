@@ -48,21 +48,21 @@ export default {
 
 	methods: {
 		select_item(item_code) {
-			let component = this.$refs["items"].find(d => d.row.item_code === item_code);
+			let component = (this.$refs["items"] || []).find(d => d.row.item_code === item_code);
 			if (component) {
 				component.select_row(true);
 			}
 		},
 
 		select_next_row(current_row) {
-			let current_row_idx = this.$refs["items"].findIndex(d => d.row == current_row);
+			let current_row_idx = (this.$refs["items"] || []).findIndex(d => d.row == current_row);
 			if (current_row_idx != -1 && current_row_idx + 1 < this.$refs["items"].length) {
 				this.$refs["items"][current_row_idx + 1].select_row();
 			}
 		},
 
 		select_previous_row(current_row) {
-			let current_row_idx = this.$refs["items"].findIndex(d => d.row == current_row);
+			let current_row_idx = (this.$refs["items"] || []).findIndex(d => d.row == current_row);
 			if (current_row_idx != -1 && current_row_idx - 1 >= 0) {
 				this.$refs["items"][current_row_idx - 1].select_row();
 			}

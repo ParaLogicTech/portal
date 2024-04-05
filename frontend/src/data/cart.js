@@ -16,7 +16,7 @@ export let cart = reactive({
 	},
 
 	get customer() {
-		return this.doc?.name;
+		return this.doc?.customer || _selected_customer.value;
 	},
 
 	get cart_id() {

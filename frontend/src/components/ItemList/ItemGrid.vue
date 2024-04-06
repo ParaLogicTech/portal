@@ -1,12 +1,12 @@
 <template>
 	<div class="@container p-3 overflow-y-scroll">
-		<div v-if="loading" class="h-full flex items-center justify-center text-gray-700 text-xl">
+		<div v-if="loading && !has_data" class="h-full flex items-center justify-center text-gray-700 text-xl">
 			<Spinner class="w-5 mr-2" />
 			<span>Loading Items...</span>
 		</div>
 
 		<div
-			v-else-if="!items || !items.length"
+			v-else-if="!items?.length"
 			class="h-full flex items-center justify-center text-gray-400 text-xl font-medium"
 		>
 			<FeatherIcon
@@ -43,6 +43,7 @@ export default {
 		items: Array,
 		matches: Object,
 		loading: Boolean,
+		has_data: Boolean,
 	},
 
 	methods: {

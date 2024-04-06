@@ -7,6 +7,7 @@
 		<ItemGrid
 			:items="filtered_items"
 			:loading="item_list.list.loading"
+			:has_data="item_list.data?.length > 0"
 			:matches="fuzzy_matches"
 			class="h-full"
 			@item-selected="this.handle_item_selected"

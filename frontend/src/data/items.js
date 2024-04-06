@@ -35,22 +35,6 @@ export let item_list = createListResource({
 				},
 			}
 
-			d.standard_price = computed(() => {
-				if (!standard_prices.data) {
-					return null;
-				}
-
-				return standard_prices.data.item_prices_map[d.name];
-			});
-
-			d.stock_data = computed(() => {
-				if (!item_stock.data) {
-					return null;
-				}
-
-				return item_stock.data[d.name];
-			});
-
 			return d;
 		})
 	},

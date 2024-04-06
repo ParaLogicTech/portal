@@ -14,18 +14,22 @@ export default {
 
 	computed: {
 		text() {
-			if (standard_prices.loading) {
+			if (standard_prices.loading && !this.price?.price_list_rate) {
 				return "..."
-			} else if (standard_prices.fetched) {
-				if (this.item.standard_price?.price_list_rate) {
-					return this.item.standard_price.formatted_price_list_rate;
-				} else {
-					return "";
-				}
+			} else if (this.price?.price_list_rate) {
+				return this.price.formatted_price_list_rate;
 			} else {
 				return "";
 			}
 		},
+
+		price() {
+			if (!standard_prices.data) {
+				return null;
+			}
+
+			return standard_prices.data.item_prices_map[this.item.name];
+		}
 	}
 }
 </script>

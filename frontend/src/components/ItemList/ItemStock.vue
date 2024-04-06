@@ -19,7 +19,7 @@ export default {
 			if (item_stock.loading) {
 				return `Loading...`;
 			} else if (item_stock.fetched) {
-				let stock_data = this.item.stock_data;
+				let stock_data = this.stock_data;
 				if (stock_data?.actual_qty > 0) {
 					return `In Stock: ${stock_data.actual_qty} ${stock_data.uom}`;
 				} else {
@@ -34,7 +34,7 @@ export default {
 			if (item_stock.loading) {
 				return ['text-gray-600', 'bg-gray-100'];
 			} else if (item_stock.fetched) {
-				let stock_data = this.item.stock_data;
+				let stock_data = this.stock_data;
 				if (stock_data?.actual_qty > 0) {
 					return ['text-green-800', 'bg-green-200'];
 				} else {
@@ -44,6 +44,14 @@ export default {
 				return []
 			}
 		},
+
+		stock_data() {
+			if (!item_stock.data) {
+				return null;
+			}
+
+			return item_stock.data[this.item.name];
+		}
 	}
 }
 </script>

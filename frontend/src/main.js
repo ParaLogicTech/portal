@@ -35,6 +35,8 @@ import {
 	FeatherIcon,
 } from 'frappe-ui'
 
+import {createAlert} from "@/utils/alerts";
+
 setConfig('resourceFetcher', frappeRequest);
 
 // Initialize app with plugins
@@ -69,6 +71,7 @@ if (import.meta.env.DEV) {
 	window.$item_stock = item_stock;
 	window.$customer_list = customer_list;
 	window.$cart = cart;
+	window.$alert = createAlert;
 }
 
 // Register Global Properties

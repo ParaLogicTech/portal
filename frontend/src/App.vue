@@ -1,13 +1,16 @@
 <template>
 	<div class="h-screen overflow-hidden" :style="{'max-height': `${height}px`}">
-		<router-view />
+		<RouterView />
 	</div>
+	<Alerts/>
 </template>
 
 <script>
 import viewheight from "@/utils/viewheight";
+import Alerts from "@/components/Utils/Alerts.vue";
 export default {
 	name: 'App',
+	components: {Alerts},
 
 	data() {
 		return {

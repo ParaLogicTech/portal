@@ -6,6 +6,7 @@
 			:class="rounded"
 			:src="item.image"
 			:alt="item.item_name"
+			loading="lazy"
 		/>
 		<div
 			v-else

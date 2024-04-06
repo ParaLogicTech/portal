@@ -1,4 +1,5 @@
 import { createListResource } from "frappe-ui";
+import {createAlert} from "@/utils/alerts";
 
 export let customer_list = createListResource({
 	doctype: 'Customer',
@@ -17,5 +18,7 @@ export let customer_list = createListResource({
 
 // Reload Customers
 export let reload_customer_data = () => {
-	customer_list.fetch();
+	customer_list.reload().catch(e => {
+		createAlert({"title": "Error loading Customers", "message": e, "variant": "error"});
+	});
 }

@@ -1,5 +1,6 @@
 import { computed } from "vue";
 import { createListResource, createResource } from 'frappe-ui'
+import {createAlert} from "@/utils/alerts";
 
 // Item Data
 export let item_list = createListResource({
@@ -145,9 +146,19 @@ export let item_stock = createResource({
 
 // Reload Items
 export let reload_items_data = () => {
-	item_list.reload();
-	item_group_list.reload();
-	brand_list.reload();
-	item_stock.reload();
-	standard_prices.reload();
+	item_list.reload().catch(e => {
+		createAlert({"title": "Error loading Items", "message": e, "variant": "error"});
+	});
+	item_group_list.reload().catch(e => {
+		createAlert({"title": "Error loading Item Groups", "message": e, "variant": "error"});
+	});
+	brand_list.reload().catch(e => {
+		createAlert({"title": "Error loading Brands", "message": e, "variant": "error"});
+	});
+	item_stock.reload().catch(e => {
+		createAlert({"title": "Error loading Item Stock", "message": e, "variant": "error"});
+	});
+	standard_prices.reload().catch(e => {
+		createAlert({"title": "Error loading Standard Prices", "message": e, "variant": "error"});
+	});
 }

@@ -1,6 +1,7 @@
 import { reactive } from "vue";
 import { createResource } from "frappe-ui";
 import { ref } from 'vue';
+import {createAlert} from "@/utils/alerts";
 
 export let _selected_customer = ref(null);
 
@@ -165,7 +166,7 @@ export const cart_queue = reactive({
 			action_obj.resolve(await resource.fetch(action_obj.params));
 		} catch (e) {
 			action_obj.reject(e);
-			console.error(e);
+			createAlert({"title": "Error updating cart", "message": e, "variant": "error"});
 		}
 	}
 });

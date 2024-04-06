@@ -163,6 +163,10 @@ export const cart_queue = reactive({
 				resource = get_cart_resource;
 			}
 
+			if (!resource) {
+				throw new Error("Invalid action");
+			}
+
 			action_obj.resolve(await resource.fetch(action_obj.params));
 		} catch (e) {
 			action_obj.reject(e);

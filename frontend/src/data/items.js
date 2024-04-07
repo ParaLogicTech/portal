@@ -6,6 +6,7 @@ import {createAlert} from "@/utils/alerts";
 export let item_list = createListResource({
 	doctype: 'Item',
 	cache: 'Items',
+	url: 'portal.sales_portal.items.get_item_list',
 	fields: [
 		'name',
 		'item_name',
@@ -125,7 +126,6 @@ export let standard_prices = createResource({
 // Stock Data
 export let item_stock = createResource({
 	url: 'portal.sales_portal.items.get_item_stock_data',
-	cache: 'Item Stock Data',
 });
 
 // Reload Items

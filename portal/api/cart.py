@@ -69,6 +69,15 @@ def update_item_qty(
 	customer=None,
 	cart_id=None,
 ):
+	cart_doc = get_cart(customer, cart_id)
+	cart_doc.validate_can_modify()
+
+	_update_item_qty(cart_doc, item_code, qty, uom)
+
+	return update_cart(cart_doc)
+
+
+def _update_item_qty(cart_doc, item_code, qty, uom):
 	# Validate arguments
 	if not item_code:
 		frappe.throw(_("Item Code not provided"))
@@ -81,9 +90,6 @@ def update_item_qty(
 	if uom:
 		validate_item_uom(item_code, uom)
 
-	cart_doc = get_cart(customer, cart_id)
-	cart_doc.validate_can_modify()
-
 	if qty > 0:
 		# Add Item or Change Qty/UOM
 		row = cart_doc.get_item_row(item_code, add_row_if_missing=True)
@@ -91,12 +97,17 @@ def update_item_qty(
 		if uom:
 			row.uom = uom
 
+		previous_conversion_factor = row.conversion_factor
 		row.conversion_factor = get_conversion_factor(item_code, row.uom).get("conversion_factor")
+
+		if flt(previous_conversion_factor, 9) != flt(row.conversion_factor, 9):
+			row.price_list_rate = None
+			row.rate = None
+			row.discount_percentage = None
+			row.margin_rate_or_amount = None
 	else:
 		# Remove Item
 		cart_doc.remove_item_row(item_code)
-
-	return update_cart(cart_doc)
 
 
 def update_cart(cart_doc):

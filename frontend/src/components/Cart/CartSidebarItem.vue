@@ -7,7 +7,7 @@
 	>
 		<ItemImage
 			:item="item"
-			class="w-[65px] h-[65px] flex-shrink-0 border border-gray-300 hidden sm:block"
+			class="w-[65px] h-[65px] flex-shrink-0 border border-gray-300"
 			rounded="rounded"
 			font="text-md"
 		/>
@@ -15,9 +15,10 @@
 		<div class="flex flex-col justify-between w-full">
 			<div class="text-sm font-semibold">{{ row.item_name }}</div>
 			<div class="flex justify-between gap-0.5">
-				<div class="w-[55%] self-end">
+				<div class="w-[45%] self-end">
 					<QtyField
 						v-model="qty_model"
+						:uoms="uoms"
 						class="h-[30px]"
 						ref="qty_field"
 						@arrow-up="this.handle_arrow_up"
@@ -27,11 +28,11 @@
 						@update:modelValue="this.handle_qty_change"
 					/>
 				</div>
-				<div class="w-[22%]">
+				<div class="w-[25%]">
 					<div class="text-2xs font-semibold text-gray-600">Rate</div>
 					<div class="text-md">{{ format_currency(row.rate, cart.currency) }}</div>
 				</div>
-				<div class="w-[22%] text-right">
+				<div class="w-[30%] text-right">
 					<div class="text-2xs font-semibold text-gray-600">Amount</div>
 					<div class="text-md font-semibold">{{ format_currency(row.amount, cart.currency) }}</div>
 				</div>
@@ -110,6 +111,10 @@ export default {
 	computed: {
 		item() {
 			return item_list.dataMap[this.row.item_code] || {};
+		},
+
+		uoms() {
+			return (this.item?.uoms || []).map(d => d.uom);
 		},
 
 		selected_class() {

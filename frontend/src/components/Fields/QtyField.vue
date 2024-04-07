@@ -1,8 +1,8 @@
 <template>
-	<div class="text-md">
+	<div class="qty-field-container">
 		<input
 			v-model="display_value.qty"
-			class="h-full w-[50px] px-0.5 py-0 remove-arrow text-sm font-medium text-center rounded-sm border-gray-400"
+			class="remove-arrow"
 			ref="qty_input"
 			@change="this.handle_qty_change"
 			@keydown="this.handle_qty_keydown"
@@ -14,15 +14,21 @@
 			pattern="[0-9]+([\.,][0-9]+)?"
 			min="0"
 		/>
+
 		<select
 			v-model="display_value.uom"
-			class="h-full w-[60px] px-1 py-0 remove-arrow text-xs font-medium ml-0.5 rounded-sm border-gray-400 text-gray-800"
+			class="remove-arrow"
 			ref="uom_input"
+			@change="this.handle_qty_change"
 			@focus="this.set_is_focused"
 			@blur="this.set_is_focused"
-			disabled="disabled"
 		>
-			<option>{{ display_value.uom }}</option>
+			<option
+				v-for="uom in uom_options"
+				:selected="uom == display_value.uom"
+			>
+				{{ uom }}
+			</option>
 		</select>
 	</div>
 </template>
@@ -35,6 +41,10 @@ export default {
 		modelValue: {
 			qty: Number,
 			uom: String,
+		},
+		uoms: {
+			type: Array,
+			default: () => [],
 		},
 	},
 
@@ -134,10 +144,30 @@ export default {
 			this.display_value.uom = this.modelValue.uom;
 		},
 	},
+
+	computed: {
+		uom_options() {
+			let uoms = this.uoms || [];
+			if (this.display_value.uom && !uoms.find(uom => uom == this.display_value.uom)) {
+				uoms = [this.display_value.uom, ...uoms];
+			}
+			return uoms;
+		}
+	}
 }
 </script>
 
 <style>
+.qty-field-container {
+	@apply inline-block text-md rounded-sm border border-gray-400;
+}
+.qty-field-container input {
+	@apply h-full w-[50px] px-0.5 py-0 text-sm font-medium text-center border-0 border-r border-gray-400;
+}
+.qty-field-container select {
+	@apply h-full w-[60px] px-1.5 py-0 text-xs font-medium text-gray-800 border-0;
+}
+
 .remove-arrow::-webkit-inner-spin-button,
 .remove-arrow::-webkit-outer-spin-button {
 	appearance: none;

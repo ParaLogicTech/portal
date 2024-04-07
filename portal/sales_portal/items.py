@@ -1,5 +1,38 @@
 import frappe
 from frappe.utils import getdate
+from frappe.client import get_list
+
+
+@frappe.whitelist()
+def get_item_list(doctype="Item", fields=None, filters=None, order_by=None, start=0, limit=20, group_by=None, parent=None, debug=False):
+	filters = frappe.parse_json(filters)
+
+	out = get_list(doctype, fields, filters, order_by, start, limit, parent)
+
+	items_map = {}
+	for d in out:
+		items_map[d.name] = d
+		d.uoms = []
+
+	item_codes = list(items_map.keys())
+	item_conditions = ""
+	if filters:
+		item_conditions = "where parent in %(item_codes)s"
+
+	uom_data = []
+	if item_codes:
+		uom_data = frappe.db.sql(f"""
+			select parent, uom, conversion_factor
+			from `tabUOM Conversion Detail`
+			{item_conditions}
+			order by idx
+		""", {"item_codes": item_codes}, as_dict=1)
+
+	for d in uom_data:
+		if d.parent in items_map:
+			items_map[d.parent].uoms.append(d)
+
+	return out
 
 
 @frappe.whitelist()

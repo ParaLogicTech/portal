@@ -24,6 +24,10 @@ export let cart = reactive({
 		return this.doc?.name;
 	},
 
+	get currency() {
+		return this.doc?.currency;
+	},
+
 	set_customer(value) {
 		if (this.customer != value) {
 			return cart_queue.add("set_customer", {

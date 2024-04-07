@@ -17,10 +17,14 @@ export default {
 			if (standard_prices.loading && !this.price?.price_list_rate) {
 				return "..."
 			} else if (this.price?.price_list_rate) {
-				return this.price.formatted_price_list_rate;
+				return format_currency(this.price.price_list_rate, this.currency);
 			} else {
 				return "";
 			}
+		},
+
+		currency() {
+			return standard_prices.data?.price_list_currency;
 		},
 
 		price() {

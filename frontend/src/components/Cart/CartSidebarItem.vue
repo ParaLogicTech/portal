@@ -29,11 +29,11 @@
 				</div>
 				<div class="w-[22%]">
 					<div class="text-2xs font-semibold text-gray-600">Rate</div>
-					<div class="text-md">${{ row.rate }}</div>
+					<div class="text-md">{{ format_currency(row.rate, cart.currency) }}</div>
 				</div>
 				<div class="w-[22%] text-right">
 					<div class="text-2xs font-semibold text-gray-600">Amount</div>
-					<div class="text-md font-semibold">${{ row.amount }}</div>
+					<div class="text-md font-semibold">{{ format_currency(row.amount, cart.currency) }}</div>
 				</div>
 			</div>
 		</div>
@@ -61,6 +61,8 @@ export default {
 				qty: this.row.qty,
 				uom: this.row.uom,
 			},
+
+			cart: cart,
 
 			selected: false,
 		}

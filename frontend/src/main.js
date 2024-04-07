@@ -5,7 +5,14 @@ import router from '@/router'
 import App from '@/App.vue'
 import moment from 'moment'
 
+import {flt, cint, cstr, format_number, format_currency} from '@/utils/formatting';
+
 import { session } from '@/data/session';
+
+import {
+	currency_list,
+	reload_currency_data,
+} from "@/data/currency";
 
 import {
 	item_list,
@@ -60,10 +67,16 @@ for (let component in globalComponents) {
 
 // Global Variables
 window.moment = moment;
+window.flt = flt;
+window.cint = cint;
+window.cstr = cstr;
+window.format_number = format_number;
+window.format_currency = format_currency;
 
 if (import.meta.env.DEV) {
 	window.$session = session;
 	window.$router = router;
+	window.$currency_list = currency_list;
 	window.$item_list = item_list;
 	window.$item_group_list = item_group_list;
 	window.$brand_list = brand_list;
@@ -76,6 +89,8 @@ if (import.meta.env.DEV) {
 
 // Register Global Properties
 app.config.globalProperties.$session = session;
+app.config.globalProperties.format_number = format_number;
+app.config.globalProperties.format_currency = format_currency;
 
 // Mount to DOM
 app.mount('#app');
@@ -86,6 +101,7 @@ if (!session.isLoggedIn) {
 }
 
 // Load Data
+reload_currency_data();
 reload_customer_data();
 reload_items_data();
 

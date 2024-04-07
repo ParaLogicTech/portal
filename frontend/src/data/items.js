@@ -1,6 +1,7 @@
 import { computed } from "vue";
 import { createListResource, createResource } from 'frappe-ui'
 import {createAlert} from "@/utils/alerts";
+import {on_doctype_list_update} from "@/socket";
 
 // Item Data
 export let item_list = createListResource({
@@ -71,8 +72,8 @@ export let item_group_list = createListResource({
 		'image',
 	],
 	filters: {
-        parent_item_group: ['is', 'set'],
-    },
+		parent_item_group: ['is', 'set'],
+	},
 	orderBy: 'name',
 	pageLength: 99999,
 });
@@ -146,3 +147,11 @@ export let reload_items_data = () => {
 		createAlert({"title": "Error loading Standard Prices", "message": e, "variant": "error"});
 	});
 }
+
+export let setup_item_data_realtime = () => {
+	on_doctype_list_update($socket, "Item", (name) => {
+		if (item_list.originalData?.find((d) => d.name === name)) {
+			item_list.fetchOne.submit(name)
+		}
+	})
+};

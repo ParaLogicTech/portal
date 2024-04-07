@@ -2,6 +2,7 @@ import { reactive } from "vue";
 import { createResource } from "frappe-ui";
 import { ref } from 'vue';
 import {createAlert} from "@/utils/alerts";
+import {subscribe_doc, unsubscribe_doc} from "@/socket";
 
 export let _selected_customer = ref(null);
 
@@ -24,6 +25,10 @@ export let cart = reactive({
 		return this.doc?.name;
 	},
 
+	get modified() {
+		return this.doc?.modified;
+	},
+
 	get currency() {
 		return this.doc?.currency;
 	},
@@ -36,13 +41,21 @@ export let cart = reactive({
 		}
 	},
 
-	// reload_cart() {
-	// 	if (this.customer || this.cart_id) {
-	// 		return get_cart_resource.fetch({customer: this.customer, cart_id: this.cart_id});
-	// 	} else {
-	// 		set_cart_doc(null);
-	// 	}
-	// },
+	reload_cart() {
+		if (!this.customer && !this.cart_id) {
+			return;
+		}
+
+		if (cart_queue.running) {
+			return cart_queue.promise;
+		} else {
+			cart_queue.add("get_cart", {
+				customer: this.customer,
+				cart_id: this.cart_id
+			});
+			return cart_queue.promise;
+		}
+	},
 
 	update_item_qty(item_code, qty, uom=null) {
 		if (!this.customer && !this.cart_id) {
@@ -163,7 +176,7 @@ export const cart_queue = reactive({
 			let resource;
 			if (action_obj.action == "update_item_qty") {
 				resource = update_item_qty_resource;
-			} else if (action_obj.action == "set_customer") {
+			} else if (["set_customer", "get_cart"].includes(action_obj.action)) {
 				resource = get_cart_resource;
 			}
 
@@ -233,6 +246,8 @@ const update_item_qty_resource = createResource({
 });
 
 const set_cart_doc = (doc) => {
+	let previous_doc = cart.doc;
+
 	cart.doc = doc;
 	if (!doc) {
 		_selected_customer.value = null;
@@ -240,6 +255,41 @@ const set_cart_doc = (doc) => {
 	} else if (doc.customer) {
 		_selected_customer.value = doc.customer;
 		localStorage.setItem('last_selected_customer', doc.customer);
+	}
+
+	subscribe_cart_doc(doc, previous_doc);
+}
+
+export const setup_cart_realtime = () => {
+	$socket.on("doc_update", (data) => {
+		// Do not reload if queue is running
+		if (cart_queue.running) {
+			return;
+		}
+
+		// Ignore if cart id is not the same
+		if (!cart.cart_id || data.doctype != 'Cart' || data.name != cart.cart_id) {
+			return;
+		}
+
+		// Do not reload if we have the same version
+		if (data.modified == cart.doc?.modified) {
+			return;
+		}
+
+		cart.reload_cart();
+	})
+}
+
+const subscribe_cart_doc = (new_doc, previous_doc) => {
+	// Unsubscribe if cart changed
+	if (previous_doc?.name && previous_doc.name != new_doc?.name) {
+		unsubscribe_doc($socket, "Cart", previous_doc.name);
+	}
+
+	// Subscribe to new cart
+	if (new_doc?.name) {
+		subscribe_doc($socket, "Cart", new_doc.name);
 	}
 }
 

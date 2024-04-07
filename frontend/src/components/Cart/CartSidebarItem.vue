@@ -46,6 +46,7 @@ import ItemImage from "@/components/ItemList/ItemImage.vue";
 import QtyField from "@/components/Fields/QtyField.vue";
 import {item_list} from "@/data/items";
 import {cart} from "@/data/cart";
+import {watch} from "vue";
 
 export default {
 	name: "CartSidebarItem",
@@ -121,5 +122,11 @@ export default {
 			return this.selected ? "bg-yellow-100" : "";
 		},
 	},
+
+	created() {
+		watch(() => cart.modified, () => {
+			this.reset_qty_model();
+		})
+	}
 }
 </script>

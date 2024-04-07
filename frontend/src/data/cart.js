@@ -183,10 +183,16 @@ const get_cart_resource = createResource({
 	url: 'portal.api.cart.get_cart',
 	method: 'GET',
 	makeParams({ customer, cart_id }) {
-		return {
-			customer: customer || null,
-			cart_id: cart_id || null,
+		let params = {};
+
+		if (customer) {
+			params.customer = customer;
 		}
+		if (cart_id) {
+			params.cart_id = cart_id;
+		}
+
+		return params;
 	},
 	validate(params) {
         validate_cart_id_or_customer(params);
@@ -200,13 +206,20 @@ const update_item_qty_resource = createResource({
 	url: 'portal.api.cart.update_item_qty',
 	method: 'POST',
 	makeParams({ item_code, qty, uom, customer, cart_id }) {
-		return {
+		let params = {
 			item_code: item_code,
 			qty: qty,
 			uom: uom,
-			customer: customer || null,
-			cart_id: cart_id || null,
 		}
+
+		if (customer) {
+			params.customer = customer;
+		}
+		if (cart_id) {
+			params.cart_id = cart_id;
+		}
+
+		return params;
 	},
 	validate(params) {
         validate_cart_id_or_customer(params);

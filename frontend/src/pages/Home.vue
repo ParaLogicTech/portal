@@ -5,18 +5,20 @@
 				class="h-full w-[370px] flex-shrink-0 border-r border-gray-400"
 				ref="cart-sidebar"
 			/>
-			<ItemList
-				class="h-full w-full"
-				@item-selected="this.handle_item_selected"
+
+			<router-view @item-selected="this.handle_item_selected"></router-view>
+
+			<SideBarNavigation
+				class="h-full w-[100px] border-l border-gray-400"
 			/>
 		</div>
 	</div>
 </template>
 
 <script>
-import ItemList from '@/components/ItemList/ItemList.vue'
 import CustomerSelection from "@/components/Customers/CustomerSelection.vue";
 import CartSidebar from "@/components/Cart/CartSidebar.vue";
+import SideBarNavigation from "@/components/SideBarNavigation.vue";
 import {cart} from "@/data/cart";
 
 export default {
@@ -25,7 +27,7 @@ export default {
 	components: {
 		CustomerSelection,
 		CartSidebar,
-		ItemList,
+		SideBarNavigation
 	},
 
 	data() {

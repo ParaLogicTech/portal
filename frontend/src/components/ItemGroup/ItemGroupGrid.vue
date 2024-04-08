@@ -9,11 +9,7 @@
 			v-else-if="!item_groups?.length"
 			class="h-full flex items-center justify-center text-gray-400 text-xl font-medium"
 		>
-			<FeatherIcon
-				name="x"
-				class="h-5 w-5 mr-1"
-				aria-hidden="true"
-			/>
+			<CircleSlash class="h-5 w-5 mr-2" />
 			<div>No Item Groups Found</div>
 		</div>
 
@@ -30,11 +26,13 @@
 
 <script>
 import ItemGroupCard from "@/components/ItemGroup/ItemGroupCard.vue";
+import {CircleSlash} from "lucide-vue-next";
 
 export default {
 	name: "ItemGroupGrid",
 
 	components: {
+		CircleSlash,
 		ItemGroupCard,
 	},
 

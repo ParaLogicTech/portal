@@ -12,6 +12,7 @@
     "feather-icons": "^4.28.0",
     "frappe-ui": "^0.1.45",
     "fuse.js": "^7.0.0",
+    "lucide-vue-next": "^0.365.0",
     "moment": "^2.30.1",
     "sass": "^1.74.1",
     "vue": "^3.2.25",

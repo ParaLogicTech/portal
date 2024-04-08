@@ -8,7 +8,7 @@
 				v-if="is_in_cart"
 				class="text-blue-900 bg-blue-200 p-1 text-xs border border-blue-400 rounded"
 			>
-				<FeatherIcon name="check" class="h-3.5 inline pr-1"/>
+				<Check class="h-3.5 w-3.5 mr-1 inline" stroke-width="1.8px"/>
 				<span>In Cart: {{ cart_qty }} {{ cart_uom }}</span>
 			</div>
 		</div>
@@ -43,6 +43,7 @@ import HighlightedMatchText from "@/components/Utils/HighlightedMatchText.vue";
 import ItemStock from "@/components/Item/ItemStock.vue";
 import ItemPrice from "@/components/Item/ItemPrice.vue";
 import {cart} from "@/data/cart";
+import {Check} from "lucide-vue-next";
 
 export default {
 	name: "ItemCard",
@@ -52,6 +53,7 @@ export default {
 		HighlightedMatchText,
 		ItemStock,
 		ItemPrice,
+		Check,
 	},
 
 	props: {

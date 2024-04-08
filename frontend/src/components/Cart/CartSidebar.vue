@@ -2,9 +2,9 @@
 	<div class="flex flex-col h-full">
 		<div class="top-bar-height flex-shrink-0 flex flex-col justify-center px-2 py-1 border-b border-gray-400">
 			<div class="flex justify-between">
-				<h1 class="text-xl font-semibold">
+				<h1 class="text-xl font-semibold flex items-center">
+					<ShoppingBag class="inline h-[18px] mr-0.5" stroke-width="1.8px"/>
 					<span>Order Cart</span>
-					<FeatherIcon name="shopping-cart" class="inline h-4 ml-1.5"/>
 				</h1>
 				<Spinner class="w-4" v-if="cart.loading" />
 			</div>
@@ -31,13 +31,15 @@
 import CartSidebarItem from "@/components/Cart/CartSidebarItem.vue";
 import CustomerSelection from "@/components/Customer/CustomerSelection.vue";
 import {cart} from "@/data/cart";
+import {ShoppingBag} from "lucide-vue-next"
 
 export default {
 	name: "CartSidebar",
 
 	components: {
 		CustomerSelection,
-		CartSidebarItem
+		CartSidebarItem,
+		ShoppingBag,
 	},
 
 	data() {

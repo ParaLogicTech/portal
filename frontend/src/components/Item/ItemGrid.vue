@@ -9,11 +9,7 @@
 			v-else-if="!items?.length"
 			class="h-full flex items-center justify-center text-gray-400 text-xl font-medium"
 		>
-			<FeatherIcon
-				name="x"
-				class="h-5 w-5 mr-1"
-				aria-hidden="true"
-			/>
+			<CircleSlash class="h-5 w-5 mr-2" />
 			<div>No Items Found</div>
 		</div>
 
@@ -31,12 +27,14 @@
 
 <script>
 import ItemCard from "@/components/Item/ItemCard.vue";
+import {CircleSlash} from "lucide-vue-next"
 
 export default {
 	name: "ItemGrid",
 
 	components: {
 		ItemCard,
+		CircleSlash,
 	},
 
 	props: {

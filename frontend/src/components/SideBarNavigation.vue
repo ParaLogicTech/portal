@@ -44,9 +44,8 @@ export default {
 
 		.icon {
 			margin: auto;
-			svg {
-				width: 23px;
-			}
+			width: 25px;
+			height: 25px;
 		}
 
 		h4 {

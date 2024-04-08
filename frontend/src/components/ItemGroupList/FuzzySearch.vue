@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import {TextInput, Button} from "frappe-ui";
 import debounce from "frappe-ui/src/utils/debounce";
 
 export default {
@@ -42,6 +43,11 @@ export default {
 
 	props: {
 		filters: Object,
+	},
+
+	components: {
+		TextInput,
+		Button,
 	},
 
 	methods: {

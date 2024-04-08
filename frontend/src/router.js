@@ -7,6 +7,18 @@ const routes = [
 		path: '/',
 		name: 'Home',
 		component: () => import('@/pages/Home.vue'),
+		children: [
+			{
+				path: '',
+				name: 'ItemListView',
+				component: () => import('@/pages/ItemListView.vue')
+			},
+			{
+				path: 'item-group-list',
+				name: 'ItemGroupListView',
+				component: () => import('@/pages/ItemGroupListView.vue')
+			},
+		]
 	},
 	{
 		path: '/login',

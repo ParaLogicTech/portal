@@ -1,5 +1,5 @@
 <template>
-	<aside>
+	<aside class="p-2">
 		<nav>
 			<ul>
 				<router-link :to="{ name: 'ItemListView' }">
@@ -84,56 +84,43 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-	nav {
-		ul {
-			padding: 10px;
+	li {
+		@apply p-2 mb-2 text-gray-500 text-center cursor-pointer;
+		list-style: none;
 
-			li {
-				list-style: none;
-				color: #C3C3C3;
-				text-align: center;
-				margin: .8rem 0;
-				padding: 7px 4px;
-				cursor: pointer;
+		.icon {
+			svg {
+				width: 23px;
+				margin: auto;
+			}
+		}
 
-				.icon {
-					svg {
-						width: 23px;
-						margin: auto;
-					}
-				}
+		h4 {
+			@apply text-xs font-medium;
+		}
+	}
 
-				h4 {
-					font-size: .8rem;
-					font-weight: 500;
+	.router-link-exact-active {
+		li {
+			@apply text-gray-900 rounded shadow outline outline-1 outline-gray-500;
+		}
+	}
+
+	.router-link-exact-active:first-child {
+		.icon {
+			svg {
+				path {
+					stroke: #141414;
 				}
 			}
+		}
+	}
 
-			.router-link-exact-active {
-				li {
-					color: #141414;
-					outline: 2px solid #d3d3d3;
-					border-radius: 5px;
-				}
-			}
-
-			.router-link-exact-active:first-child {
-				.icon {
-					svg {
-						path {
-							stroke: #141414;
-						}
-					}
-				}
-			}
-
-			.router-link-exact-active:not(:first-child) {
-				.icon {
-					svg {
-						path {
-							fill: #141414;
-						}
-					}
+	.router-link-exact-active:not(:first-child) {
+		.icon {
+			svg {
+				path {
+					fill: #141414;
 				}
 			}
 		}

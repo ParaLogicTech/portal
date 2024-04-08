@@ -19,10 +19,10 @@
 
 		<div v-else class="grid @md:grid-cols-2 @3xl:grid-cols-3 @5xl:grid-cols-4 @8xl:grid-cols-5 gap-3">
 			<ItemCard
-				v-for="item in items"
-				:key="item.name"
-				:item="item"
-				:matches="get_item_matches(item)"
+				v-for="d in items"
+				:key="d.name"
+				:item="d"
+				:matches="get_matches(d)"
 				@item-selected="this.handle_item_selected"
 			/>
 		</div>
@@ -47,8 +47,8 @@ export default {
 	},
 
 	methods: {
-		get_item_matches(item) {
-			return this.matches ? this.matches[item.name] : [];
+		get_matches(d) {
+			return this.matches ? this.matches[d.name] : [];
 		},
 
 		handle_item_selected(item) {

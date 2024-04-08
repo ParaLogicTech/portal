@@ -1,6 +1,6 @@
 <template>
-<div class="@container px-3 py-2 flex flex-col justify-center" style="min-height: 48px;">
-	<div class="flex flex-row w-full flex-wrap @xl:flex-nowrap gap-1">
+<div class="@container filter-area-container top-bar-height">
+	<div class="flex flex-row flex-wrap @xl:flex-nowrap gap-1">
 		<div class="w-full">
 			<TextInput
 				type="text"

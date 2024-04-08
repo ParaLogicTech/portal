@@ -24,3 +24,26 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     @apply bg-gray-500;
 }
+
+.top-bar-height {
+    min-height: 48px;
+}
+
+.filter-area-container {
+    @apply px-3 py-2 flex flex-col justify-center;
+}
+
+.item-card {
+    @apply rounded shadow border border-gray-400 relative;
+}
+.item-card.clickable {
+    @apply cursor-pointer hover:border-yellow-700 hover:shadow-md transition-all duration-150 ease-in-out;
+}
+.item-card .item-card-indicators {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+}
+.item-card .item-card-separator {
+    @apply border-t border-gray-200;
+}

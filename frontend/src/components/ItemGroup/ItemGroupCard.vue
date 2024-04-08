@@ -1,13 +1,16 @@
 <template>
-	<div class="flex flex-col rounded shadow border border-gray-400 cursor-pointer hover:border-yellow-700 hover:shadow-md transition-all duration-150 ease-in-out relative">
+	<div class="flex flex-col item-card clickable">
+		<ItemImage
+			:item="item_group"
+			class="h-[220px] flex-shrink-0"
+			rounded="rounded rounded-b-none"
+		/>
 
-		<ItemImage :item="item" class="h-[220px] flex-shrink-0" />
-
-		<div class="flex flex-col justify-between h-full">
+		<div class="flex flex-col justify-between h-full item-card-separator">
 			<h1 class="text-sm font-medium px-3 py-2.5">
 				<HighlightedMatchText
-					:text="item.name"
-					:matches="item_name_matches"
+					:text="item_group.name"
+					:matches="item_group_matches"
 				/>
 			</h1>
 		</div>
@@ -27,13 +30,13 @@ export default {
 	},
 
 	props: {
-		item: Object,
+		item_group: Object,
 		matches: Array,
 	},
 
 	computed: {
-		item_name_matches() {
-			return (this.matches || []).filter(d => d.key == "item.name")[0] || {};
+		item_group_matches() {
+			return (this.matches || []).filter(d => d.key == "name")[0] || {};
 		}
 	},
 }

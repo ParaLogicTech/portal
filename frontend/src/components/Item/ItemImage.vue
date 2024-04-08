@@ -5,7 +5,7 @@
 			class="w-auto h-full mx-auto object-cover"
 			:class="rounded"
 			:src="item.image"
-			:alt="item.item_name"
+			:alt="item.item_name || item.name"
 			loading="lazy"
 		/>
 		<div

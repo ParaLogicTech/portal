@@ -1,12 +1,12 @@
 <template>
-	<div class="@container py-2 px-3">
-		<div class="flex flex-row w-full flex-wrap @xl:flex-nowrap gap-1">
+	<div class="@container filter-area-container top-bar-height">
+		<div class="flex flex-row flex-wrap @xs:flex-nowrap gap-1">
 			<div class="w-full">
 				<TextInput
 					type="text"
 					size="sm"
 					variant="outline"
-					placeholder="Search Items Group..."
+					placeholder="Search Item Groups..."
 					:debounce="150"
 					v-model="this.filters.txt"
 				/>

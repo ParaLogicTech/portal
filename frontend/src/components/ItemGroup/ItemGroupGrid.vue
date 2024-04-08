@@ -1,12 +1,12 @@
 <template>
 	<div class="@container p-3 overflow-y-scroll">
-		<div v-if="loading" class="h-full flex items-center justify-center text-gray-700 text-xl">
+		<div v-if="loading && !has_data" class="h-full flex items-center justify-center text-gray-700 text-xl">
 			<Spinner class="w-5 mr-2" />
-			<span>Loading Items...</span>
+			<span>Loading Item Groups...</span>
 		</div>
 
 		<div
-			v-else-if="!items || !items.length"
+			v-else-if="!item_groups?.length"
 			class="h-full flex items-center justify-center text-gray-400 text-xl font-medium"
 		>
 			<FeatherIcon
@@ -14,15 +14,15 @@
 				class="h-5 w-5 mr-1"
 				aria-hidden="true"
 			/>
-			<div>No Items Found</div>
+			<div>No Item Groups Found</div>
 		</div>
 
 		<div v-else class="grid @md:grid-cols-2 @3xl:grid-cols-3 @5xl:grid-cols-4 @8xl:grid-cols-5 gap-3">
 			<ItemGroupCard
-				v-for="item in items"
-				:key="item.name"
-				:item="item"
-				:matches="get_item_matches(item)"
+				v-for="d in item_groups"
+				:key="d.name"
+				:item_group="d"
+				:matches="get_matches(d)"
 			/>
 		</div>
 	</div>
@@ -39,14 +39,15 @@ export default {
 	},
 
 	props: {
-		items: Array,
+		item_groups: Array,
 		matches: Object,
 		loading: Boolean,
+		has_data: Boolean,
 	},
 
 	methods: {
-		get_item_matches(item) {
-			return this.matches ? this.matches[item.name] : [];
+		get_matches(d) {
+			return this.matches ? this.matches[d.name] : [];
 		}
 	}
 }

@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="rounded shadow border border-gray-400 cursor-pointer hover:border-yellow-700 hover:shadow-md transition-all duration-150 ease-in-out relative"
+		class="item-card clickable"
 		@click="this.handle_click"
 	>
 		<div class="item-card-indicators">
@@ -14,9 +14,13 @@
 		</div>
 
 		<div class="flex flex-col h-full">
-			<ItemImage :item="item" class="h-[220px] flex-shrink-0" rounded="rounded rounded-b-none" />
+			<ItemImage
+				:item="item"
+				class="h-[220px] flex-shrink-0"
+				rounded="rounded rounded-b-none"
+			/>
 
-			<div class="flex flex-col justify-between h-full border-t border-gray-200">
+			<div class="flex flex-col justify-between h-full item-card-separator">
 				<h1 class="text-sm font-medium px-3 py-2.5">
 					<HighlightedMatchText
 						:text="item.item_name"
@@ -24,7 +28,7 @@
 					/>
 				</h1>
 
-				<div class="flex flex-wrap gap-1 justify-between items-center px-3 py-2.5 border-t border-gray-200">
+				<div class="flex flex-wrap gap-1 justify-between items-center px-3 py-2.5 item-card-separator">
 					<ItemStock :item="item" class="text-xs" />
 					<ItemPrice :item="item" class="text-md font-semibold text-violet-900" />
 				</div>
@@ -80,11 +84,3 @@ export default {
 	}
 }
 </script>
-
-<style>
-	.item-card-indicators {
-		position: absolute;
-		top: 8px;
-		right: 8px;
-	}
-</style>

@@ -39,7 +39,7 @@
 
 <script>
 import ItemImage from "@/components/Item/ItemImage.vue";
-import HighlightedMatchText from "@/components/HighlightedMatchText.vue";
+import HighlightedMatchText from "@/components/Utils/HighlightedMatchText.vue";
 import ItemStock from "@/components/Item/ItemStock.vue";
 import ItemPrice from "@/components/Item/ItemPrice.vue";
 import {cart} from "@/data/cart";

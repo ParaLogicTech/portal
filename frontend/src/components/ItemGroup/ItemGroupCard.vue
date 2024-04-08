@@ -19,7 +19,7 @@
 
 <script>
 import ItemImage from "@/components/Item/ItemImage.vue";
-import HighlightedMatchText from "@/components/HighlightedMatchText.vue";
+import HighlightedMatchText from "@/components/Utils/HighlightedMatchText.vue";
 
 export default {
 	name: "ItemGroupCard",

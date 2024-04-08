@@ -1,12 +1,12 @@
 <template>
 	<div class="@container p-3 overflow-y-scroll">
-		<div v-if="loading && !has_data" class="h-full flex items-center justify-center text-gray-700 text-xl">
+		<div v-if="loading" class="h-full flex items-center justify-center text-gray-700 text-xl">
 			<Spinner class="w-5 mr-2" />
 			<span>Loading Items...</span>
 		</div>
 
 		<div
-			v-else-if="!items?.length"
+			v-else-if="!items || !items.length"
 			class="h-full flex items-center justify-center text-gray-400 text-xl font-medium"
 		>
 			<FeatherIcon
@@ -18,41 +18,35 @@
 		</div>
 
 		<div v-else class="grid @md:grid-cols-2 @3xl:grid-cols-3 @5xl:grid-cols-4 @8xl:grid-cols-5 gap-3">
-			<ItemCard
+			<ItemGroupCard
 				v-for="item in items"
 				:key="item.name"
 				:item="item"
 				:matches="get_item_matches(item)"
-				@item-selected="this.handle_item_selected"
 			/>
 		</div>
 	</div>
 </template>
 
 <script>
-import ItemCard from "@/components/ItemList/ItemCard.vue";
+import ItemGroupCard from "@/components/ItemGroup/ItemGroupCard.vue";
 
 export default {
-	name: "ItemGrid",
+	name: "ItemGroupGrid",
 
 	components: {
-		ItemCard,
+		ItemGroupCard,
 	},
 
 	props: {
 		items: Array,
 		matches: Object,
 		loading: Boolean,
-		has_data: Boolean,
 	},
 
 	methods: {
 		get_item_matches(item) {
 			return this.matches ? this.matches[item.name] : [];
-		},
-
-		handle_item_selected(item) {
-			this.$emit('item-selected', item);
 		}
 	}
 }

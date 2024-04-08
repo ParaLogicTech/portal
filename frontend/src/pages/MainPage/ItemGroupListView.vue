@@ -1,6 +1,6 @@
 <template>
 	<div class="flex flex-col h-full">
-		<FuzzySearch
+		<ItemGroupFilters
 			:filters="filters"
 			class="border-b border-gray-400 shadow-sm"
 		/>
@@ -14,13 +14,13 @@
 </template>
 
 <script>
-import FuzzySearch from "@/components/ItemGroupList/FuzzySearch.vue";
-import ItemGroupGrid from "@/components/ItemGroupList/ItemGroupGrid.vue";
+import ItemGroupFilters from "@/components/ItemGroup/ItemGroupFilters.vue";
+import ItemGroupGrid from "@/components/ItemGroup/ItemGroupGrid.vue";
 import { item_group_list } from "@/data/items";
 import Fuse from 'fuse.js'
 
 export default {
-	name: "ItemGroup",
+	name: "ItemGroupListView",
 
 	data() {
 		return {
@@ -32,7 +32,7 @@ export default {
 	},
 
 	components: {
-		FuzzySearch,
+		ItemGroupFilters,
 		ItemGroupGrid,
 	},
 

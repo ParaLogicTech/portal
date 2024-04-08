@@ -29,7 +29,7 @@
 
 <script>
 import CartSidebarItem from "@/components/Cart/CartSidebarItem.vue";
-import CustomerSelection from "@/components/Customers/CustomerSelection.vue";
+import CustomerSelection from "@/components/Customer/CustomerSelection.vue";
 import {cart} from "@/data/cart";
 
 export default {

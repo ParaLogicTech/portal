@@ -5,18 +5,18 @@ const base_path = '/sales-portal'
 const routes = [
 	{
 		path: '/',
-		name: 'Home',
-		component: () => import('@/pages/Home.vue'),
+		name: 'MainPage',
+		component: () => import('@/pages/MainPage/MainPage.vue'),
 		children: [
 			{
 				path: '',
 				name: 'ItemListView',
-				component: () => import('@/pages/ItemListView.vue')
+				component: () => import('@/pages/MainPage/ItemListView.vue')
 			},
 			{
-				path: 'item-group-list',
+				path: 'item-groups',
 				name: 'ItemGroupListView',
-				component: () => import('@/pages/ItemGroupListView.vue')
+				component: () => import('@/pages/MainPage/ItemGroupListView.vue')
 			},
 		]
 	},

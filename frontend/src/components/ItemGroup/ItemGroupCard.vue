@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import ItemImage from "@/components/ItemList/ItemImage.vue";
+import ItemImage from "@/components/Item/ItemImage.vue";
 import HighlightedMatchText from "@/components/HighlightedMatchText.vue";
 
 export default {

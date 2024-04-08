@@ -6,7 +6,10 @@
 				ref="cart-sidebar"
 			/>
 
-			<router-view @item-selected="this.handle_item_selected"></router-view>
+			<RouterView
+				class="h-full w-full"
+				@item-selected="this.handle_item_selected"
+			/>
 
 			<SideBarNavigation
 				class="h-full w-[100px] border-l border-gray-400"
@@ -16,13 +19,13 @@
 </template>
 
 <script>
-import CustomerSelection from "@/components/Customers/CustomerSelection.vue";
+import CustomerSelection from "@/components/Customer/CustomerSelection.vue";
 import CartSidebar from "@/components/Cart/CartSidebar.vue";
 import SideBarNavigation from "@/components/SideBarNavigation.vue";
 import {cart} from "@/data/cart";
 
 export default {
-	name: 'Home',
+	name: "MainPage",
 
 	components: {
 		CustomerSelection,

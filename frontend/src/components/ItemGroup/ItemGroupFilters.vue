@@ -33,7 +33,7 @@ import {TextInput, Button} from "frappe-ui";
 import debounce from "frappe-ui/src/utils/debounce";
 
 export default {
-	name: "FuzzySearch",
+	name: "ItemGroupFilters",
 
 	data() {
 		return {

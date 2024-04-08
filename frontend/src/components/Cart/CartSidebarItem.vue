@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import ItemImage from "@/components/ItemList/ItemImage.vue";
+import ItemImage from "@/components/Item/ItemImage.vue";
 import QtyField from "@/components/Fields/QtyField.vue";
 import {item_list} from "@/data/items";
 import {cart} from "@/data/cart";

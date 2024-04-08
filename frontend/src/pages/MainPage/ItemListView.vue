@@ -16,13 +16,13 @@
 </template>
 
 <script>
-import ItemGrid from "@/components/ItemList/ItemGrid.vue";
-import ItemFilters from "@/components/ItemList/ItemFilters.vue";
+import ItemGrid from "@/components/Item/ItemGrid.vue";
+import ItemFilters from "@/components/Item/ItemFilters.vue";
 import { item_list, active_items, in_item_group } from "@/data/items";
 import Fuse from 'fuse.js'
 
 export default {
-	name: "ItemList",
+	name: "ItemListView",
 
 	components: {
 		ItemFilters,

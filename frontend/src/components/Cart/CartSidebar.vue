@@ -1,13 +1,11 @@
 <template>
 	<div class="flex flex-col h-full">
-		<div class="top-bar-height flex-shrink-0 flex flex-col justify-center px-2 py-1 border-b border-gray-400">
-			<div class="flex justify-between">
-				<h1 class="text-xl font-semibold flex items-center">
-					<ShoppingBag class="inline h-[18px] mr-0.5" stroke-width="1.8px"/>
-					<span>Order Cart</span>
-				</h1>
-				<Spinner class="w-4" v-if="cart.loading" />
+		<div class="top-bar-height flex-shrink-0 flex justify-between items-center px-2 py-1 border-b border-gray-400">
+			<div class="flex items-center">
+				<ShoppingBag class="inline h-[18px] mr-0.5" stroke-width="1.8px"/>
+				<h1 class="text-xl font-semibold">Order Cart</h1>
 			</div>
+			<Spinner class="w-4" v-if="cart.loading" />
 		</div>
 
 		<div class="p-2 border-b border-gray-400 shadow-sm">

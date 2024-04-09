@@ -27,6 +27,7 @@ body {
 
 .top-bar-height {
     min-height: 48px;
+    flex-shrink: 0;
 }
 
 .filter-area-container {

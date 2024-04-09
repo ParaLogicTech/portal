@@ -1,19 +1,22 @@
 <template>
 	<div class="flex flex-col h-full">
-		<div class="top-bar-height flex-shrink-0 flex justify-between items-center px-2 py-1 border-b border-gray-400">
-			<div class="flex items-center">
-				<ShoppingBag class="inline h-[18px] mr-0.5" stroke-width="1.8px"/>
-				<h1 class="text-xl font-semibold">Order Cart</h1>
-			</div>
-			<Spinner class="w-4" v-if="cart.loading" />
-		</div>
+		<CartHeader class="top-bar-height px-2 py-1 border-b border-gray-400"/>
 
 		<div class="p-2 border-b border-gray-400 shadow-sm">
 			<CustomerSelection/>
 		</div>
 
 		<div class="h-full overflow-y-scroll">
+			<div
+				v-if="is_empty"
+				class="h-full flex items-center justify-center text-gray-400 text-xl font-medium"
+			>
+				<CircleSlash class="h-5 w-5 mr-2" />
+				<div>Cart is empty</div>
+			</div>
+
 			<CartSidebarItem
+				v-else
 				v-for="row in doc.items || []"
 				:row="row"
 				:key="row.name || row.item_code"
@@ -29,15 +32,17 @@
 import CartSidebarItem from "@/components/Cart/CartSidebarItem.vue";
 import CustomerSelection from "@/components/Customer/CustomerSelection.vue";
 import {cart} from "@/data/cart";
-import {ShoppingBag} from "lucide-vue-next"
+import {CircleSlash} from "lucide-vue-next"
+import CartHeader from "@/components/Cart/CartHeader.vue";
 
 export default {
 	name: "CartSidebar",
 
 	components: {
+		CartHeader,
 		CustomerSelection,
 		CartSidebarItem,
-		ShoppingBag,
+		CircleSlash,
 	},
 
 	data() {
@@ -70,6 +75,10 @@ export default {
 	},
 
 	computed: {
+		is_empty() {
+			return !this.doc.items?.length;
+		},
+
 		doc() {
 			return this.cart.doc || {};
 		}

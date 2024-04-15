@@ -9,6 +9,7 @@
 			:loading="item_group_list.list.loading"
 			:has_data="item_group_list.data?.length > 0"
 			:matches="fuzzy_matches"
+			@item-group-selected="this.handle_item_group_selected"
 			class="h-full"
 		/>
 	</div>
@@ -96,6 +97,10 @@ export default {
 			});
 			return fuse.search(txt);
 		},
+
+		handle_item_group_selected(item_group) {
+			this.$emit('item-group-selected', item_group);
+		}
 	},
 }
 </script>

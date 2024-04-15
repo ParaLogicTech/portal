@@ -19,6 +19,7 @@
 				:key="d.name"
 				:item_group="d"
 				:matches="get_matches(d)"
+				@item-group-selected="this.handle_item_group_selected"
 			/>
 		</div>
 	</div>
@@ -46,6 +47,10 @@ export default {
 	methods: {
 		get_matches(d) {
 			return this.matches ? this.matches[d.name] : [];
+		},
+
+		handle_item_group_selected(item_group) {
+			this.$emit('item-group-selected', item_group);
 		}
 	}
 }

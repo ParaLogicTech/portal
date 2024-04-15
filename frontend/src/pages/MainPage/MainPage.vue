@@ -9,7 +9,8 @@
 			<RouterView
 				class="h-full w-full"
 				@item-selected="this.handle_item_selected"
-			/>
+				@item-group-selected="this.handle_item_group_selected"
+				/>
 
 			<SideBarNavigation
 				class="h-full w-[100px] border-l border-gray-400"
@@ -46,6 +47,11 @@ export default {
 			}
 			this.$refs["cart-sidebar"].select_item(item.item_code);
 		},
+
+		handle_item_group_selected(item_group) {
+			this.$emit('item-group-selected', item_group);
+			this.$router.push({ name: 'ItemListView', query: { group: encodeURIComponent(item_group.name) } });
+		}
 	},
 
 	pageMeta() {

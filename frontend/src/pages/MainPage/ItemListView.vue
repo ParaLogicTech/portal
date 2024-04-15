@@ -117,6 +117,29 @@ export default {
 
 		handle_item_selected(item) {
 			this.$emit('item-selected', item);
+		},
+	},
+
+	created() {
+		const group_name = this.$route.query.group;
+		if (group_name) {
+			this.filters.item_group = {
+				label: decodeURIComponent(group_name),
+				value: decodeURIComponent(group_name)
+			};
+		}
+	},
+
+	watch: {
+		'filters.item_group': function(newValue) {
+			const self = this;
+			if (!newValue) {
+				(() => {
+					const query = { ...self.$route.query };
+					delete query.group;
+					self.$router.replace({ query });
+				})();
+			}
 		}
 	},
 }

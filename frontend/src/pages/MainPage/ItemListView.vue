@@ -42,7 +42,7 @@ export default {
 	},
 
     props: {
-        selectedItemGroup: Object,
+        selected_item_group: Object,
     },
 
 	computed: {
@@ -123,26 +123,24 @@ export default {
 			this.$emit('item-selected', item);
 		},
 
-		updateGroupFilter () {
-			const group = this.selectedItemGroup;
-			if(group && isNaN(group)) {
+		set_selected_item_group () {
+			if (this.selected_item_group) {
 				this.filters.item_group = {
-					label: group.name,
-					value: group.name
+					label: this.selected_item_group,
+					value: this.selected_item_group,
 				};
 			}
 		}
 	},
 
-	created() {
-		this.updateGroupFilter();
-	},
-
 	watch: {
-		selectedItemGroup(newValue) {
-			if (newValue) {
-				this.updateGroupFilter();
-			}
+		selected_item_group: {
+			handler(item_group) {
+				if (item_group) {
+					this.set_selected_item_group();
+				}
+			},
+			immediate: true,
 		}
 	},
 }

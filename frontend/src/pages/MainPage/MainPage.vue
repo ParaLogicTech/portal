@@ -12,9 +12,10 @@
 				class="h-full w-full"
 				@item-selected="this.handle_item_selected"
 				@item-group-selected="this.handle_item_group_selected"
+				:selected_item_group=selected_item_group
 			>
 				<KeepAlive>
-					<component :is="Component" :selectedItemGroup = selectedItemGroup />
+					<component :is="Component" />
 				</KeepAlive>
 			</RouterView>
 
@@ -43,7 +44,7 @@ export default {
 	data() {
 		return {
 			cart: cart,
-			selectedItemGroup: null,
+			selected_item_group: null,
 		}
 	},
 
@@ -56,7 +57,7 @@ export default {
 		},
 
 		handle_item_group_selected(item_group) {
-			this.selectedItemGroup = item_group;
+			this.selected_item_group = item_group;
 			this.$router.push({ name: 'ItemListView' });
 		},
 	},

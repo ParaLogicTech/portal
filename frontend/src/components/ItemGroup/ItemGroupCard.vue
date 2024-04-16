@@ -36,7 +36,7 @@ export default {
 
 	methods: {
 		handle_click() {
-			this.$emit('item-group-selected', this.item_group);
+			this.$emit('item-group-selected', this.item_group?.name);
 		}
 	},
 

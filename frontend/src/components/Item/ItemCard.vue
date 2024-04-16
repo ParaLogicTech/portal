@@ -11,6 +11,8 @@
 				<Check class="h-3.5 w-3.5 mr-1 inline" stroke-width="1.8px"/>
 				<span>In Cart: {{ cart_qty }} {{ cart_uom }}</span>
 			</div>
+
+			<Spinner class="w-5" v-if="is_in_cart_queue" />
 		</div>
 
 		<div class="flex flex-col h-full">
@@ -73,7 +75,8 @@ export default {
 		},
 
 		cart_qty() {
-			return cart.get_row_by_item(this.item.name)?.qty || 0;
+			let qty = cart.get_row_by_item(this.item.name)?.qty || 0;
+			return format_number(qty);
 		},
 
 		cart_uom() {
@@ -82,6 +85,10 @@ export default {
 
 		is_in_cart() {
 			return cart.has_item(this.item.name);
+		},
+
+		is_in_cart_queue() {
+			return !!cart.items_in_queue.find(item_code => item_code == this.item.name);
 		},
 	}
 }

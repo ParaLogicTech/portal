@@ -94,7 +94,11 @@ export function format_number(v, format, decimals) {
 	}
 
 	// join decimal
-	part[1] = part[1] && info.decimal_str ? info.decimal_str + part[1] : "";
+	if (part[1] && cint(part[1]) !== 0 && info.decimal_str) {
+		part[1] = info.decimal_str + part[1];
+	} else {
+		part[1] = "";
+	}
 
 	// join
 	return (is_negative ? "-" : "") + part[0] + part[1];

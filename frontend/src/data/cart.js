@@ -1,4 +1,4 @@
-import { reactive } from "vue";
+import {computed, reactive} from "vue";
 import { createResource } from "frappe-ui";
 import { ref } from 'vue';
 import {createAlert} from "@/utils/alerts";
@@ -80,15 +80,26 @@ export let cart = reactive({
 
 	get_row_by_item(item_code) {
 		return this.doc?.items?.find(item => item.item_code === item_code);
-	}
+	},
+
+	items_in_queue: computed(() => {
+		return cart_queue.pending_actions
+			.map(a => a?.params?.item_code)
+			.filter(d => d);
+	}),
 });
 
 export const cart_queue = reactive({
 	running: false,
 	promise: null,
 
-	pending_actions: [],
-	pending_customer_change: null,
+	running_action: null,
+	queued_actions: [],
+	queued_customer_change: null,
+
+	pending_actions: computed(() => {
+		return [cart_queue.running_action, ...cart_queue.queued_actions, cart_queue.queued_customer_change].filter(d => d);
+	}),
 
 	add(action, params) {
 		// Update existing action instead of adding a new one if possible
@@ -112,9 +123,9 @@ export const cart_queue = reactive({
 
 		// Add to queue
 		if (action == "set_customer") {
-			this.pending_customer_change = action_obj;
+			this.queued_customer_change = action_obj;
 		} else {
-			this.pending_actions.push(action_obj);
+			this.queued_actions.push(action_obj);
 		}
 
 		// Run the queue if not already running
@@ -127,7 +138,7 @@ export const cart_queue = reactive({
 
 	update_existing_action(action, params) {
 		if (action == "update_item_qty") {
-			let existing_action = this.pending_actions.find(q => (
+			let existing_action = this.queued_actions.find(q => (
 				q.action == "update_item_qty"
 				&& q.params.item_code == params.item_code
 				&& q.params.customer == params.customer
@@ -140,9 +151,9 @@ export const cart_queue = reactive({
 				return existing_action.promise;
 			}
 		} else if (action == "set_customer") {
-			if (this.pending_customer_change) {
-				this.pending_customer_change.params.customer = params.customer;
-				return this.pending_customer_change.promise;
+			if (this.queued_customer_change) {
+				this.queued_customer_change.params.customer = params.customer;
+				return this.queued_customer_change.promise;
 			}
 		}
 	},
@@ -150,14 +161,14 @@ export const cart_queue = reactive({
 	async run() {
 		this.running = true;
 
-		while (this.pending_actions.length) {
-			let action_obj = this.pending_actions.shift();
+		while (this.queued_actions.length) {
+			let action_obj = this.queued_actions.shift();
 			await this.run_action(action_obj);
 		}
 
-		if (this.pending_customer_change) {
-			let action_obj = this.pending_customer_change;
-			this.pending_customer_change = null;
+		if (this.queued_customer_change) {
+			let action_obj = this.queued_customer_change;
+			this.queued_customer_change = null;
 
 			if (action_obj.params.customer) {
 				await this.run_action(action_obj);
@@ -172,6 +183,7 @@ export const cart_queue = reactive({
 	async run_action(action_obj) {
 		try {
 			// console.log('Running', action_obj)
+			this.running_action = action_obj;
 
 			let resource;
 			if (action_obj.action == "update_item_qty") {
@@ -188,6 +200,8 @@ export const cart_queue = reactive({
 		} catch (e) {
 			action_obj.reject(e);
 			createAlert({"title": "Error updating cart", "message": e, "variant": "error"});
+		} finally {
+			this.running_action = null;
 		}
 	}
 });

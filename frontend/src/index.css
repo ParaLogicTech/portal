@@ -45,6 +45,7 @@ body {
     @apply cursor-pointer hover:border-violet-800 hover:shadow-md transition-all duration-150 ease-in-out;
 }
 .item-card .item-card-indicators {
+    @apply flex gap-1 items-center;
     position: absolute;
     top: 8px;
     right: 8px;

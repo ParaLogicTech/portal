@@ -2,6 +2,7 @@
 	<div class="h-full overflow-hidden">
 		<div class="flex h-full">
 			<CartSidebar
+				v-if="show_cart_sidebar"
 				class="h-full w-[370px] flex-shrink-0 border-r border-gray-400"
 				ref="cart-sidebar"
 			/>
@@ -12,7 +13,7 @@
 			/>
 
 			<SideBarNavigation
-				class="h-full w-[100px] border-l border-gray-400"
+				class="h-full w-[76px] flex-shrink-0 border-l border-gray-400"
 			/>
 		</div>
 	</div>
@@ -46,6 +47,12 @@ export default {
 			}
 			this.$refs["cart-sidebar"].select_item(item.item_code);
 		},
+	},
+
+	computed: {
+		show_cart_sidebar() {
+			return !this.$route.meta.hide_sidebar;
+		}
 	},
 
 	pageMeta() {

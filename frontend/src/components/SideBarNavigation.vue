@@ -1,6 +1,6 @@
 <template>
 	<aside class="p-2">
-		<nav>
+		<nav class="sidebar-nav">
 			<ul>
 				<router-link :to="{ name: 'ItemListView' }">
 					<li>
@@ -37,25 +37,34 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-	li {
-		@apply p-2 mb-2 text-gray-500 text-center cursor-pointer;
-		list-style: none;
-
-		.icon {
-			margin: auto;
-			width: 25px;
-			height: 25px;
-		}
-
-		h4 {
-			@apply text-xs font-medium mt-1;
-		}
-	}
-
-	.router-link-exact-active {
+<style lang="scss">
+	.sidebar-nav {
 		li {
-			@apply text-gray-900 rounded shadow outline outline-1 outline-gray-500;
+			@apply p-2 mb-2 text-gray-600 text-center rounded-sm;
+			@apply outline outline-1 outline-transparent;
+
+			transition-property: color, background-color, border-color, outline-color, fill, stroke, box-shadow;
+			@apply duration-150 ease-in-out;
+
+			list-style: none;
+
+			.icon {
+				margin: auto;
+				width: 25px;
+				height: 25px;
+			}
+
+			h4 {
+				@apply text-xs font-medium mt-1;
+			}
+		}
+
+		a:hover:not(.router-link-exact-active) li {
+			@apply text-gray-800 shadow outline-gray-300;
+		}
+
+		.router-link-exact-active li {
+			@apply text-violet-700 shadow-md outline-gray-500;
 		}
 	}
 </style>

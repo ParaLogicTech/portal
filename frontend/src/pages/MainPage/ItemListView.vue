@@ -41,6 +41,10 @@ export default {
 		}
 	},
 
+    props: {
+        selected_item_group: Object,
+    },
+
 	computed: {
 		filtered_items() {
 			let items = this.fuzzy_filtered_items;
@@ -117,6 +121,26 @@ export default {
 
 		handle_item_selected(item) {
 			this.$emit('item-selected', item);
+		},
+
+		set_selected_item_group () {
+			if (this.selected_item_group) {
+				this.filters.item_group = {
+					label: this.selected_item_group,
+					value: this.selected_item_group,
+				};
+			}
+		}
+	},
+
+	watch: {
+		selected_item_group: {
+			handler(item_group) {
+				if (item_group) {
+					this.set_selected_item_group();
+				}
+			},
+			immediate: true,
 		}
 	},
 }

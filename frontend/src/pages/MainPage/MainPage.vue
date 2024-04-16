@@ -8,9 +8,16 @@
 			/>
 
 			<RouterView
+				v-slot="{ Component }"
 				class="h-full w-full"
 				@item-selected="this.handle_item_selected"
-			/>
+				@item-group-selected="this.handle_item_group_selected"
+				:selected_item_group=selected_item_group
+			>
+				<KeepAlive>
+					<component :is="Component" />
+				</KeepAlive>
+			</RouterView>
 
 			<SideBarNavigation
 				class="h-full w-[76px] flex-shrink-0 border-l border-gray-400"
@@ -31,12 +38,13 @@ export default {
 	components: {
 		CustomerSelection,
 		CartSidebar,
-		SideBarNavigation
+		SideBarNavigation,
 	},
 
 	data() {
 		return {
 			cart: cart,
+			selected_item_group: null,
 		}
 	},
 
@@ -46,6 +54,11 @@ export default {
 				await cart.update_item_qty(item.item_code, 1);
 			}
 			this.$refs["cart-sidebar"].select_item(item.item_code);
+		},
+
+		handle_item_group_selected(item_group) {
+			this.selected_item_group = item_group;
+			this.$router.push({ name: 'ItemListView' });
 		},
 	},
 

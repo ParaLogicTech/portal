@@ -1,5 +1,5 @@
 <template>
-	<div class="flex flex-col item-card clickable">
+	<div class="flex flex-col item-card clickable" @click="this.handle_click">
 		<ItemImage
 			:item="item_group"
 			class="h-[220px] flex-shrink-0"
@@ -32,6 +32,12 @@ export default {
 	props: {
 		item_group: Object,
 		matches: Array,
+	},
+
+	methods: {
+		handle_click() {
+			this.$emit('item-group-selected', this.item_group?.name);
+		}
 	},
 
 	computed: {

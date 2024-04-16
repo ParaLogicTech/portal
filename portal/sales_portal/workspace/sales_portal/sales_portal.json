@@ -1,0 +1,58 @@
+{
+ "charts": [],
+ "content": "[{\"id\":\"OF6wyJ4ijJ\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Sales Portal</span>\",\"col\":12}},{\"id\":\"sO_jfSEqkS\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Portal\",\"col\":3}},{\"id\":\"KV7S3aWtTF\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Cart\",\"col\":3}},{\"id\":\"V3Xzn030Ff\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Portal Settings\",\"col\":3}}]",
+ "creation": "2024-04-16 14:45:21.933755",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "website",
+ "idx": 0,
+ "is_hidden": 0,
+ "label": "Sales Portal",
+ "links": [],
+ "modified": "2024-04-16 15:24:56.007151",
+ "modified_by": "Administrator",
+ "module": "Sales Portal",
+ "name": "Sales Portal",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [
+  {
+   "role": "Sales User"
+  }
+ ],
+ "sequence_id": 111.0,
+ "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Sales Portal",
+   "stats_filter": "",
+   "type": "URL",
+   "url": "/sales-portal"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "New",
+   "label": "Sales Portal Settings",
+   "link_to": "Sales Portal Settings",
+   "stats_filter": "",
+   "type": "DocType"
+  },
+  {
+   "color": "Orange",
+   "doc_view": "List",
+   "format": "{} To Receive",
+   "label": "Cart",
+   "link_to": "Cart",
+   "stats_filter": "{\"status\":[\"=\",\"To Receive\"]}",
+   "type": "DocType"
+  }
+ ],
+ "title": "Sales Portal"
+}

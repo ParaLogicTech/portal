@@ -44,7 +44,7 @@ export default {
 			@apply outline outline-1 outline-transparent;
 
 			transition-property: color, background-color, border-color, outline-color, fill, stroke, box-shadow;
-			@apply duration-150 ease-in-out;
+			@apply duration-200 ease-in-out;
 
 			list-style: none;
 

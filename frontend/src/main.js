@@ -30,6 +30,8 @@ import {
 	reload_customer_data,
 } from "@/data/customers";
 
+import {settings, reload_settings_data} from "@/data/settings";
+
 import {cart, setup_cart_realtime} from "@/data/cart";
 
 import {
@@ -67,6 +69,7 @@ if (import.meta.env.DEV) {
 	window.$item_stock = item_stock;
 	window.$customer_list = customer_list;
 	window.$cart = cart;
+	window.$settings = settings;
 	window.$alert = createAlert;
 }
 
@@ -91,6 +94,7 @@ for (let component in globalComponents) {
 
 // Register Global Properties
 app.config.globalProperties.$session = session;
+app.config.globalProperties.$settings = settings;
 app.config.globalProperties.format_number = format_number;
 app.config.globalProperties.format_currency = format_currency;
 
@@ -110,6 +114,7 @@ if (!session.isLoggedIn) {
 	setup_cart_realtime();
 
 	// Load Data
+	reload_settings_data();
 	reload_currency_data();
 	reload_customer_data();
 	reload_items_data();

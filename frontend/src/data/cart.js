@@ -193,7 +193,7 @@ export const cart_queue = reactive({
 });
 
 const get_cart_resource = createResource({
-	url: 'portal.api.cart.get_cart',
+	url: 'portal.sales_portal.api.cart.get_cart',
 	method: 'GET',
 	makeParams({ customer, cart_id }) {
 		let params = {};
@@ -216,7 +216,7 @@ const get_cart_resource = createResource({
 });
 
 const update_item_qty_resource = createResource({
-	url: 'portal.api.cart.update_item_qty',
+	url: 'portal.sales_portal.api.cart.update_item_qty',
 	method: 'POST',
 	makeParams({ item_code, qty, uom, customer, cart_id }) {
 		let params = {

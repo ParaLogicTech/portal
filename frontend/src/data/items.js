@@ -2,12 +2,13 @@ import { computed } from "vue";
 import { createListResource, createResource } from 'frappe-ui'
 import {createAlert} from "@/utils/alerts";
 import {on_doctype_list_update} from "@/socket";
+import {settings} from "@/data/settings";
 
 // Item Data
 export let item_list = createListResource({
 	doctype: 'Item',
 	cache: 'Items',
-	url: 'portal.sales_portal.items.get_item_list',
+	url: 'portal.sales_portal.api.items.get_item_list',
 	fields: [
 		'name',
 		'item_name',
@@ -53,7 +54,7 @@ export let active_items = computed(() => {
 			&& !d.is_end_of_life
 	});
 
-	if (localStorage.getItem('hide_items_without_image')) {
+	if (settings.data?.hide_items_without_image) {
 		active_items = active_items.filter((d) => d.image);
 	}
 
@@ -120,13 +121,13 @@ export let get_brand = (brand) => {
 
 // Price Data
 export let standard_prices = createResource({
-	url: 'portal.sales_portal.items.get_item_prices',
+	url: 'portal.sales_portal.api.items.get_item_prices',
 	cache: 'Standard Selling Prices',
 });
 
 // Stock Data
 export let item_stock = createResource({
-	url: 'portal.sales_portal.items.get_item_stock_data',
+	url: 'portal.sales_portal.api.items.get_item_stock_data',
 });
 
 // Reload Items

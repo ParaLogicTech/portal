@@ -1,6 +1,6 @@
 <template>
 	<div class="flex flex-col h-full">
-		<CartHeader class="top-bar-height px-2 py-1 border-b border-gray-400"/>
+		<CartHeader class="top-bar-height controls-bg px-2 py-1 border-b border-gray-400"/>
 
 		<div class="p-2 border-b border-gray-400 shadow-sm">
 			<CustomerSelection/>

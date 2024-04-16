@@ -1,5 +1,5 @@
 <template>
-<div class="@container filter-area-container top-bar-height">
+<div class="@container filter-area-container top-bar-height controls-bg">
 	<div class="flex flex-row flex-wrap @xl:flex-nowrap gap-1">
 		<div class="w-full">
 			<TextInput

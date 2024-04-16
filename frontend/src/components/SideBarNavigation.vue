@@ -1,5 +1,5 @@
 <template>
-	<aside class="p-2">
+	<aside class="p-2 controls-bg">
 		<nav class="sidebar-nav">
 			<ul>
 				<router-link :to="{ name: 'ItemListView' }">

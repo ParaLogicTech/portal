@@ -45,7 +45,7 @@ export function cint(v, def) {
 	return v;
 }
 
-export function format_number(v, format, decimals) {
+export function format_number(v, format, decimals, always_show_decimals) {
 	if (!format) {
 		format = get_number_format();
 		if (decimals == null) decimals = 2;
@@ -94,7 +94,7 @@ export function format_number(v, format, decimals) {
 	}
 
 	// join decimal
-	if (part[1] && cint(part[1]) !== 0 && info.decimal_str) {
+	if (part[1] && info.decimal_str && (cint(part[1]) !== 0 || always_show_decimals)) {
 		part[1] = info.decimal_str + part[1];
 	} else {
 		part[1] = "";
@@ -115,12 +115,12 @@ export function format_currency(v, currency, decimals) {
 
 	if (symbol) {
 		if (show_symbol_on_right) {
-			return format_number(v, format, decimals) + symbol;
+			return format_number(v, format, decimals, true) + symbol;
 		}
-		return symbol + format_number(v, format, decimals);
+		return symbol + format_number(v, format, decimals, true);
 	}
 
-	return format_number(v, format, decimals);
+	return format_number(v, format, decimals, true);
 }
 
 function get_currency_symbol(currency) {

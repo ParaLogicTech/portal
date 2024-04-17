@@ -7,7 +7,7 @@
 		<ItemGroupGrid
 			:item_groups="filtered_item_groups"
 			:loading="item_group_list.list.loading"
-			:has_data="active_item_groups?.length > 0"
+			:has_data="item_group_list.data?.length > 0"
 			:matches="fuzzy_matches"
 			@item-group-selected="this.handle_item_group_selected"
 			class="h-full"
@@ -18,7 +18,7 @@
 <script>
 import ItemGroupFilters from "@/components/ItemGroup/ItemGroupFilters.vue";
 import ItemGroupGrid from "@/components/ItemGroup/ItemGroupGrid.vue";
-import {active_item_groups, item_group_list} from "@/data/items";
+import {item_group_list} from "@/data/items";
 import Fuse from 'fuse.js'
 
 export default {
@@ -35,7 +35,6 @@ export default {
 				txt: null,
 			},
 			item_group_list: item_group_list,
-			active_item_groups: active_item_groups,
 		}
 	},
 
@@ -58,7 +57,7 @@ export default {
 			if (this.fuzzy_match_result) {
 				return this.fuzzy_match_result.map(d => d.item);
 			} else {
-				return this.active_item_groups;
+				return this.item_group_list.data;
 			}
 		},
 
@@ -89,7 +88,7 @@ export default {
 
 	methods: {
 		fuzzy_search(txt) {
-			let items = this.active_item_groups;
+			let items = this.item_group_list.data;
 			let fuse = new Fuse(items, {
 				keys: ['name'],
 				threshold: 0.4,

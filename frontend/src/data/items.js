@@ -103,16 +103,6 @@ export let get_item_group = (item_group) => {
 	return (item_group_list.dataMap || {})[item_group];
 }
 
-export let active_item_groups = computed(() => {
-	let active_item_groups_name = new Set();
-
-	active_items.value.forEach(item => {
-		active_item_groups_name.add(item.item_group);
-	});
-
-	return item_group_list.data.filter(group => active_item_groups_name.has(group.name))
-})
-
 // Brand Data
 export let brand_list = createListResource({
 	doctype: 'Brand',

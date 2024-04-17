@@ -125,7 +125,9 @@ export default {
 
 	created() {
 		watch(() => cart.modified, () => {
-			this.reset_qty_model();
+			if (!cart.loading) {
+				this.reset_qty_model();
+			}
 		})
 	}
 }

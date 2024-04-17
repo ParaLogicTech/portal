@@ -42,7 +42,7 @@ export default {
 	},
 
     props: {
-        selected_item_group: Object,
+        selected_item_group: String,
     },
 
 	computed: {

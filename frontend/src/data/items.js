@@ -72,9 +72,6 @@ export let item_group_list = createListResource({
 		'rgt',
 		'image',
 	],
-	filters: {
-		parent_item_group: ['is', 'set'],
-	},
 	orderBy: 'name',
 	pageLength: 99999,
 });
@@ -104,14 +101,40 @@ export let get_item_group = (item_group) => {
 }
 
 export let active_item_groups = computed(() => {
-	let active_item_groups_name = new Set();
+	let item_groups_with_items = new Set();
 
-	active_items.value.forEach(item => {
-		active_item_groups_name.add(item.item_group);
-	});
+	// Item Groups with directly linked items
+	for (let item of active_items.value) {
+		item_groups_with_items.add(item.item_group);
+	}
 
-	return item_group_list.data.filter(group => active_item_groups_name.has(group.name))
+	// Item Groups with items in child item groups
+	for (let item_group of new Set(item_groups_with_items)) {
+		let ancestors = get_item_group_ancestors(item_group);
+		for (let ancestor of ancestors) {
+			item_groups_with_items.add(ancestor);
+		}
+	}
+
+	return (item_group_list.data || []).filter(d => {
+		return (
+			d.parent_item_group
+			&& item_groups_with_items.has(d.name)
+		)
+	})
 })
+
+let get_item_group_ancestors = (item_group) => {
+	let ig = get_item_group(item_group);
+
+	let ancestors = [];
+	while (ig?.parent_item_group) {
+		ancestors.push(ig.parent_item_group);
+		ig = get_item_group(ig.parent_item_group);
+	}
+
+	return ancestors;
+}
 
 // Brand Data
 export let brand_list = createListResource({

@@ -3,31 +3,31 @@
 		<SearchFilter
 			:filters="filters"
 			class="flex-shrink-0 border-b border-gray-400 shadow-sm"
-			placeholder="Search Item Group..."
+			placeholder="Search Brands..."
 		/>
-		<ItemGroupGrid
-			:item_groups="filtered_item_groups"
-			:loading="item_group_list.list.loading"
-			:has_data="active_item_groups?.length > 0"
+		<BrandGrid
+			:brand_list="filtered_brands"
+			:loading="brand_list.list.loading"
+			:has_data="brand_list.data?.length > 0"
 			:matches="fuzzy_matches"
-			@item-group-selected="this.handle_item_group_selected"
 			class="h-full"
+			@brand-selected="this.handle_brand_selected"
 		/>
 	</div>
 </template>
 
 <script>
 import SearchFilter from "@/components/Utils/SearchFilter.vue";
-import ItemGroupGrid from "@/components/ItemGroup/ItemGroupGrid.vue";
-import {active_item_groups, item_group_list} from "@/data/items";
+import BrandGrid from "@/components/Brand/BrandGrid.vue";
+import {brand_list} from "@/data/items";
 import fuzzy_search from "@/mixins/fuzzy_search";
 
 export default {
-	name: "ItemGroupListView",
+	name: "BrandListView",
 
 	components: {
 		SearchFilter,
-		ItemGroupGrid
+		BrandGrid
 	},
 
 	mixins: [fuzzy_search],
@@ -37,18 +37,17 @@ export default {
 			filters: {
 				txt: null,
 			},
-			item_group_list: item_group_list,
-			active_item_groups: active_item_groups,
+			brand_list: brand_list,
 		}
 	},
 
 	computed: {
-		filtered_item_groups() {
+		filtered_brands() {
 			return this.fuzzy_filtered_items;
 		},
 
 		list_data() {
-			return this.active_item_groups || [];
+			return this.brand_list.data || [];
 		},
 
 		filters_applied() {
@@ -64,9 +63,9 @@ export default {
 	},
 
 	methods: {
-		handle_item_group_selected(item_group) {
-			this.$emit('item-group-selected', item_group);
+		handle_brand_selected(brand) {
+			this.$emit('brand-selected', brand);
 		}
-	},
+	}
 }
 </script>

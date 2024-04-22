@@ -14,6 +14,12 @@
 						<h4>Item Groups</h4>
 					</li>
 				</router-link>
+				<router-link :to="{ name: 'BrandListView' }">
+					<li>
+						<Award class="icon" stroke-width="1.8px"/>
+						<h4>Brands</h4>
+					</li>
+				</router-link>
 				<li>
 					<ShoppingBag class="icon" stroke-width="1.8px"/>
 					<h4>Order Cart</h4>
@@ -24,7 +30,7 @@
 </template>
 
 <script>
-import {PackageSearch, ShoppingBag, Boxes} from 'lucide-vue-next';
+import {PackageSearch, ShoppingBag, Boxes, Award} from 'lucide-vue-next';
 
 export default {
 	name: "SideBarNavigation",
@@ -33,6 +39,7 @@ export default {
 		ShoppingBag,
 		PackageSearch,
 		Boxes,
+		Award
 	}
 }
 </script>

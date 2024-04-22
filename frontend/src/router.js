@@ -18,6 +18,11 @@ const routes = [
 				name: 'ItemGroupListView',
 				component: () => import('@/pages/MainPage/ItemGroupListView.vue')
 			},
+			{
+				path: 'brands',
+				name: 'BrandListView',
+				component: () => import('@/pages/MainPage/BrandListView.vue')
+			},
 		]
 	},
 	{

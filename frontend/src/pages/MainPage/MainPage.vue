@@ -12,7 +12,9 @@
 				class="h-full w-full"
 				@item-selected="this.handle_item_selected"
 				@item-group-selected="this.handle_item_group_selected"
+				@brand-selected="this.handle_brand_selected"
 				:selected_item_group=selected_item_group
+				:selected_brand=selected_brand
 			>
 				<KeepAlive>
 					<component :is="Component" />
@@ -45,6 +47,7 @@ export default {
 		return {
 			cart: cart,
 			selected_item_group: null,
+			selected_brand: null
 		}
 	},
 
@@ -60,6 +63,11 @@ export default {
 			this.selected_item_group = item_group;
 			this.$router.push({ name: 'ItemListView' });
 		},
+
+		handle_brand_selected(brand) {
+			this.selected_brand = brand;
+			this.$router.push({ name: 'ItemListView' });
+		}
 	},
 
 	computed: {

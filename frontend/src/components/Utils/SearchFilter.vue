@@ -6,7 +6,7 @@
 					type="text"
 					size="sm"
 					variant="outline"
-					placeholder="Search Item Groups..."
+					:placeholder="this.placeholder"
 					:debounce="150"
 					v-model="this.filters.txt"
 				/>
@@ -43,6 +43,7 @@ export default {
 
 	props: {
 		filters: Object,
+		placeholder: String
 	},
 
 	components: {

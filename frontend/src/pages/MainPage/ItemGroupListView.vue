@@ -1,8 +1,9 @@
 <template>
 	<div class="flex flex-col h-full">
-		<ItemGroupFilters
+		<SearchFilter
 			:filters="filters"
 			class="flex-shrink-0 border-b border-gray-400 shadow-sm"
+			placeholder="Search Item Group..."
 		/>
 		<ItemGroupGrid
 			:item_groups="filtered_item_groups"
@@ -16,18 +17,20 @@
 </template>
 
 <script>
-import ItemGroupFilters from "@/components/ItemGroup/ItemGroupFilters.vue";
+import SearchFilter from "@/components/Utils/SearchFilter.vue";
 import ItemGroupGrid from "@/components/ItemGroup/ItemGroupGrid.vue";
 import {active_item_groups, item_group_list} from "@/data/items";
-import Fuse from 'fuse.js'
+import fuzzy_search from "@/mixins/fuzzy_search";
 
 export default {
 	name: "ItemGroupListView",
 
 	components: {
-		ItemGroupFilters,
-		ItemGroupGrid,
+		SearchFilter,
+		ItemGroupGrid
 	},
+
+	mixins: [fuzzy_search],
 
 	data() {
 		return {
@@ -44,35 +47,8 @@ export default {
 			return this.fuzzy_filtered_items;
 		},
 
-		fuzzy_matches() {
-			let out = {};
-			if (this.fuzzy_match_result) {
-				for (let d of this.fuzzy_match_result) {
-					out[d.item.name] = d.matches
-				}
-			}
-			return out;
-		},
-
-		fuzzy_filtered_items() {
-			if (this.fuzzy_match_result) {
-				return this.fuzzy_match_result.map(d => d.item);
-			} else {
-				return this.active_item_groups;
-			}
-		},
-
-		fuzzy_match_result() {
-			if (this.clean_txt) {
-				return this.fuzzy_search(this.clean_txt);
-			} else {
-				return null;
-			}
-		},
-
-		clean_txt() {
-			let txt = this.filters.txt || "";
-			return txt.toString().trim();
+		list_data() {
+			return this.active_item_groups || [];
 		},
 
 		filters_applied() {
@@ -88,17 +64,6 @@ export default {
 	},
 
 	methods: {
-		fuzzy_search(txt) {
-			let items = this.active_item_groups;
-			let fuse = new Fuse(items, {
-				keys: ['name'],
-				threshold: 0.4,
-				includeMatches: true,
-				minMatchCharLength: 2,
-			});
-			return fuse.search(txt);
-		},
-
 		handle_item_group_selected(item_group) {
 			this.$emit('item-group-selected', item_group);
 		}

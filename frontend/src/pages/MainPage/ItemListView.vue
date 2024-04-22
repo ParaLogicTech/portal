@@ -19,7 +19,7 @@
 import ItemGrid from "@/components/Item/ItemGrid.vue";
 import ItemFilters from "@/components/Item/ItemFilters.vue";
 import { item_list, active_items, in_item_group } from "@/data/items";
-import Fuse from 'fuse.js'
+import fuzzy_search from "@/mixins/fuzzy_search";
 
 export default {
 	name: "ItemListView",
@@ -28,6 +28,8 @@ export default {
 		ItemFilters,
 		ItemGrid,
 	},
+
+	mixins: [fuzzy_search],
 
 	data() {
 		return {
@@ -38,11 +40,13 @@ export default {
 			},
 			item_list: item_list,
 			active_items: active_items,
+			fuzzy_search_keys: ['item_name', 'name']
 		}
 	},
 
     props: {
         selected_item_group: String,
+        selected_brand: String,
     },
 
 	computed: {
@@ -64,35 +68,8 @@ export default {
 			return items;
 		},
 
-		fuzzy_matches() {
-			let out = {};
-			if (this.fuzzy_match_result) {
-				for (let d of this.fuzzy_match_result) {
-					out[d.item.name] = d.matches
-				}
-			}
-			return out;
-		},
-
-		fuzzy_filtered_items() {
-			if (this.fuzzy_match_result) {
-				return this.fuzzy_match_result.map(d => d.item);
-			} else {
-				return this.active_items;
-			}
-		},
-
-		fuzzy_match_result() {
-			if (this.clean_txt) {
-				return this.fuzzy_search(this.clean_txt);
-			} else {
-				return null;
-			}
-		},
-
-		clean_txt() {
-			let txt = this.filters.txt || "";
-			return txt.toString().trim();
+		list_data() {
+			return this.active_items || [];
 		},
 
 		filters_applied() {
@@ -108,17 +85,6 @@ export default {
 	},
 
 	methods: {
-		fuzzy_search(txt) {
-			let items = this.active_items;
-			let fuse = new Fuse(items, {
-				keys: ['item_name', 'name'],
-				threshold: 0.4,
-				includeMatches: true,
-				minMatchCharLength: 2,
-			});
-			return fuse.search(txt);
-		},
-
 		handle_item_selected(item) {
 			this.$emit('item-selected', item);
 		},
@@ -130,7 +96,17 @@ export default {
 					value: this.selected_item_group,
 				};
 			}
+		},
+
+		set_selected_brand () {
+			if (this.selected_brand) {
+				this.filters.brand = {
+					label: this.selected_brand,
+					value: this.selected_brand,
+				};
+			}
 		}
+
 	},
 
 	watch: {
@@ -138,6 +114,15 @@ export default {
 			handler(item_group) {
 				if (item_group) {
 					this.set_selected_item_group();
+				}
+			},
+			immediate: true,
+		},
+
+		selected_brand: {
+			handler(brand) {
+				if (brand) {
+					this.set_selected_brand();
 				}
 			},
 			immediate: true,

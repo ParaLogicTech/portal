@@ -152,6 +152,15 @@ export let get_brand = (brand) => {
 	return (brand_list.dataMap || {})[brand];
 }
 
+export let active_brands = computed(() => {
+	let brands_with_items = new Set();
+	for (let item of active_items.value) {
+		brands_with_items.add(item.brand);
+	}
+
+	return (brand_list.data || []).filter(d => brands_with_items.has(d.name));
+});
+
 // Price Data
 export let standard_prices = createResource({
 	url: 'portal.sales_portal.api.items.get_item_prices',

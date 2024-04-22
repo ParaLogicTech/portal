@@ -8,7 +8,7 @@
 		<ItemGroupGrid
 			:item_groups="filtered_item_groups"
 			:loading="item_group_list.list.loading"
-			:has_data="active_item_groups?.length > 0"
+			:has_data="item_group_list.data?.length > 0"
 			:matches="fuzzy_matches"
 			@item-group-selected="this.handle_item_group_selected"
 			class="h-full"

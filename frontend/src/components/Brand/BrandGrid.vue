@@ -2,7 +2,7 @@
 	<div class="@container p-3 overflow-y-scroll">
 		<div v-if="loading && !has_data" class="h-full flex items-center justify-center text-gray-700 text-xl">
 			<Spinner class="w-5 mr-2" />
-			<span>Loading Brands..</span>
+			<span>Loading Brands...</span>
 		</div>
 
 		<div

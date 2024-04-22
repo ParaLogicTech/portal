@@ -19,7 +19,7 @@
 <script>
 import SearchFilter from "@/components/Utils/SearchFilter.vue";
 import BrandGrid from "@/components/Brand/BrandGrid.vue";
-import {brand_list} from "@/data/items";
+import {active_brands, brand_list} from "@/data/items";
 import fuzzy_search from "@/mixins/fuzzy_search";
 
 export default {
@@ -47,7 +47,7 @@ export default {
 		},
 
 		list_data() {
-			return this.brand_list.data || [];
+			return active_brands.value || [];
 		},
 
 		filters_applied() {

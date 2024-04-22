@@ -48,8 +48,8 @@
 </template>
 
 <script>
-import {Autocomplete, TextInput, Button} from "frappe-ui";
-import {brand_list, item_group_list} from "@/data/items";
+import {Autocomplete, Button, TextInput} from "frappe-ui";
+import {active_brands, active_item_groups} from "@/data/items";
 import debounce from "frappe-ui/src/utils/debounce"
 
 export default {
@@ -81,8 +81,7 @@ export default {
 
 	computed: {
 		item_group_options() {
-			let item_groups = item_group_list.data;
-			return (item_groups || []).map(d => {
+			return (active_item_groups.value || []).map(d => {
 				return {
 					label: d.name,
 					value: d.name,
@@ -91,8 +90,7 @@ export default {
 		},
 
 		brand_options() {
-			let brands = brand_list.data;
-			return (brands || []).map(d => {
+			return (active_brands.value || []).map(d => {
 				return {
 					label: d.name,
 					value: d.name,

@@ -83,9 +83,15 @@ export default {
 			this.$emit('item-selected', item);
 		},
 
-		set_filter(key, value) {
+		set_item_group_filter(value) {
 			if (value) {
-				this.filters[key] = { label: value, value: value };
+				this.filters.item_group = { label: value, value: value };
+			}
+		},
+
+		set_brand_filter(value) {
+			if (value) {
+				this.filters.brand = { label: value, value: value };
 			}
 		},
 
@@ -100,11 +106,11 @@ export default {
 		'$route.query': {
 			handler(query) {
 				if (query.group) {
-					this.set_filter('item_group', query.group);
+					this.set_item_group_filter(query.group);
 				}
 
 				if (query.brand) {
-					this.set_filter('brand', query.brand);
+					this.set_brand_filter(query.brand);
 				}
 			},
 			immediate: true,

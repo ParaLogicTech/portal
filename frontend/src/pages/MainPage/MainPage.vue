@@ -60,14 +60,12 @@ export default {
 		},
 
 		handle_item_group_selected(item_group) {
-			this.selected_item_group = item_group;
-			this.$router.push({ name: 'ItemListView' });
+			this.$router.push({ name: 'ItemListView' , query:{ group: item_group }});
 		},
 
 		handle_brand_selected(brand) {
-			this.selected_brand = brand;
-			this.$router.push({ name: 'ItemListView' });
-		}
+			this.$router.push({ name: 'ItemListView' , query:{ brand: brand }});
+		},
 	},
 
 	computed: {

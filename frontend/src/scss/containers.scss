@@ -1,0 +1,40 @@
+.top-bar-height {
+    min-height: 48px;
+    flex-shrink: 0;
+}
+
+.controls-bg {
+    @apply bg-white;
+}
+
+.filter-area-container {
+    @apply px-3 py-2 flex flex-col justify-center;
+}
+
+// Cards
+.card {
+    @apply rounded border border-gray-400 relative;
+
+    &.item-card {
+        @apply shadow;
+    }
+
+    &.clickable {
+        @apply cursor-pointer hover:border-violet-800 hover:shadow-md transition-all duration-150 ease-in-out;
+    }
+
+    &.selected {
+		@apply border-purple-700;
+	}
+
+    .card-top-right {
+        @apply flex gap-1 items-center;
+        position: absolute;
+        top: 8px;
+        right: 8px;
+    }
+
+    .card-separator {
+        @apply border-t border-gray-200;
+    }
+}

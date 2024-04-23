@@ -1,12 +1,15 @@
 <template>
-	<div class="flex flex-col item-card clickable" @click="this.handle_click">
+	<div
+		class="card item-card clickable flex flex-col"
+		@click="this.handle_click"
+	>
 		<ItemImage
 			:item="brand_list"
 			class="h-[220px] flex-shrink-0"
 			rounded="rounded rounded-b-none"
 		/>
 
-		<div class="flex flex-col justify-between h-full item-card-separator">
+		<div class="flex flex-col justify-between h-full card-separator">
 			<h1 class="text-sm font-medium px-3 py-2.5">
 				<HighlightedMatchText
 					:text="brand_list.name"

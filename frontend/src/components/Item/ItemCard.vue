@@ -1,9 +1,9 @@
 <template>
 	<div
-		class="item-card clickable"
+		class="card item-card clickable"
 		@click="this.handle_click"
 	>
-		<div class="item-card-indicators">
+		<div class="card-top-right">
 			<div
 				v-if="is_in_cart"
 				class="text-blue-900 bg-blue-200 p-1 text-xs border border-blue-400 rounded"
@@ -22,7 +22,7 @@
 				rounded="rounded rounded-b-none"
 			/>
 
-			<div class="flex flex-col justify-between h-full item-card-separator">
+			<div class="flex flex-col justify-between h-full card-separator">
 				<h1 class="text-sm font-medium px-3 py-2.5">
 					<HighlightedMatchText
 						:text="item.item_name"
@@ -30,7 +30,7 @@
 					/>
 				</h1>
 
-				<div class="flex flex-wrap gap-1 justify-between items-center px-3 py-2.5 item-card-separator">
+				<div class="flex flex-wrap gap-1 justify-between items-center px-3 py-2.5 card-separator">
 					<ItemStock :item="item" class="text-xs" />
 					<ItemPrice :item="item" class="text-md font-semibold text-violet-900" />
 				</div>

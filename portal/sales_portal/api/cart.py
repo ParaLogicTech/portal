@@ -7,6 +7,11 @@ from erpnext.stock.get_item_details import get_conversion_factor
 
 @frappe.whitelist()
 def get_cart(customer=None, cart_id=None):
+	cart_doc = get_cart_doc(customer, cart_id)
+	return get_output(cart_doc)
+
+
+def get_cart_doc(customer=None, cart_id=None):
 	if not customer and not cart_id:
 		frappe.throw(_("Customer or Cart ID is required"))
 
@@ -69,7 +74,13 @@ def update_item_qty(
 	customer=None,
 	cart_id=None,
 ):
-	cart_doc = get_cart(customer, cart_id)
+	# Validate arguments
+	if not item_code:
+		frappe.throw(_("Item Code not provided"))
+	if not frappe.db.exists("Item", item_code):
+		frappe.throw(_("Item {0} does not exists").format(item_code))
+
+	cart_doc = get_cart_doc(customer, cart_id)
 	cart_doc.validate_can_modify()
 
 	_update_item_qty(cart_doc, item_code, qty, uom)
@@ -78,12 +89,6 @@ def update_item_qty(
 
 
 def _update_item_qty(cart_doc, item_code, qty, uom):
-	# Validate arguments
-	if not item_code:
-		frappe.throw(_("Item Code not provided"))
-	if not frappe.db.exists("Item", item_code):
-		frappe.throw(_("Item {0} does not exists").format(item_code))
-
 	qty = flt(qty)
 	qty = max(qty, 0)
 
@@ -110,10 +115,34 @@ def _update_item_qty(cart_doc, item_code, qty, uom):
 		cart_doc.remove_item_row(item_code)
 
 
+@frappe.whitelist()
+def update_cart_value(
+	fieldname,
+	value,
+	customer=None,
+	cart_id=None,
+):
+	allowed_fields = ["delivery_date", "customer_address", "contact_person"]
+	meta = frappe.get_meta("Cart")
+	if fieldname not in allowed_fields or not meta.has_field(fieldname):
+		frappe.throw(_("Field {0} not allowed").format(fieldname))
+
+	cart_doc = get_cart_doc(customer, cart_id)
+	cart_doc.validate_can_modify()
+
+	_update_cart_value(cart_doc, fieldname, value)
+
+	return update_cart(cart_doc)
+
+
+def _update_cart_value(cart_doc, fieldname, value):
+	cart_doc.set(fieldname, value)
+
+
 def update_cart(cart_doc):
 	process_cart(cart_doc, for_save=True)
 	cart_doc.save()
-	return cart_doc
+	return get_output(cart_doc)
 
 
 def process_cart(cart_doc, for_save):
@@ -122,3 +151,13 @@ def process_cart(cart_doc, for_save):
 	if not for_save:
 		cart_doc.run_method("set_missing_values")
 		cart_doc.run_method("calculate_taxes_and_totals")
+
+
+def get_output(cart_doc):
+	from portal.sales_portal.api.customers import get_customer_contacts, get_customer_addresses
+
+	return {
+		"doc": cart_doc,
+		"addresses": get_customer_addresses(cart_doc.customer),
+		"contacts": get_customer_contacts(cart_doc.customer),
+	}

@@ -1,0 +1,23 @@
+body {
+    overflow: hidden;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    @apply bg-gray-200;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    @apply bg-gray-400 rounded;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-500;
+}

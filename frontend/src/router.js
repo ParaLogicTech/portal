@@ -11,17 +11,25 @@ const routes = [
 			{
 				path: '',
 				name: 'ItemListView',
-				component: () => import('@/pages/MainPage/ItemListView.vue')
+				component: () => import('@/pages/MainPage/ItemListView.vue'),
 			},
 			{
 				path: 'item-groups',
 				name: 'ItemGroupListView',
-				component: () => import('@/pages/MainPage/ItemGroupListView.vue')
+				component: () => import('@/pages/MainPage/ItemGroupListView.vue'),
 			},
 			{
 				path: 'brands',
 				name: 'BrandListView',
-				component: () => import('@/pages/MainPage/BrandListView.vue')
+				component: () => import('@/pages/MainPage/BrandListView.vue'),
+			},
+			{
+				path: 'cart',
+				name: 'OrderCartView',
+				component: () => import('@/pages/MainPage/OrderCartView.vue'),
+				meta: {
+					hide_sidebar: true,
+				},
 			},
 		]
 	},

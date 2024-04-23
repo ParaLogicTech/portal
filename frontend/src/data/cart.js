@@ -8,6 +8,8 @@ export let _selected_customer = ref(null);
 
 export let cart = reactive({
 	doc: null,
+	addresses: [],
+	contacts: [],
 
 	get loading() {
 		return cart_queue.running;
@@ -69,6 +71,22 @@ export let cart = reactive({
 			item_code: item_code,
 			qty: qty,
 			uom: uom,
+			cart_id: this.cart_id,
+			customer: this.customer,
+		});
+	},
+
+	update_cart_value(fieldname, value) {
+		if (!this.customer && !this.cart_id) {
+			return;
+		}
+		if (!fieldname) {
+			return;
+		}
+
+		return cart_queue.add("update_cart_value", {
+			fieldname: fieldname,
+			value: value,
 			cart_id: this.cart_id,
 			customer: this.customer,
 		});
@@ -155,6 +173,18 @@ export const cart_queue = reactive({
 				this.queued_customer_change.params.customer = params.customer;
 				return this.queued_customer_change.promise;
 			}
+		} else if (action == "update_cart_value") {
+			let existing_action = this.queued_actions.find(q => (
+				q.action == "update_cart_value"
+				&& q.params.fieldname == params.fieldname
+				&& q.params.customer == params.customer
+				&& q.params.cart_id == params.cart_id
+			));
+
+			if (existing_action) {
+				existing_action.params.value = params.value;
+				return existing_action.promise;
+			}
 		}
 	},
 
@@ -173,7 +203,7 @@ export const cart_queue = reactive({
 			if (action_obj.params.customer) {
 				await this.run_action(action_obj);
 			} else {
-				set_cart_doc(null);
+				update_cart_data(null);
 			}
 		}
 
@@ -190,6 +220,8 @@ export const cart_queue = reactive({
 				resource = update_item_qty_resource;
 			} else if (["set_customer", "get_cart"].includes(action_obj.action)) {
 				resource = get_cart_resource;
+			} else if (action_obj.action == "update_cart_value") {
+				resource = update_cart_value_resource;
 			}
 
 			if (!resource) {
@@ -222,10 +254,10 @@ const get_cart_resource = createResource({
 		return params;
 	},
 	validate(params) {
-        validate_cart_id_or_customer(params);
-    },
+		validate_cart_id_or_customer(params);
+	},
 	onSuccess(data) {
-		set_cart_doc(data);
+		update_cart_data(data);
 	},
 });
 
@@ -249,29 +281,61 @@ const update_item_qty_resource = createResource({
 		return params;
 	},
 	validate(params) {
-        validate_cart_id_or_customer(params);
+		validate_cart_id_or_customer(params);
 		if (!params.item_code) {
 			return 'Item Code is required';
 		}
-    },
+	},
 	onSuccess(data) {
-		set_cart_doc(data);
+		update_cart_data(data);
 	},
 });
 
-const set_cart_doc = (doc) => {
+const update_cart_value_resource = createResource({
+	url: 'portal.sales_portal.api.cart.update_cart_value',
+	method: 'POST',
+	makeParams({ fieldname, value, customer, cart_id }) {
+		let params = {
+			fieldname: fieldname,
+			value: value,
+		}
+
+		if (customer) {
+			params.customer = customer;
+		}
+		if (cart_id) {
+			params.cart_id = cart_id;
+		}
+
+		return params;
+	},
+	validate(params) {
+		validate_cart_id_or_customer(params);
+		if (!params.fieldname) {
+			return 'Fieldname is required';
+		}
+	},
+	onSuccess(data) {
+		update_cart_data(data);
+	},
+});
+
+const update_cart_data = (data) => {
 	let previous_doc = cart.doc;
 
-	cart.doc = doc;
-	if (!doc) {
+	cart.doc = data?.doc;
+	cart.addresses = data.addresses || [];
+	cart.contacts = data.contacts || [];
+
+	if (!cart.doc) {
 		_selected_customer.value = null;
 		localStorage.removeItem('last_selected_customer');
-	} else if (doc.customer) {
-		_selected_customer.value = doc.customer;
-		localStorage.setItem('last_selected_customer', doc.customer);
+	} else if (cart.doc.customer) {
+		_selected_customer.value = cart.doc.customer;
+		localStorage.setItem('last_selected_customer', cart.doc.customer);
 	}
 
-	subscribe_cart_doc(doc, previous_doc);
+	subscribe_cart_doc(cart.doc, previous_doc);
 }
 
 export const setup_cart_realtime = () => {

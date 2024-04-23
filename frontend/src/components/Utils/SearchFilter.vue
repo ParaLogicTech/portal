@@ -33,7 +33,7 @@ import {TextInput, Button} from "frappe-ui";
 import debounce from "frappe-ui/src/utils/debounce";
 
 export default {
-	name: "ItemGroupFilters",
+	name: "SearchFilter",
 
 	data() {
 		return {

@@ -39,15 +39,9 @@ export default {
 				brand: null,
 			},
 			item_list: item_list,
-			active_items: active_items,
-			fuzzy_search_keys: ['item_name', 'name']
+			fuzzy_search_keys: ['item_name', 'name'],
 		}
 	},
-
-    props: {
-        selected_item_group: String,
-        selected_brand: String,
-    },
 
 	computed: {
 		filtered_items() {
@@ -69,7 +63,7 @@ export default {
 		},
 
 		list_data() {
-			return this.active_items || [];
+			return active_items.value || [];
 		},
 
 		filters_applied() {
@@ -89,44 +83,51 @@ export default {
 			this.$emit('item-selected', item);
 		},
 
-		set_selected_item_group () {
-			if (this.selected_item_group) {
-				this.filters.item_group = {
-					label: this.selected_item_group,
-					value: this.selected_item_group,
-				};
+		set_item_group_filter(value) {
+			if (value) {
+				this.filters.item_group = { label: value, value: value };
 			}
 		},
 
-		set_selected_brand () {
-			if (this.selected_brand) {
-				this.filters.brand = {
-					label: this.selected_brand,
-					value: this.selected_brand,
-				};
+		set_brand_filter(value) {
+			if (value) {
+				this.filters.brand = { label: value, value: value };
 			}
-		}
+		},
 
+		remove_query_in_url() {
+			const query = { ...this.$route.query };
+			query.group ? delete query.group : '';
+			query.brand ? delete query.brand : '';
+			this.$router.replace({ query });
+		},
 	},
 
 	watch: {
-		selected_item_group: {
-			handler(item_group) {
-				if (item_group) {
-					this.set_selected_item_group();
+		'$route.query': {
+			handler(query) {
+				if (query.group) {
+					this.set_item_group_filter(query.group);
+				}
+
+				if (query.brand) {
+					this.set_brand_filter(query.brand);
 				}
 			},
 			immediate: true,
 		},
 
-		selected_brand: {
-			handler(brand) {
-				if (brand) {
-					this.set_selected_brand();
-				}
-			},
-			immediate: true,
-		}
+		'filters.item_group': function (newValue) {
+			if(!newValue) {
+				this.remove_query_in_url()
+			}
+		},
+
+		'filters.brand': function (newValue) {
+			if(!newValue) {
+				this.remove_query_in_url()
+			}
+		},
 	},
 }
 </script>

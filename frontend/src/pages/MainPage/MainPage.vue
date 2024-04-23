@@ -13,8 +13,6 @@
 				@item-selected="this.handle_item_selected"
 				@item-group-selected="this.handle_item_group_selected"
 				@brand-selected="this.handle_brand_selected"
-				:selected_item_group=selected_item_group
-				:selected_brand=selected_brand
 			>
 				<KeepAlive>
 					<component :is="Component" />
@@ -46,8 +44,6 @@ export default {
 	data() {
 		return {
 			cart: cart,
-			selected_item_group: null,
-			selected_brand: null
 		}
 	},
 
@@ -60,14 +56,12 @@ export default {
 		},
 
 		handle_item_group_selected(item_group) {
-			this.selected_item_group = item_group;
-			this.$router.push({ name: 'ItemListView' });
+			this.$router.push({ name: 'ItemListView' , query:{ group: item_group }});
 		},
 
 		handle_brand_selected(brand) {
-			this.selected_brand = brand;
-			this.$router.push({ name: 'ItemListView' });
-		}
+			this.$router.push({ name: 'ItemListView' , query:{ brand: brand }});
+		},
 	},
 
 	computed: {

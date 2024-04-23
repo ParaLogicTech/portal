@@ -100,7 +100,6 @@ export default {
 			query.group ? delete query.group : '';
 			query.brand ? delete query.brand : '';
 			this.$router.replace({ query });
-			console.log(query)
 		},
 	},
 

@@ -95,10 +95,12 @@ export default {
 			}
 		},
 
-		remove_query_in_url(key) {
+		remove_query_in_url() {
 			const query = { ...this.$route.query };
-			delete query[key];
+			query.group ? delete query.group : '';
+			query.brand ? delete query.brand : '';
 			this.$router.replace({ query });
+			console.log(query)
 		},
 	},
 
@@ -118,13 +120,13 @@ export default {
 
 		'filters.item_group': function (newValue) {
 			if(!newValue) {
-				this.remove_query_in_url("group")
+				this.remove_query_in_url()
 			}
 		},
 
 		'filters.brand': function (newValue) {
 			if(!newValue) {
-				this.remove_query_in_url("brand")
+				this.remove_query_in_url()
 			}
 		},
 	},

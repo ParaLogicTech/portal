@@ -15,7 +15,7 @@
 				@brand-selected="this.handle_brand_selected"
 			>
 				<KeepAlive>
-					<component :is="Component" />
+					<component :is="Component" ref="router-view" />
 				</KeepAlive>
 			</RouterView>
 
@@ -55,12 +55,18 @@ export default {
 			this.$refs["cart-sidebar"].select_item(item.item_code);
 		},
 
-		handle_item_group_selected(item_group) {
-			this.$router.push({ name: 'ItemListView' , query:{ group: item_group }});
+		async handle_item_group_selected(item_group) {
+			await this.$router.push({name: 'ItemListView'});
+			if (this.$refs["router-view"].set_item_group_filter) {
+				this.$refs["router-view"].set_item_group_filter(item_group);
+			}
 		},
 
-		handle_brand_selected(brand) {
-			this.$router.push({ name: 'ItemListView' , query:{ brand: brand }});
+		async handle_brand_selected(brand) {
+			await this.$router.push({name: 'ItemListView'});
+			if (this.$refs["router-view"].set_brand_filter) {
+				this.$refs["router-view"].set_brand_filter(brand);
+			}
 		},
 	},
 

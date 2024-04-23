@@ -86,46 +86,16 @@ export default {
 		set_item_group_filter(value) {
 			if (value) {
 				this.filters.item_group = { label: value, value: value };
+			} else {
+				this.filters.item_group = null;
 			}
 		},
 
 		set_brand_filter(value) {
 			if (value) {
 				this.filters.brand = { label: value, value: value };
-			}
-		},
-
-		remove_query_in_url() {
-			const query = { ...this.$route.query };
-			query.group ? delete query.group : '';
-			query.brand ? delete query.brand : '';
-			this.$router.replace({ query });
-		},
-	},
-
-	watch: {
-		'$route.query': {
-			handler(query) {
-				if (query.group) {
-					this.set_item_group_filter(query.group);
-				}
-
-				if (query.brand) {
-					this.set_brand_filter(query.brand);
-				}
-			},
-			immediate: true,
-		},
-
-		'filters.item_group': function (newValue) {
-			if(!newValue) {
-				this.remove_query_in_url()
-			}
-		},
-
-		'filters.brand': function (newValue) {
-			if(!newValue) {
-				this.remove_query_in_url()
+			} else {
+				this.filters.brand = null;
 			}
 		},
 	},

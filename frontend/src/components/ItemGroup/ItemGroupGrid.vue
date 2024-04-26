@@ -21,7 +21,7 @@ import ItemGroupCard from "@/components/ItemGroup/ItemGroupCard.vue";
 import GridView from "@/components/Utils/GridView.vue"
 
 export default {
-	name: "BrandGrid",
+	name: "ItemGroupGrid",
 
 	components: {
 		ItemGroupCard,

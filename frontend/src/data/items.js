@@ -3,6 +3,7 @@ import { createListResource, createResource } from 'frappe-ui'
 import {createAlert} from "@/utils/alerts";
 import {on_doctype_list_update} from "@/socket";
 import {settings} from "@/data/settings";
+import {reactive} from "vue";
 
 // Item Data
 export let item_list = createListResource({
@@ -166,6 +167,29 @@ export let standard_prices = createResource({
 	url: 'portal.sales_portal.api.items.get_item_prices',
 	cache: 'Standard Selling Prices',
 });
+
+// Specific Customer Data With Prices
+const customer_item_price_resources = reactive({});
+export const get_item_prices_resource = (customer) => {
+	if (!customer) {
+		return standard_prices;
+	}
+
+	if (!customer_item_price_resources[customer]) {
+		let resource = customer_item_price_resources[customer] = createResource({
+			url: 'portal.sales_portal.api.items.get_item_prices',
+			params: {
+				customer: customer
+			},
+		});
+
+		resource.reload().catch(e => {
+			createAlert({"title": `Error loading prices for Customer ${customer}`, "message": e, "variant": "error"});
+		});
+	}
+
+	return customer_item_price_resources[customer]
+};
 
 // Stock Data
 export let item_stock = createResource({

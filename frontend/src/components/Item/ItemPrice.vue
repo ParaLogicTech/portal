@@ -3,7 +3,8 @@
 </template>
 
 <script>
-import { standard_prices } from "@/data/items";
+import { standard_prices, get_item_prices_resource } from "@/data/items";
+import {cart} from "@/data/cart";
 
 export default {
 	name: "ItemPrice",
@@ -28,11 +29,12 @@ export default {
 		},
 
 		price() {
-			if (!standard_prices.data) {
-				return null;
+			const item_price_resource = get_item_prices_resource(cart.doc?.customer);
+			if(item_price_resource.data) {
+				if(item_price_resource.data.item_prices_map[this.item.name]) {
+					return item_price_resource.data.item_prices_map[this.item.name]
+				}
 			}
-
-			return standard_prices.data.item_prices_map[this.item.name];
 		}
 	}
 }

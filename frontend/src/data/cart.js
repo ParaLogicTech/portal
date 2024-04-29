@@ -324,8 +324,8 @@ const update_cart_data = (data) => {
 	let previous_doc = cart.doc;
 
 	cart.doc = data?.doc;
-	cart.addresses = data.addresses || [];
-	cart.contacts = data.contacts || [];
+	cart.addresses = data?.addresses || [];
+	cart.contacts = data?.contacts || [];
 
 	if (!cart.doc) {
 		_selected_customer.value = null;

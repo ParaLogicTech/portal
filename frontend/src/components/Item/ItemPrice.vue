@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { standard_prices, get_item_prices_resource } from "@/data/items";
+import { get_item_prices_resource } from "@/data/items";
 import {cart} from "@/data/cart";
 
 export default {
@@ -15,7 +15,7 @@ export default {
 
 	computed: {
 		text() {
-			if (standard_prices.loading && !this.price?.price_list_rate) {
+			if (this.item_price_resource.loading && !this.price?.price_list_rate) {
 				return "..."
 			} else if (this.price?.price_list_rate) {
 				return format_currency(this.price.price_list_rate, this.currency);
@@ -25,17 +25,19 @@ export default {
 		},
 
 		currency() {
-			return standard_prices.data?.price_list_currency;
+			return this.item_price_resource.data?.price_list_currency;
 		},
 
 		price() {
-			const item_price_resource = get_item_prices_resource(cart.doc?.customer);
-			if(item_price_resource.data) {
-				if(item_price_resource.data.item_prices_map[this.item.name]) {
-					return item_price_resource.data.item_prices_map[this.item.name]
-				}
+			if (!this.item_price_resource?.data?.item_prices_map[this.item.name]) {
+				return null;
 			}
-		}
+			return this.item_price_resource.data.item_prices_map[this.item.name];
+		},
+
+		item_price_resource() {
+			return get_item_prices_resource(cart.doc?.customer);
+		},
 	}
 }
 </script>

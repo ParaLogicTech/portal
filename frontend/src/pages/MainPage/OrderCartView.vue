@@ -2,145 +2,102 @@
 	<div class="flex flex-col h-full">
 		<CartHeader class="top-bar-height px-3 py-1 border-b border-gray-400 shadow-sm"/>
 
-		<div class="cart-form h-full overflow-y-auto">
-			<!-- First Section -->
-			<div class="section">
-				<div class="section-grid grid-cols-3">
-					<div class="col">
-						<div class="col-row">
-							<label for="cart_customer">Customer</label>
-							<CustomerSelection id="cart_customer" />
-						</div>
-					</div>
+		<CartForm
+			class="h-full overflow-y-auto"
+			v-model:doc="model"
+			:addresses="addresses"
+			:contacts="contacts"
+			@qty-changed="handle_qty_change"
+			@cart-value-changed="handle_cart_value_change"
+			@item-value-changed="handle_item_value_change"
+			ref="cart_form"
+		/>
 
-					<div class="col">
-						<FormControl
-							type="textarea"
-							label="Remarks"
-							v-model="doc.remarks"
-							variant="subtle"
-							class="col-row"
-						/>
-					</div>
-
-					<div class="col">
-						<FormControl
-							type="date"
-							label="Order Date"
-							v-model="doc.transaction_date"
-							variant="subtle"
-							:disabled="true"
-							class="col-row"
-						/>
-
-						<FormControl
-							type="date"
-							label="Expected Delivery Date"
-							v-model="doc.delivery_date"
-							variant="subtle"
-							class="col-row"
-						/>
-					</div>
-				</div>
-			</div>
-
-			<!-- Address Section -->
-			<div class="section">
-				<h2 class="section-heading">Address</h2>
-
-				<div v-if="!addresses?.length" class="section-message">
-					Customer has no address
-				</div>
-				<div v-else class="section-grid grid-cols-3">
-					<AddressCard
-						v-for="d in addresses"
-						:address="d"
-						:selected="d.name == doc.customer_address"
-						:selectable="true"
-						:key="d.name"
-						@address-selected="handle_address_selected"
-					/>
-				</div>
-			</div>
-
-			<!-- Contacts Section -->
-			<div class="section">
-				<h2 class="section-heading">Contact Person</h2>
-
-				<div v-if="!contacts?.length" class="section-message">
-					Customer has no contact persons
-				</div>
-				<div
-					v-else
-					class="section-grid grid-cols-3"
-				>
-					<ContactCard
-						v-for="d in contacts"
-						:contact="d"
-						:selected="d.name == doc.contact_person"
-						:selectable="true"
-						:key="d.name"
-						@contact-selected="handle_contact_selected"
-					/>
-				</div>
-			</div>
-
-			<!-- Items Section -->
-			<div class="section">
-				<h2 class="section-heading">Items</h2>
-				<div class="section-message">
-					Work in Progress
-				</div>
-			</div>
-		</div>
-
-		<div class="top-bar-height flex justify-between items-center px-3 py-1 border-t border-gray-400 shadow-sm">
-			<div>WIP</div>
+		<div class="top-bar-height flex justify-end items-center px-3 py-1 border-t border-gray-400 shadow-sm">
+			<Button
+				variant="solid"
+				theme="blue"
+				size="sm"
+				label="Submit Order"
+				:disabled="!can_submit"
+				:link="null"
+				:loading="placing_order"
+				@click="place_order"
+				class="min-w-18"
+			>
+				<template #suffix>
+					<SendHorizontal class="h-4" />
+				</template>
+			</Button>
 		</div>
 	</div>
 </template>
 
 <script>
 import CartHeader from "@/components/Cart/CartHeader.vue";
-import {ShoppingBag} from "lucide-vue-next";
 import {cart} from "@/data/cart";
-import CustomerSelection from "@/components/Customer/CustomerSelection.vue";
-import {Textarea, FormControl} from "frappe-ui";
-import AddressCard from "@/components/Customer/AddressCard.vue";
-import ContactCard from "@/components/Customer/ContactCard.vue";
+import CartForm from "@/components/Cart/CartForm.vue";
+import {Button} from "frappe-ui";
+import cloneDeep from "lodash.clonedeep"
+import {SendHorizontal} from "lucide-vue-next"
 
 export default {
 	name: "OrderCartView",
 
-	components: {ContactCard, AddressCard, CustomerSelection, CartHeader, ShoppingBag, Textarea, FormControl},
+	components: {CartForm, CartHeader, Button, SendHorizontal},
 
 	data() {
 		return {
 			cart: cart,
-
-			cart_model: {
-				items: [],
-			},
+			model: this.make_cart_model(),
+			placing_order: false,
 		}
 	},
 
 	methods: {
-		handle_address_selected(address) {
-			if (address.name == this.doc.customer_address) {
-				return;
-			}
-			cart.update_cart_value('customer_address', address.name);
+		handle_qty_change(row) {
+			cart.update_item_qty(row.item_code, row.qty, row.uom);
 		},
 
-		handle_contact_selected(contact) {
-			if (contact.name == this.doc.contact_person) {
-				return;
+		handle_cart_value_change(field, value) {
+			cart.update_cart_value(field, value);
+		},
+
+		handle_item_value_change(row, field, value) {
+			cart.update_item_value(row.item_code, field, value)
+		},
+
+		refresh_form() {
+			this.model = this.make_cart_model();
+			this.$nextTick(() => {
+				this.$refs.cart_form.refresh_view();
+			});
+		},
+
+		make_cart_model() {
+			return cloneDeep(cart.doc || {});
+		},
+
+		async place_order() {
+			if (this.can_submit) {
+				try {
+					this.placing_order = true;
+					let data = await cart.place_order();
+				} finally {
+					this.placing_order = false;
+				}
 			}
-			cart.update_cart_value('contact_person', contact.name);
 		},
 	},
 
 	computed: {
+		can_submit() {
+			return (
+				this.doc.customer
+				&& (this.doc.items || []).length
+			)
+		},
+
 		addresses() {
 			return cart.addresses || [];
 		},
@@ -150,37 +107,16 @@ export default {
 		},
 
 		doc() {
-			return this.cart?.doc || {};
+			return cart.doc || {};
 		},
+	},
+
+	created() {
+		this.$watch(() => cart.loading, () => {
+			if (!cart.loading) {
+				this.refresh_form();
+			}
+		});
 	}
 }
 </script>
-
-<style lang="scss">
-	.cart-form {
-		.section {
-			@apply py-4 px-5 border-b border-gray-300 text-md;
-
-			.section-heading {
-				@apply font-medium text-lg text-md mb-2 text-gray-700;
-				margin-top: -5px;
-			}
-
-			.section-message {
-				@apply font-normal text-gray-600;
-			}
-
-			.section-grid {
-				@apply grid gap-4;
-			}
-		}
-
-		label {
-			@apply block text-sm text-gray-700 font-medium mb-0.5;
-		}
-
-		.col-row:not(:first-child) {
-			@apply mt-3;
-		}
-	}
-</style>

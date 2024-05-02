@@ -1,6 +1,6 @@
 import frappe
 from frappe import _
-from frappe.utils import getdate, flt
+from frappe.utils import getdate, flt, cast
 from portal.sales_portal.doctype.cart.cart import validate_item_uom
 from erpnext.stock.get_item_details import get_conversion_factor
 
@@ -116,13 +116,51 @@ def _update_item_qty(cart_doc, item_code, qty, uom):
 
 
 @frappe.whitelist()
+def update_item_value(
+	item_code,
+	fieldname,
+	value,
+	customer=None,
+	cart_id=None,
+):
+	allowed_fields = ["rate", "discount_percentage"]
+	meta = frappe.get_meta("Cart Item")
+	if fieldname not in allowed_fields or not meta.has_field(fieldname):
+		frappe.throw(_("Field {0} not allowed").format(fieldname))
+
+	cart_doc = get_cart_doc(customer, cart_id)
+	cart_doc.validate_can_modify()
+
+	_update_item_value(cart_doc, item_code, fieldname, value)
+
+	return update_cart(cart_doc)
+
+
+def _update_item_value(cart_doc, item_code, fieldname, value):
+	row = cart_doc.get_item_row(item_code, add_row_if_missing=True)
+	if not row:
+		return
+
+	df = frappe.get_meta("Cart Item").get_field(fieldname) or frappe._dict()
+	value = cast(df.fieldtype, value)
+	row.set(fieldname, value)
+
+	if fieldname == "rate":
+		row.discount_percentage = None
+		row.margin_rate_or_amount = None
+	elif fieldname == "discount_percentage":
+		row.rate = None
+		row.margin_rate_or_amount = None
+
+
+@frappe.whitelist()
 def update_cart_value(
 	fieldname,
 	value,
 	customer=None,
 	cart_id=None,
 ):
-	allowed_fields = ["delivery_date", "customer_address", "contact_person"]
+	allowed_fields = ["delivery_date", "customer_address", "contact_person", "remarks"]
 	meta = frappe.get_meta("Cart")
 	if fieldname not in allowed_fields or not meta.has_field(fieldname):
 		frappe.throw(_("Field {0} not allowed").format(fieldname))
@@ -136,7 +174,23 @@ def update_cart_value(
 
 
 def _update_cart_value(cart_doc, fieldname, value):
+	df = frappe.get_meta("Cart").get_field(fieldname) or frappe._dict()
+	value = cast(df.fieldtype, value)
 	cart_doc.set(fieldname, value)
+
+
+@frappe.whitelist()
+def place_order(customer=None, cart_id=None):
+	cart_doc = get_cart_doc(customer, cart_id)
+	cart_doc.validate_can_modify()
+
+	cart_doc.order_confirmed = 1
+	process_cart(cart_doc, for_save=True)
+	cart_doc.save()  # todo submit and map sales order
+
+	new_cart_doc = get_cart_doc(customer)
+	out = get_output(new_cart_doc)
+	return out
 
 
 def update_cart(cart_doc):

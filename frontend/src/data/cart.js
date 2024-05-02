@@ -51,11 +51,10 @@ export let cart = reactive({
 		if (cart_queue.running) {
 			return cart_queue.promise;
 		} else {
-			cart_queue.add("get_cart", {
+			return cart_queue.add("get_cart", {
 				customer: this.customer,
 				cart_id: this.cart_id
 			});
-			return cart_queue.promise;
 		}
 	},
 
@@ -76,6 +75,23 @@ export let cart = reactive({
 		});
 	},
 
+	update_item_value(item_code, fieldname, value) {
+		if (!this.customer && !this.cart_id) {
+			return;
+		}
+		if (!item_code || !fieldname) {
+			return;
+		}
+
+		return cart_queue.add("update_item_value", {
+			item_code: item_code,
+			fieldname: fieldname,
+			value: value,
+			cart_id: this.cart_id,
+			customer: this.customer,
+		});
+	},
+
 	update_cart_value(fieldname, value) {
 		if (!this.customer && !this.cart_id) {
 			return;
@@ -87,6 +103,17 @@ export let cart = reactive({
 		return cart_queue.add("update_cart_value", {
 			fieldname: fieldname,
 			value: value,
+			cart_id: this.cart_id,
+			customer: this.customer,
+		});
+	},
+
+	place_order() {
+		if (!this.customer && !this.cart_id) {
+			return;
+		}
+
+		return cart_queue.add("place_order", {
 			cart_id: this.cart_id,
 			customer: this.customer,
 		});
@@ -114,9 +141,15 @@ export const cart_queue = reactive({
 	running_action: null,
 	queued_actions: [],
 	queued_customer_change: null,
+	queued_place_order: null,
 
 	pending_actions: computed(() => {
-		return [cart_queue.running_action, ...cart_queue.queued_actions, cart_queue.queued_customer_change].filter(d => d);
+		return [
+			cart_queue.running_action,
+			...cart_queue.queued_actions,
+			cart_queue.queued_customer_change,
+			cart_queue.queued_place_order,
+		].filter(d => d);
 	}),
 
 	add(action, params) {
@@ -141,7 +174,17 @@ export const cart_queue = reactive({
 
 		// Add to queue
 		if (action == "set_customer") {
+			if (this.queued_place_order) {
+				action_obj.reject("Cannot change customer while placing order");
+				return promise;
+			}
 			this.queued_customer_change = action_obj;
+		} else if (action == "place_order") {
+			if (this.queued_customer_change) {
+				action_obj.reject("Cannot place order while changing customer");
+				return promise;
+			}
+			this.queued_place_order = action_obj;
 		} else {
 			this.queued_actions.push(action_obj);
 		}
@@ -185,6 +228,23 @@ export const cart_queue = reactive({
 				existing_action.params.value = params.value;
 				return existing_action.promise;
 			}
+		} else if (action == "update_item_value") {
+			let existing_action = this.queued_actions.find(q => (
+				q.action == "update_item_value"
+				&& q.params.item_code == params.item_code
+				&& q.params.fieldname == params.fieldname
+				&& q.params.customer == params.customer
+				&& q.params.cart_id == params.cart_id
+			));
+
+			if (existing_action) {
+				existing_action.params.value = params.value;
+				return existing_action.promise;
+			}
+		} else if (action == "place_order") {
+			if (this.queued_place_order) {
+				return this.queued_place_order.promise;
+			}
 		}
 	},
 
@@ -207,6 +267,12 @@ export const cart_queue = reactive({
 			}
 		}
 
+		if (this.queued_place_order) {
+			let action_obj = this.queued_place_order;
+			this.queued_place_order = null;
+			await this.run_action(action_obj);
+		}
+
 		this.running = false;
 	},
 
@@ -222,13 +288,19 @@ export const cart_queue = reactive({
 				resource = get_cart_resource;
 			} else if (action_obj.action == "update_cart_value") {
 				resource = update_cart_value_resource;
+			} else if (action_obj.action == "update_item_value") {
+				resource = update_item_value_resource;
+			} else if (action_obj.action == "place_order") {
+				resource = place_order_resource;
 			}
 
 			if (!resource) {
 				throw new Error("Invalid action");
 			}
 
-			action_obj.resolve(await resource.fetch(action_obj.params));
+			let data = await resource.fetch(action_obj.params);
+			update_cart_data(data);
+			action_obj.resolve(data);
 		} catch (e) {
 			action_obj.reject(e);
 			createAlert({"title": "Error updating cart", "message": e, "variant": "error"});
@@ -255,9 +327,6 @@ const get_cart_resource = createResource({
 	},
 	validate(params) {
 		validate_cart_id_or_customer(params);
-	},
-	onSuccess(data) {
-		update_cart_data(data);
 	},
 });
 
@@ -286,9 +355,6 @@ const update_item_qty_resource = createResource({
 			return 'Item Code is required';
 		}
 	},
-	onSuccess(data) {
-		update_cart_data(data);
-	},
 });
 
 const update_cart_value_resource = createResource({
@@ -315,8 +381,55 @@ const update_cart_value_resource = createResource({
 			return 'Fieldname is required';
 		}
 	},
-	onSuccess(data) {
-		update_cart_data(data);
+});
+
+const update_item_value_resource = createResource({
+	url: 'portal.sales_portal.api.cart.update_item_value',
+	method: 'POST',
+	makeParams({ item_code, fieldname, value, customer, cart_id }) {
+		let params = {
+			item_code: item_code,
+			fieldname: fieldname,
+			value: value,
+		}
+
+		if (customer) {
+			params.customer = customer;
+		}
+		if (cart_id) {
+			params.cart_id = cart_id;
+		}
+
+		return params;
+	},
+	validate(params) {
+		validate_cart_id_or_customer(params);
+		if (!params.item_code) {
+			return 'Item Code is required';
+		}
+		if (!params.fieldname) {
+			return 'Fieldname is required';
+		}
+	},
+});
+
+const place_order_resource = createResource({
+	url: 'portal.sales_portal.api.cart.place_order',
+	method: 'POST',
+	makeParams({ customer, cart_id }) {
+		let params = {};
+
+		if (customer) {
+			params.customer = customer;
+		}
+		if (cart_id) {
+			params.cart_id = cart_id;
+		}
+
+		return params;
+	},
+	validate(params) {
+		validate_cart_id_or_customer(params);
 	},
 });
 

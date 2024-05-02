@@ -2,7 +2,7 @@
 	<div class="flex flex-col h-full">
 		<ItemFilters
 			:filters="filters"
-			class="flex-shrink-0 border-b border-gray-400 shadow-sm"
+			class="flex-none border-b border-gray-400 shadow-sm"
 		/>
 		<ItemGrid
 			:items="filtered_items"

@@ -1,26 +1,26 @@
 <template>
 	<div class="h-full overflow-hidden">
 		<div class="flex h-full">
-			<CartSidebar
-				v-if="show_cart_sidebar"
-				class="h-full w-[370px] flex-shrink-0 border-r border-gray-400"
-				ref="cart-sidebar"
+			<SideBarNavigation
+				class="h-full w-[76px] flex-none border-r border-gray-400"
 			/>
 
 			<RouterView
 				v-slot="{ Component }"
-				class="h-full w-full"
+				class="h-full w-full min-w-0 flex-initial"
 				@item-selected="this.handle_item_selected"
 				@item-group-selected="this.handle_item_group_selected"
 				@brand-selected="this.handle_brand_selected"
 			>
 				<KeepAlive>
-					<component :is="Component" ref="router-view" />
+					<component :is="Component" ref="router_view" />
 				</KeepAlive>
 			</RouterView>
 
-			<SideBarNavigation
-				class="h-full w-[76px] flex-shrink-0 border-l border-gray-400"
+			<CartSidebar
+				v-if="show_cart_sidebar"
+				class="h-full w-[370px] flex-none border-l border-gray-400"
+				ref="cart_sidebar"
 			/>
 		</div>
 	</div>
@@ -52,20 +52,20 @@ export default {
 			if (!cart.has_item(item.item_code)) {
 				await cart.update_item_qty(item.item_code, 1);
 			}
-			this.$refs["cart-sidebar"].select_item(item.item_code);
+			this.$refs.cart_sidebar.select_item(item.item_code);
 		},
 
 		async handle_item_group_selected(item_group) {
 			await this.$router.push({name: 'ItemListView'});
-			if (this.$refs["router-view"].set_item_group_filter) {
-				this.$refs["router-view"].set_item_group_filter(item_group);
+			if (this.$refs.router_view.set_item_group_filter) {
+				this.$refs.router_view.set_item_group_filter(item_group);
 			}
 		},
 
 		async handle_brand_selected(brand) {
 			await this.$router.push({name: 'ItemListView'});
-			if (this.$refs["router-view"].set_brand_filter) {
-				this.$refs["router-view"].set_brand_filter(brand);
+			if (this.$refs.router_view.set_brand_filter) {
+				this.$refs.router_view.set_brand_filter(brand);
 			}
 		},
 	},

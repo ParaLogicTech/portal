@@ -1,5 +1,5 @@
 <template>
-	<div class="qty-field-container">
+	<div class="qty-field-container field">
 		<input
 			v-model="display_value.qty"
 			class="remove-arrow"
@@ -38,10 +38,11 @@ export default {
 	name: "QtyField",
 
 	props: {
-		modelValue: {
-			qty: Number,
-			uom: String,
+		qty: {
+			type: Number,
+			default: 0,
 		},
+		uom: String,
 		uoms: {
 			type: Array,
 			default: () => [],
@@ -51,15 +52,15 @@ export default {
 	data() {
 		return {
 			display_value: {
-				qty: this.modelValue.qty,
-				uom: this.modelValue.uom,
+				qty: this.qty,
+				uom: this.uom,
 			},
 			change_timeout: null,
 			focused: false,
 		}
 	},
 
-	emits: ['update:modelValue', 'arrow-up', 'arrow-down', 'focus', 'blur'],
+	emits: ['update:qty', 'update:uom', 'arrow-up', 'arrow-down', 'focus', 'blur'],
 
 	methods: {
 		focus() {
@@ -100,14 +101,13 @@ export default {
 			if (this.display_value.qty == null || this.display_value.qty === "") {
 				return;
 			}
-			if (this.display_value.qty == this.modelValue.qty && this.display_value.uom == this.modelValue.uom) {
+			if (this.display_value.qty == this.qty && this.display_value.uom == this.uom) {
 				return;
 			}
 
-			this.$emit('update:modelValue', {
-				qty: this.display_value.qty,
-				uom: this.display_value.uom,
-			});
+			this.$emit('update:qty', this.display_value.qty);
+			this.$emit('update:uom', this.display_value.uom);
+			this.$emit('change', this.display_value.qty, this.display_value.uom)
 		},
 
 		clear_timeout() {
@@ -140,8 +140,8 @@ export default {
 		},
 
 		refresh() {
-			this.display_value.qty = this.modelValue.qty;
-			this.display_value.uom = this.modelValue.uom;
+			this.display_value.qty = this.qty;
+			this.display_value.uom = this.uom;
 		},
 	},
 
@@ -159,23 +159,14 @@ export default {
 
 <style>
 .qty-field-container {
-	@apply inline-block text-md rounded-sm border border-gray-400;
+	@apply text-md flex;
 }
 .qty-field-container input {
-	@apply h-full w-[50px] px-0.5 py-0 text-sm font-medium text-center border-0 border-r border-gray-400;
+	width: 50px;
+	@apply h-full px-0.5 py-0 text-sm font-medium text-center border-0 border-r border-gray-400 flex-shrink-0;
 }
 .qty-field-container select {
-	@apply h-full w-[60px] px-1.5 py-0 text-xs font-medium text-gray-800 border-0;
-}
-
-.remove-arrow::-webkit-inner-spin-button,
-.remove-arrow::-webkit-outer-spin-button {
-	appearance: none;
-	margin: 0;
-}
-
-.remove-arrow {
-	appearance: none;
-	background-position: right 0.1rem center;
+	width: 100%;
+	@apply h-full px-1.5 py-0 text-xs font-medium text-gray-800 border-0;
 }
 </style>

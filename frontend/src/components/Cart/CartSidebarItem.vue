@@ -7,17 +7,18 @@
 	>
 		<ItemImage
 			:item="item"
-			class="w-[65px] h-[65px] flex-shrink-0 border border-gray-300"
+			class="w-[65px] h-[65px] flex-none border border-gray-300"
 			rounded="rounded"
 			font="text-md"
 		/>
 
 		<div class="flex flex-col justify-between w-full">
 			<div class="text-sm font-semibold">{{ row.item_name }}</div>
-			<div class="flex justify-between gap-0.5">
+			<div class="flex justify-between gap-1.5">
 				<div class="w-[45%] self-end">
 					<QtyField
-						v-model="qty_model"
+						v-model:qty="qty_model.qty"
+						v-model:uom="qty_model.uom"
 						:uoms="uoms"
 						class="h-[30px]"
 						ref="qty_field"
@@ -25,7 +26,7 @@
 						@arrow-down="this.handle_arrow_down"
 						@focus="this.handle_qty_focused"
 						@blur="this.handle_qty_blurred"
-						@update:modelValue="this.handle_qty_change"
+						@change="this.handle_qty_change"
 					/>
 				</div>
 				<div class="w-[25%]">
@@ -99,10 +100,9 @@ export default {
 
 		handle_qty_change() {
 			cart.update_item_qty(this.row.item_code, this.qty_model.qty, this.qty_model.uom);
-			cart.promise.finally(() => this.reset_qty_model());
 		},
 
-		reset_qty_model() {
+		refresh_view() {
 			this.qty_model.qty = this.row.qty;
 			this.qty_model.uom = this.row.uom;
 			this.$refs.qty_field?.refresh();
@@ -124,9 +124,9 @@ export default {
 	},
 
 	created() {
-		watch(() => cart.modified, () => {
+		this.$watch(() => cart.loading, () => {
 			if (!cart.loading) {
-				this.reset_qty_model();
+				this.refresh_view();
 			}
 		})
 	}

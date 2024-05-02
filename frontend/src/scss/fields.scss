@@ -1,0 +1,22 @@
+.field {
+	@apply text-sm rounded-sm border border-gray-400 transition-colors duration-100;
+
+	&:focus {
+		box-shadow: unset;
+	}
+}
+input.field {
+	@apply p-1.5;
+	width: 100%;
+}
+
+.remove-arrow::-webkit-inner-spin-button,
+.remove-arrow::-webkit-outer-spin-button {
+	appearance: none;
+	margin: 0;
+}
+
+.remove-arrow {
+	appearance: none;
+	background-position: right 0.2rem center;
+}

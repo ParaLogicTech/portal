@@ -5,7 +5,7 @@
 	>
 		<ItemImage
 			:item="item_group"
-			class="h-[220px] flex-shrink-0"
+			class="h-[220px] flex-none"
 			rounded="rounded rounded-b-none"
 		/>
 

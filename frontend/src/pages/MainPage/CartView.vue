@@ -7,10 +7,11 @@
 			v-model:doc="model"
 			:addresses="addresses"
 			:contacts="contacts"
+			:loading="placing_order"
 			@qty-changed="handle_qty_change"
 			@cart-value-changed="handle_cart_value_change"
 			@item-value-changed="handle_item_value_change"
-			ref="cart_form"
+			ref="order_form"
 		/>
 
 		<div class="top-bar-height flex justify-end items-center px-3 py-1 border-t border-gray-400 shadow-sm">
@@ -21,15 +22,34 @@
 				label="Submit Order"
 				:disabled="!can_submit"
 				:link="null"
-				:loading="placing_order"
-				@click="place_order"
-				class="min-w-18"
+				:loading="confirmation_dialog || placing_order"
+				@click="confirmation_dialog = true"
+				class="h-[30px]"
 			>
 				<template #suffix>
 					<SendHorizontal class="h-4" />
 				</template>
 			</Button>
 		</div>
+
+		<Dialog
+			v-model="confirmation_dialog"
+			:options="{
+				title: 'Confirm',
+				message: 'Are you sure you want to submit this order?',
+				size: 'xl',
+				actions: [
+					{
+						label: 'Confirm',
+						variant: 'solid',
+						theme: 'blue',
+						onClick: () => {
+							this.place_order();
+						},
+					},
+				],
+			}"
+		/>
 	</div>
 </template>
 
@@ -51,6 +71,7 @@ export default {
 			cart: cart,
 			model: this.make_cart_model(),
 			placing_order: false,
+			confirmation_dialog: false,
 		}
 	},
 
@@ -70,7 +91,7 @@ export default {
 		refresh_form() {
 			this.model = this.make_cart_model();
 			this.$nextTick(() => {
-				this.$refs.cart_form.refresh_view();
+				this.$refs.order_form.refresh_view();
 			});
 		},
 
@@ -79,15 +100,16 @@ export default {
 		},
 
 		async place_order() {
+			this.confirmation_dialog = false;
 			if (this.can_submit) {
 				try {
 					this.placing_order = true;
 					let data = await cart.place_order();
 					if (data.sales_order) {
 						this.$router.push({
-							name: "SalesOrderView",
+							name: "OrderView",
 							params: {
-								id: data.sales_order
+								name: data.sales_order
 							}
 						});
 					}

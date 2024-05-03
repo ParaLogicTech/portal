@@ -72,13 +72,13 @@ export default {
 
 	computed: {
 		show_cart_sidebar() {
-			return !this.$route.meta.hide_sidebar;
+			return this.$route.meta.show_cart_sidebar;
 		}
 	},
 
 	pageMeta() {
 		return {
-			title: 'Order Cart',
+			title: 'Sales Portal',
 		}
 	},
 }

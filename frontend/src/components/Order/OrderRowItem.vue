@@ -11,7 +11,7 @@
 		/>
 		<div class="text-ellipsis">{{ row.item_name }}</div>
 	</div>
-	<div v-else-if="column.key == 'qty'">
+	<div v-else-if="column.key == 'qty' && !read_only">
 		<QtyField
 			v-model:qty="row.qty"
 			v-model:uom="row.uom"
@@ -23,7 +23,7 @@
 			@change="this.handle_qty_change"
 		/>
 	</div>
-	<div v-else-if="column.key == 'rate'">
+	<div v-else-if="column.key == 'rate' && !read_only">
 		<CurrencyField
 			v-model="row.rate"
 			:currency="doc.currency"
@@ -34,7 +34,7 @@
 			@update:modelValue="(v) => this.handle_value_change('rate', v)"
 		/>
 	</div>
-	<div v-else-if="column.key == 'discount_percentage'">
+	<div v-else-if="column.key == 'discount_percentage' && !read_only">
 		<PercentField
 			v-model="row.discount_percentage"
 			class="h-[35px]"
@@ -73,6 +73,7 @@ export default {
 		value: [String, Number, Object],
 		align: String,
 		events: Object,
+		read_only: Boolean,
 	},
 
 	methods: {
@@ -129,6 +130,8 @@ export default {
 				return format_currency(this.value, this.doc.currency);
 			} else if (this.column.key == "discount_percentage") {
 				return format_number(this.value, null, 1) + "%";
+			} else if (this.column.key == "qty") {
+				return format_number(this.value, null, 2) + " " + this.row.uom;
 			} else {
 				return cstr(this.value);
 			}

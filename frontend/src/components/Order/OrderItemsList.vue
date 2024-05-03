@@ -15,6 +15,7 @@
 				:value="item"
 				:align="align"
 				:events="events"
+				:read_only="read_only"
 				@select-next-row="select_next_row"
 				@select-previous-row="select_previous_row"
 				@qty-changed="handle_qty_change"
@@ -37,6 +38,7 @@ export default {
 
 	props: {
 		doc: Object,
+		read_only: Boolean,
 	},
 
 	data() {

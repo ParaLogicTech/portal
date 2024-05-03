@@ -1,12 +1,28 @@
 <template>
-	<div class="cart-form">
+	<div class="order-form">
+		<div
+			class="loading-overlay"
+			v-if="loading"
+		>
+			<div class="loading-text">Loading...</div>
+		</div>
+
 		<!-- First Section -->
 		<div class="section">
 			<div class="section-grid grid-cols-3">
 				<div class="col">
-					<div class="col-row">
-						<label for="cart_customer">Customer</label>
-						<CustomerSelection id="cart_customer" />
+					<FormControl
+						v-if="read_only"
+						type="text"
+						label="Customer"
+						v-model="doc.customer_name"
+						variant="subtle"
+						class="col-row"
+						:disabled="true"
+					/>
+					<div v-else class="col-row space-y-1.5">
+						<label>Customer</label>
+						<CustomerSelection />
 					</div>
 				</div>
 
@@ -17,7 +33,9 @@
 						v-model="doc.remarks"
 						variant="subtle"
 						class="col-row"
+						rows="5"
 						@change="handle_cart_value_change('remarks', doc.remarks)"
+						:disabled="read_only"
 					/>
 				</div>
 
@@ -38,56 +56,26 @@
 						variant="subtle"
 						class="col-row"
 						@change="handle_cart_value_change('delivery_date', doc.delivery_date)"
+						:disabled="read_only"
 					/>
 				</div>
 			</div>
 		</div>
 
-		<!-- Address Section -->
-		<div class="section">
-			<h2 class="section-heading">Address</h2>
-
-			<div v-if="!addresses?.length" class="section-message">
-				Customer has no address
-			</div>
-			<div v-else class="section-grid grid-cols-3">
-				<AddressCard
-					v-for="d in addresses"
-					:address="d"
-					:selected="d.name == doc.customer_address"
-					:selectable="true"
-					:key="d.name"
-					@address-selected="handle_address_selected"
-				/>
-			</div>
-		</div>
-
-		<!-- Contacts Section -->
-		<div class="section">
-			<h2 class="section-heading">Contact Person</h2>
-
-			<div v-if="!contacts?.length" class="section-message">
-				Customer has no contact persons
-			</div>
-			<div
-				v-else
-				class="section-grid grid-cols-3"
-			>
-				<ContactCard
-					v-for="d in contacts"
-					:contact="d"
-					:selected="d.name == doc.contact_person"
-					:selectable="true"
-					:key="d.name"
-					@contact-selected="handle_contact_selected"
-				/>
-			</div>
-		</div>
+		<AddressAndContact
+			:doc="doc"
+			:addresses="addresses"
+			:contacts="contacts"
+			:read_only="read_only"
+			@address-selected="handle_address_selected"
+			@contact-selected="handle_contact_selected"
+		/>
 
 		<!-- Items Section -->
 		<div class="section">
 			<OrderItemsList
 				:doc="doc"
+				:read_only="read_only"
 				ref="items"
 				@qty-changed="handle_qty_change"
 				@value-changed="handle_item_value_change"
@@ -134,24 +122,22 @@
 </template>
 
 <script>
-import AddressCard from "@/components/Customer/AddressCard.vue";
 import CustomerSelection from "@/components/Customer/CustomerSelection.vue";
-import ContactCard from "@/components/Customer/ContactCard.vue";
 import {FormControl} from "frappe-ui";
 import OrderItemsList from "@/components/Order/OrderItemsList.vue";
+import AddressAndContact from "@/components/Order/AddressAndContact.vue";
 
 export default {
 	name: "OrderForm",
 
-	components: {OrderItemsList, ContactCard, AddressCard, CustomerSelection, FormControl},
+	components: {AddressAndContact, OrderItemsList, CustomerSelection, FormControl},
 
 	props: {
 		doc: Object,
 		addresses: Array,
 		contacts: Array,
-	},
-
-	data() {
+		loading: Boolean,
+		read_only: Boolean,
 	},
 
 	methods: {
@@ -199,7 +185,9 @@ export default {
 </script>
 
 <style lang="scss">
-	.cart-form {
+	.order-form {
+		@apply relative;
+
 		.section {
 			@apply py-4 px-5 border-b border-gray-300 text-md;
 
@@ -217,12 +205,28 @@ export default {
 			}
 		}
 
+		.col-row:not(:first-child) {
+			@apply mt-3;
+		}
+
+		.loading-overlay {
+			@apply flex items-center justify-center bg-white opacity-70 z-10;
+			position: absolute;
+			height: 100%;
+			width: 100%;
+
+			.loading-text {
+				@apply drop-shadow text-gray-900 text-4xl font-normal;
+			}
+		}
+
 		label {
 			@apply block text-sm text-gray-700 font-medium mb-0.5;
 		}
 
-		.col-row:not(:first-child) {
-			@apply mt-3;
+		input, textarea, select {
+			@apply text-gray-800;
 		}
+
 	}
 </style>

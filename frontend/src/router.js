@@ -10,26 +10,54 @@ const routes = [
 		children: [
 			{
 				path: '',
+				redirect: (to) => {
+					return { name: 'ItemListView' }
+				}
+			},
+			{
+				path: 'items',
 				name: 'ItemListView',
 				component: () => import('@/pages/MainPage/ItemListView.vue'),
+				meta: {
+					show_cart_sidebar: true,
+				},
 			},
 			{
 				path: 'item-groups',
 				name: 'ItemGroupListView',
 				component: () => import('@/pages/MainPage/ItemGroupListView.vue'),
+				meta: {
+					show_cart_sidebar: true,
+				},
 			},
 			{
 				path: 'brands',
 				name: 'BrandListView',
 				component: () => import('@/pages/MainPage/BrandListView.vue'),
+				meta: {
+					show_cart_sidebar: true,
+				},
 			},
 			{
 				path: 'cart',
 				name: 'CartView',
 				component: () => import('@/pages/MainPage/CartView.vue'),
-				meta: {
-					hide_sidebar: true,
-				},
+			},
+			{
+				path: 'orders',
+				children: [
+					{
+						path: '',
+						name: 'OrderListView',
+						component: () => import('@/pages/MainPage/OrderListView.vue'),
+					},
+					{
+						path: ':name',
+						name: 'OrderView',
+						props: true,
+						component: () => import('@/pages/MainPage/OrderView.vue'),
+					},
+				]
 			},
 		]
 	},

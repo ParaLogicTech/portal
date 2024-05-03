@@ -20,6 +20,12 @@
 						<h4>Brands</h4>
 					</li>
 				</router-link>
+				<router-link :to="{ name: 'OrderListView' }">
+					<li>
+						<History class="icon" stroke-width="1.8px" />
+						<h4>Order History</h4>
+					</li>
+				</router-link>
 				<router-link :to="{ name: 'CartView' }">
 					<li>
 						<ShoppingBag class="icon" stroke-width="1.8px"/>
@@ -32,7 +38,7 @@
 </template>
 
 <script>
-import {PackageSearch, ShoppingBag, Boxes, Award} from 'lucide-vue-next';
+import {PackageSearch, ShoppingBag, Boxes, Award, History} from 'lucide-vue-next';
 
 export default {
 	name: "SideBarNavigation",
@@ -41,7 +47,8 @@ export default {
 		ShoppingBag,
 		PackageSearch,
 		Boxes,
-		Award
+		Award,
+		History,
 	}
 }
 </script>
@@ -68,11 +75,11 @@ export default {
 			}
 		}
 
-		a:hover:not(.router-link-exact-active) li {
+		a:hover:not(.router-link-active) li {
 			@apply text-gray-800 shadow outline-gray-300;
 		}
 
-		.router-link-exact-active li {
+		.router-link-active li {
 			@apply text-violet-700 shadow-md outline-gray-500;
 		}
 	}

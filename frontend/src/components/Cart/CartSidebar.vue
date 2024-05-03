@@ -25,6 +25,22 @@
 				ref="items"
 			/>
 		</div>
+
+		<div class="h-[43px] flex-none p-1.5 border-t border-gray-400">
+			<Button
+				variant="solid"
+				theme="blue"
+				size="sm"
+				label="Open Order Cart"
+				:link="null"
+				@click="open_cart"
+				class="w-full h-full"
+			>
+				<template #prefix>
+					<ShoppingBag class="h-3.5" />
+				</template>
+			</Button>
+		</div>
 	</div>
 </template>
 
@@ -32,17 +48,21 @@
 import CartSidebarItem from "@/components/Cart/CartSidebarItem.vue";
 import CustomerSelection from "@/components/Customer/CustomerSelection.vue";
 import {cart} from "@/data/cart";
-import {CircleSlash} from "lucide-vue-next"
+import {CircleSlash, SendHorizontal} from "lucide-vue-next"
 import CartHeader from "@/components/Cart/CartHeader.vue";
+import {Button} from "frappe-ui";
+import {ShoppingBag} from "lucide-vue-next"
 
 export default {
 	name: "CartSidebar",
 
 	components: {
+		SendHorizontal, Button,
 		CartHeader,
 		CustomerSelection,
 		CartSidebarItem,
 		CircleSlash,
+		ShoppingBag,
 	},
 
 	data() {
@@ -52,6 +72,10 @@ export default {
 	},
 
 	methods: {
+		open_cart() {
+			this.$router.push({name: "CartView"});
+		},
+
 		select_item(item_code) {
 			let component = (this.$refs["items"] || []).find(d => d.row.item_code === item_code);
 			if (component) {

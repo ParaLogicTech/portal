@@ -25,8 +25,8 @@ const routes = [
 			},
 			{
 				path: 'cart',
-				name: 'OrderCartView',
-				component: () => import('@/pages/MainPage/OrderCartView.vue'),
+				name: 'CartView',
+				component: () => import('@/pages/MainPage/CartView.vue'),
 				meta: {
 					hide_sidebar: true,
 				},

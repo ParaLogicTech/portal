@@ -8,7 +8,7 @@
 		ref="list_view"
 	>
 		<template #cell="{ column, row, item, align }">
-			<CartRowItem
+			<OrderRowItem
 				:doc="doc"
 				:column="column"
 				:row="row"
@@ -28,12 +28,12 @@
 import mitt from 'mitt';
 import {ListView} from "frappe-ui";
 import QtyField from "@/components/Fields/QtyField.vue";
-import CartRowItem from "@/components/Cart/CartRowItem.vue";
+import OrderRowItem from "@/components/Order/OrderRowItem.vue";
 
 export default {
-	name: "CartItemsList",
+	name: "OrderItemsList",
 
-	components: {CartRowItem, QtyField, ListView},
+	components: {OrderRowItem, QtyField, ListView},
 
 	props: {
 		doc: Object,

@@ -20,7 +20,7 @@
 						<h4>Brands</h4>
 					</li>
 				</router-link>
-				<router-link :to="{ name: 'OrderCartView' }">
+				<router-link :to="{ name: 'CartView' }">
 					<li>
 						<ShoppingBag class="icon" stroke-width="1.8px"/>
 						<h4>Order Cart</h4>

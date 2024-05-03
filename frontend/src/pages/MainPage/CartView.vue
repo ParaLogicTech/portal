@@ -2,7 +2,7 @@
 	<div class="flex flex-col h-full">
 		<CartHeader class="top-bar-height px-3 py-1 border-b border-gray-400 shadow-sm"/>
 
-		<CartForm
+		<OrderForm
 			class="h-full overflow-y-auto"
 			v-model:doc="model"
 			:addresses="addresses"
@@ -36,15 +36,15 @@
 <script>
 import CartHeader from "@/components/Cart/CartHeader.vue";
 import {cart} from "@/data/cart";
-import CartForm from "@/components/Cart/CartForm.vue";
+import OrderForm from "@/components/Order/OrderForm.vue";
 import {Button} from "frappe-ui";
 import cloneDeep from "lodash.clonedeep"
 import {SendHorizontal} from "lucide-vue-next"
 
 export default {
-	name: "OrderCartView",
+	name: "CartView",
 
-	components: {CartForm, CartHeader, Button, SendHorizontal},
+	components: {OrderForm, CartHeader, Button, SendHorizontal},
 
 	data() {
 		return {
@@ -83,6 +83,14 @@ export default {
 				try {
 					this.placing_order = true;
 					let data = await cart.place_order();
+					if (data.sales_order) {
+						this.$router.push({
+							name: "SalesOrderView",
+							params: {
+								id: data.sales_order
+							}
+						});
+					}
 				} finally {
 					this.placing_order = false;
 				}

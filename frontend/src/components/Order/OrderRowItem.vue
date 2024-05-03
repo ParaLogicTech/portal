@@ -62,7 +62,7 @@ import CurrencyField from "@/components/Fields/CurrencyField.vue";
 import PercentField from "@/components/Fields/PercentField.vue";
 
 export default {
-	name: "CartRowItem",
+	name: "OrderRowItem",
 
 	components: {PercentField, CurrencyField, ItemImage, ListRowItem, QtyField},
 

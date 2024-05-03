@@ -86,7 +86,7 @@
 
 		<!-- Items Section -->
 		<div class="section">
-			<CartItemsList
+			<OrderItemsList
 				:doc="doc"
 				ref="items"
 				@qty-changed="handle_qty_change"
@@ -138,12 +138,12 @@ import AddressCard from "@/components/Customer/AddressCard.vue";
 import CustomerSelection from "@/components/Customer/CustomerSelection.vue";
 import ContactCard from "@/components/Customer/ContactCard.vue";
 import {FormControl} from "frappe-ui";
-import CartItemsList from "@/components/Cart/CartItemsList.vue";
+import OrderItemsList from "@/components/Order/OrderItemsList.vue";
 
 export default {
-	name: "CartForm",
+	name: "OrderForm",
 
-	components: {CartItemsList, ContactCard, AddressCard, CustomerSelection, FormControl},
+	components: {OrderItemsList, ContactCard, AddressCard, CustomerSelection, FormControl},
 
 	props: {
 		doc: Object,

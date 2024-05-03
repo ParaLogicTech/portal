@@ -7,6 +7,10 @@ app_description = "Portal for Sales Persons and Customers"
 app_email = "info@paralogic.io"
 app_license = "GNU General Public License (v3)"
 
+website_route_rules = [
+	{"from_route": "/sales-portal/<path:app_path>", "to_route": "sales-portal"},
+]
+
 fixtures = [
 	{
 		"doctype": "Custom Field",

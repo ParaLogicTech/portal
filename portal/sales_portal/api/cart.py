@@ -1,7 +1,7 @@
 import frappe
 from frappe import _
 from frappe.utils import getdate, flt, cast
-from portal.sales_portal.doctype.cart.cart import validate_item_uom
+from portal.sales_portal.doctype.cart.cart import validate_item_uom, make_sales_order
 from erpnext.stock.get_item_details import get_conversion_factor
 
 
@@ -186,10 +186,15 @@ def place_order(customer=None, cart_id=None):
 
 	cart_doc.order_confirmed = 1
 	process_cart(cart_doc, for_save=True)
-	cart_doc.save()  # todo submit and map sales order
+	cart_doc.submit()
+
+	sales_order = make_sales_order(cart_doc.name, ignore_permissions=True)
+	sales_order.save()
 
 	new_cart_doc = get_cart_doc(customer)
 	out = get_output(new_cart_doc)
+	out["sales_order"] = sales_order.name
+
 	return out
 
 

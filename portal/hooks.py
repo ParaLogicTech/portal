@@ -7,6 +7,18 @@ app_description = "Portal for Sales Persons and Customers"
 app_email = "info@paralogic.io"
 app_license = "GNU General Public License (v3)"
 
+fixtures = [
+	{
+		"doctype": "Custom Field",
+		"filters": {
+			"name": ["in", [
+				'Sales Order-cart',
+				'Sales Order Item-cart_item',
+			]]
+		}
+	},
+]
+
 # Includes in <head>
 # ------------------
 

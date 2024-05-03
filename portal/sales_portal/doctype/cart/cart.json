@@ -23,6 +23,7 @@
   "delivery_date",
   "amended_from",
   "more_info",
+  "sales_person",
   "more_info_cb_1",
   "more_info_cb_2",
   "more_info_cb_3",
@@ -1148,12 +1149,20 @@
    "read_only": 1,
    "reqd": 1,
    "width": "100px"
+  },
+  {
+   "fieldname": "sales_person",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Sales Person",
+   "options": "Sales Person"
   }
  ],
  "icon": "fa fa-file-text",
  "is_submittable": 1,
  "links": [],
- "modified": "2024-04-02 12:30:35.906325",
+ "modified": "2024-05-02 12:55:28.881947",
  "modified_by": "Administrator",
  "module": "Sales Portal",
  "name": "Cart",

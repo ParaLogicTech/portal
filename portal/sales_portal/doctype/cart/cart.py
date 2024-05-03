@@ -1,6 +1,8 @@
 import frappe
 from frappe import _
 from erpnext.controllers.selling_controller import SellingController
+from frappe.model.mapper import get_mapped_doc
+from crm.crm.doctype.sales_person.sales_person import get_sales_person_from_user
 
 
 class Cart(SellingController):
@@ -19,6 +21,7 @@ class Cart(SellingController):
 	def validate(self):
 		super().validate()
 		self.validate_uom_is_integer("stock_uom", "qty")
+		self.set_sales_person_from_user()
 		self.validate_order_confirmed()
 		self.set_status()
 
@@ -31,6 +34,10 @@ class Cart(SellingController):
 	def on_cancel(self):
 		self.update_status_on_cancel()
 		self.db_set("order_confirmed", 0)
+
+	def set_sales_person_from_user(self):
+		if not self.get('sales_person'):
+			self.sales_person = get_sales_person_from_user()
 
 	def validate_order_confirmed(self):
 		if self.order_confirmed and not self.get("items"):
@@ -49,7 +56,11 @@ class Cart(SellingController):
 			frappe.throw(_("Cannot modify confirmed order cart"))
 
 	def has_sales_order_or_invoice(self):
-		return False
+		if self.docstatus != 1:
+			return False
+
+		so = frappe.db.get_value("Sales Order", {"cart": self.name, "docstatus": ["!=", 0]})
+		return so or False
 
 	def get_item_row(self, item_code, add_row_if_missing=False):
 		row = None
@@ -83,6 +94,44 @@ def validate_item_uom(item_code, uom):
 	has_uom = any(d.uom for d in item_doc.uoms if d.uom == uom)
 	if not has_uom:
 		frappe.throw(_("UOM {0} not allowed for Item {1}").format(uom, item_code))
+
+
+def make_sales_order(source_name, target_doc=None, ignore_permissions=False):
+	def set_missing_values(source, target):
+		if source.sales_person:
+			target.sales_team = []
+			target.append("sales_team", {
+				"sales_person": source.sales_person,
+				"allocated_percentage": 100
+			})
+
+		target.flags.ignore_permissions = ignore_permissions
+		target.run_method("set_missing_values")
+		target.run_method("calculate_taxes_and_totals")
+		target.run_method("set_payment_schedule")
+
+	return get_mapped_doc("Cart", source_name, {
+		"Cart": {
+			"doctype": "Sales Order",
+			"validation": {
+				"docstatus": ["=", 1]
+			},
+			"field_map": {
+				"remarks": "remarks",
+				"name": "cart",
+			}
+		},
+		"Cart Item": {
+			"doctype": "Sales Order Item",
+			"field_map": {
+				"name": "cart_item",
+			},
+		},
+		"Sales Taxes and Charges": {
+			"doctype": "Sales Taxes and Charges",
+			"add_if_empty": True
+		},
+	}, target_doc, set_missing_values, ignore_permissions=ignore_permissions)
 
 
 def on_doctype_update():

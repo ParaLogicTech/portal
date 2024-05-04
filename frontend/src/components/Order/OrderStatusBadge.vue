@@ -44,7 +44,7 @@ export default {
 			} else if (["Closed", "Delivered"].includes(this.status_label)) {
 				return "bg-green-300 text-green-900";
 			} else if (this.status_label == "To Deliver") {
-				return "bg-orange-200 text-orange-700";
+				return "bg-orange-200 text-orange-800";
 			} else {
 				return "bg-gray-200 text-gray-800";
 			}

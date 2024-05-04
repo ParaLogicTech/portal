@@ -14,7 +14,7 @@
 			:addresses="addresses"
 			:contacts="contacts"
 			:read_only="true"
-			:loading="sales_order_resource.loading"
+			:loading="order_resource.loading"
 		/>
 	</div>
 </template>
@@ -40,7 +40,7 @@ export default {
 	methods: {
 		async reload() {
 			try {
-				await this.sales_order_resource.fetch();
+				await this.order_resource.fetch();
 			} catch (e) {
 				createAlert({"title": "Error loading Sales Order", "message": e, "variant": "error"});
 			}
@@ -56,7 +56,7 @@ export default {
 
 		handle_realtime_update(data) {
 			// Do not reload if already reloading
-			if (this.sales_order_resource.loading) {
+			if (this.order_resource.loading) {
 				return;
 			}
 
@@ -76,15 +76,15 @@ export default {
 
 	computed: {
 		doc() {
-			return this.sales_order_resource.data?.doc || {};
+			return this.order_resource.data?.doc || {};
 		},
 
 		address() {
-			return this.sales_order_resource.data?.address || null;
+			return this.order_resource.data?.address || null;
 		},
 
 		contact() {
-			return this.sales_order_resource.data?.contact || null;
+			return this.order_resource.data?.contact || null;
 		},
 
 		contacts() {
@@ -96,10 +96,10 @@ export default {
 		},
 
 		loading() {
-			return this.sales_order_resource.loading;
+			return this.order_resource.loading;
 		},
 
-		sales_order_resource() {
+		order_resource() {
 			return this.$resources.get_sales_order;
 		},
 	},

@@ -37,6 +37,12 @@ export default {
 		}
 	},
 
+	data() {
+		return {
+			active: false,
+		}
+	},
+
 	methods: {
 		async reload() {
 			try {
@@ -48,15 +54,24 @@ export default {
 		},
 
 		refresh_form() {
-			this.doc = {};
 			this.$nextTick(() => {
 				this.$refs.order_form.refresh_view();
 			});
 		},
 
+		setup_realtime_updates() {
+			subscribe_doc($socket, 'Sales Order', this.name);
+			$socket.on("doc_update", this.handle_realtime_update);
+		},
+
+		stop_realtime_updates(name) {
+			unsubscribe_doc($socket, 'Sales Order', name);
+			$socket.off("doc_update", this.handle_realtime_update);
+		},
+
 		handle_realtime_update(data) {
-			// Do not reload if already reloading
-			if (this.order_resource.loading) {
+			// Do not reload if already loading or inactive
+			if (this.order_resource.loading || !this.active) {
 				return;
 			}
 
@@ -109,22 +124,39 @@ export default {
 			return {
 				url: 'portal.sales_portal.api.orders.get_sales_order',
 				method: 'GET',
-				params: {
-					name: this.name,
+				makeParams() {
+					return {
+						name: this.name
+					}
 				},
 			}
 		},
 	},
 
-	beforeMount() {
-		this.reload();
-		subscribe_doc($socket, 'Sales Order', this.name);
-		$socket.on("doc_update", this.handle_realtime_update);
+	watch: {
+		name: {
+			handler(new_name, old_name) {
+				if (!this.active) {
+					return;
+				}
+				this.stop_realtime_updates(old_name);
+				this.order_resource.reset();
+				this.reload();
+				this.setup_realtime_updates();
+			},
+		}
 	},
 
-	beforeUnmount() {
-		unsubscribe_doc($socket, 'Sales Order', this.name);
-		$socket.off("doc_update", this.handle_realtime_update);
-	}
+	activated() {
+		this.active = true;
+		this.order_resource.reset();
+		this.reload();
+		this.setup_realtime_updates();
+	},
+
+	deactivated() {
+		this.active = false;
+		this.stop_realtime_updates(this.name);
+	},
 }
 </script>

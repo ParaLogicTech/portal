@@ -15,7 +15,7 @@
 		<div class="flex flex-col justify-between w-full">
 			<div class="text-sm font-semibold">{{ row.item_name }}</div>
 			<div class="flex justify-between gap-1.5">
-				<div class="w-[45%] self-end">
+				<div class="min-w-[40%] self-end">
 					<QtyField
 						v-model:qty="qty_model.qty"
 						v-model:uom="qty_model.uom"
@@ -29,13 +29,13 @@
 						@change="this.handle_qty_change"
 					/>
 				</div>
-				<div class="w-[25%]">
+				<div class="basis-[25%]">
 					<div class="text-2xs font-semibold text-gray-600">Rate</div>
-					<div class="text-md">{{ format_currency(row.rate, cart.currency) }}</div>
+					<div class="text-md text-[13.5px]">{{ format_currency(row.rate, cart.currency) }}</div>
 				</div>
-				<div class="w-[30%] text-right">
+				<div class="basis-[35%] text-right">
 					<div class="text-2xs font-semibold text-gray-600">Amount</div>
-					<div class="text-md font-semibold">{{ format_currency(row.amount, cart.currency) }}</div>
+					<div class="text-md font-semibold text-[13.5px]">{{ format_currency(row.amount, cart.currency) }}</div>
 				</div>
 			</div>
 		</div>

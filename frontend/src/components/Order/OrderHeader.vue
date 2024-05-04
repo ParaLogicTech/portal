@@ -11,23 +11,23 @@
 				{{ name }}
 			</h2>
 
-			<div
-				class="rounded py-1 px-1.5 text-xs font-semibold ml-2"
-				:class="status_color"
-			>
-				{{ status }}
-			</div>
+			<OrderStatusBadge
+				:doc="doc"
+				:loading="loading"
+				class="ml-2"
+			/>
 		</div>
 	</div>
 </template>
 
 <script>
 import {FileText} from "lucide-vue-next";
+import OrderStatusBadge from "@/components/Order/OrderStatusBadge.vue";
 
 export default {
 	name: "OrderHeader",
 
-	components: {FileText},
+	components: {OrderStatusBadge, FileText},
 
 	props: {
 		name: {
@@ -40,37 +40,5 @@ export default {
 		},
 		loading: Boolean,
 	},
-
-	computed: {
-		status() {
-			if (this.loading) {
-				return "Loading";
-			} else {
-				if (this.doc.docstatus == 0) {
-					return "Draft";
-				} else if (this.doc.docstatus == 2) {
-					return "Cancelled";
-				} else if (this.doc.status == "Closed") {
-					return "Closed";
-				} else if (this.doc.delivery_status == "Delivered") {
-					return "Delivered";
-				} else {
-					return "To Deliver";
-				}
-			}
-		},
-
-		status_color() {
-			if (this.status == "Draft") {
-				return "bg-blue-200 text-blue-800";
-			} else if (["Closed", "Delivered"].includes(this.status)) {
-				return "bg-green-300 text-green-900";
-			} else if (this.status == "To Deliver") {
-				return "bg-orange-200 text-orange-700";
-			} else {
-				return "bg-gray-200 text-gray-800";
-			}
-		},
-	}
 }
 </script>

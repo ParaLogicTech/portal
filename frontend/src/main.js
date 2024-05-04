@@ -6,7 +6,16 @@ import App from '@/App.vue'
 import moment from 'moment'
 import { initSocket } from './socket'
 
-import {flt, cint, cstr, format_number, format_currency} from '@/utils/formatting';
+import {
+	flt,
+	cint,
+	cstr,
+	format_number,
+	format_currency,
+	format_date,
+	format_time,
+	format_datetime
+} from '@/utils/formatting';
 
 import { session } from '@/data/session';
 
@@ -57,6 +66,9 @@ window.cint = cint;
 window.cstr = cstr;
 window.format_number = format_number;
 window.format_currency = format_currency;
+window.format_date = format_date;
+window.format_time = format_time;
+window.format_datetime = format_datetime;
 
 if (import.meta.env.DEV) {
 	window.$session = session;

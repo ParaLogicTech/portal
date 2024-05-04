@@ -55,7 +55,7 @@ export let active_items = computed(() => {
 			&& !d.is_end_of_life
 	});
 
-	if (settings.data?.hide_items_without_image) {
+	if (settings.value.hide_items_without_image) {
 		active_items = active_items.filter((d) => d.image);
 	}
 

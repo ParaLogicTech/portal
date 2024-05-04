@@ -1,4 +1,5 @@
 import {currency_list} from "@/data/currency";
+import {settings} from "@/data/settings";
 
 export function flt(v, decimals, number_format, rounding_method) {
 	if (v == null || v == "") return 0;
@@ -110,7 +111,7 @@ export function format_currency(v, currency, decimals) {
 	const show_symbol_on_right = get_symbol_on_right(currency);
 
 	if (decimals === undefined) {
-		decimals = 2;
+		decimals = settings.value.currency_precision || 2;
 	}
 
 	if (symbol) {
@@ -136,8 +137,7 @@ function replace_all(s, t1, t2) {
 }
 
 function get_number_format() {
-	// ToDo get number format from system
-	return "#,###.##";
+	return settings.value.number_format || "#,###.##";
 }
 
 function get_number_format_info(format) {
@@ -184,8 +184,7 @@ function strip_number_groups(v, number_format) {
 
 
 function _round(num, precision, rounding_method) {
-	// ToDo get rounding method from system
-	rounding_method = rounding_method || "Banker's Rounding (legacy)";
+	rounding_method = rounding_method || settings.value.rounding_method || "Banker's Rounding (legacy)";
 
 	let is_negative = num < 0 ? true : false;
 
@@ -265,4 +264,60 @@ function rstrip(s, chars) {
 		last_char = s.substr(s.length - 1);
 	}
 	return s;
+}
+
+const defaultDateFormat = "YYYY-MM-DD";
+const defaultTimeFormat = "HH:mm:ss";
+
+export function format_date(val) {
+	return str_to_user(val, false, true);
+}
+export function format_time(val) {
+	return str_to_user(val, false, true);
+}
+export function format_datetime(val) {
+	return str_to_user(val);
+}
+
+function str_to_user(val, only_time = false, only_date = false) {
+	if (!val) return "";
+	const user_date_fmt = get_user_date_fmt().toUpperCase();
+	const user_time_fmt = get_user_time_fmt();
+
+	if (only_time) {
+		let date_obj = moment(val, defaultTimeFormat);
+		return date_obj.format(user_time_fmt);
+	} else if (only_date) {
+		let date_obj = moment(val, defaultDateFormat);
+		return date_obj.format(user_date_fmt);
+	} else {
+		let user_format;
+		let date_obj = moment.tz(val, get_system_timezone());
+		if (typeof val !== "string" || val.indexOf(" ") === -1) {
+			user_format = user_date_fmt;
+		} else {
+			user_format = user_date_fmt + " " + user_time_fmt;
+		}
+		return date_obj.clone().tz(get_user_timezone()).format(user_format);
+	}
+}
+
+function get_user_date_fmt() {
+	return settings.value.date_format || "dd-mm-yyyy";
+}
+
+function get_user_time_fmt() {
+	if (settings.value.time_format == "24 Hour") {
+		return 'HH:mm:ss';
+	} else {
+		return 'hh:mm:ss A';
+	}
+}
+
+function get_system_timezone() {
+	return settings.value.system_timezone;
+}
+
+function get_user_timezone() {
+	return settings.value.user_timezone;
 }

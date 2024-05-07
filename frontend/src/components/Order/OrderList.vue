@@ -1,5 +1,6 @@
 <template>
 	<ListView
+		class="list-view-fix"
 		row-key="name"
 		:columns="columns"
 		:rows="rows || []"
@@ -34,6 +35,7 @@ export default {
 
 	props: {
 		rows: Array,
+		show_customers: Boolean,
 	},
 
 	methods: {
@@ -42,6 +44,8 @@ export default {
 				return format_currency(value, row.currency);
 			} else if (column.key == "transaction_date") {
 				return format_date(value);
+			} else if (column.key == "total_qty") {
+				return format_number(value);
 			} else {
 				return value;
 			}
@@ -50,29 +54,51 @@ export default {
 
 	computed: {
 		columns() {
-			return [
+			let columns = [
 				{
 					label: "Order #",
 					key: "name",
-					width: "100px",
+					width: "110px",
 				},
 				{
 					label: "Order Date",
 					key: "transaction_date",
-					width: "140px",
+					width: "100px",
+				},
+				{
+					label: "Customer Name",
+					key: "customer_name",
+					width: "minmax(150px, 300px)",
 				},
 				{
 					label: "Status",
 					key: "status",
-					width: "140px",
+					width: "100px",
+				},
+				{
+					label: "Total Qty",
+					key: "total_qty",
+					align: "right",
+					width: "100px",
 				},
 				{
 					label: "Grand Total",
 					key: "grand_total",
 					align: "right",
-					width: "100px",
+					width: "120px",
 				},
-			]
+				{
+					label: "Sales Person",
+					key: "sales_person",
+					width: "minmax(110px, 1fr)",
+				},
+			];
+
+			if (!this.show_customers) {
+				columns = columns.filter(c => c.key != "customer_name")
+			}
+
+			return columns;
 		},
 
 		options() {

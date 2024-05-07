@@ -2,7 +2,7 @@
 	<Autocomplete
 		:options="this.customer_options"
 		v-model="customer_model"
-		placeholder="Select Customer..."
+		placeholder="Select Customer"
 		variant="outline",
 		@update:modelValue="this.update_cart_customer"
 	>

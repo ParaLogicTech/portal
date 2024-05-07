@@ -24,6 +24,15 @@
 						<label>Customer</label>
 						<CustomerSelection />
 					</div>
+
+					<FormControl
+						type="text"
+						label="Sales Person"
+						v-model="sales_person"
+						variant="subtle"
+						class="col-row"
+						:disabled="true"
+					/>
 				</div>
 
 				<div class="col">
@@ -181,6 +190,16 @@ export default {
 			this.$emit('update:doc', this.doc);
 		},
 	},
+
+	computed: {
+		sales_person() {
+			if (this.doc.doctype == "Cart") {
+				return this.doc.sales_person;
+			} else {
+				return (this.doc.sales_team || []).map(d => d.sales_person).join(", ");
+			}
+		},
+	}
 }
 </script>
 

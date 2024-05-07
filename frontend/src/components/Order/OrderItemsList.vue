@@ -1,7 +1,7 @@
 <template>
 	<ListView
 		row-key="name"
-		class="items-list"
+		class="list-view-fix"
 		:columns="columns"
 		:rows="doc.items || []"
 		:options="options"
@@ -136,15 +136,3 @@ export default {
 	},
 }
 </script>
-
-<style>
-.items-list {
-	width: fit-content !important;
-}
-.items-list .grid {
-	min-width: 0;
-}
-.items-list .grid > div {
-	min-width: 0;
-}
-</style>

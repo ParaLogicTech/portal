@@ -38,3 +38,16 @@
         @apply border-t border-gray-200;
     }
 }
+
+// List view width fix
+.list-view-fix {
+	width: fit-content !important;
+
+    .grid {
+	    min-width: 0;
+    }
+
+    .grid > div {
+        min-width: 0;
+    }
+}

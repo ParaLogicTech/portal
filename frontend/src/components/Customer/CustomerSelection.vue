@@ -5,20 +5,25 @@
 		placeholder="Select Customer..."
 		variant="outline",
 		@update:modelValue="this.update_cart_customer"
-	/>
+	>
+		<template #prefix>
+			<CircleUser class="h-[17px] w-[17px] mr-1.5" stroke-width="1.5px" />
+		</template>
+	</Autocomplete>
 </template>
 
 <script>
 import {Autocomplete} from "frappe-ui";
-import {customer_list} from "@/data/customers";
+import {customer_list, active_customers} from "@/data/customers";
 import {cart, _selected_customer} from "@/data/cart";
 import {watch} from "vue"
+import {CircleUser} from "lucide-vue-next"
 
 export default {
 	name: "CustomerSelection",
 
 	components: {
-		Autocomplete,
+		Autocomplete, CircleUser,
 	},
 
 	data() {
@@ -52,7 +57,7 @@ export default {
 
 	computed: {
 		customer_options() {
-			let customers = customer_list.data || [];
+			let customers = active_customers.value || [];
 			return customers.map(d => this.get_option(d));
 		}
 	},

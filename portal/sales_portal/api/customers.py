@@ -8,7 +8,16 @@ from erpnext.accounts.party import get_address_display
 def get_customer_list(doctype="Customer", fields=None, filters=None, order_by=None, start=0, limit=20, group_by=None, parent=None, debug=False):
 	filters = frappe.parse_json(filters)
 
-	out = get_list(doctype, fields, filters, order_by, start, limit, parent)
+	out = get_list(
+		doctype=doctype,
+		fields=fields,
+		filters=filters,
+		order_by=order_by,
+		limit_start=start,
+		limit_page_length=limit,
+		group_by=group_by,
+		parent=parent
+	)
 	return out
 
 

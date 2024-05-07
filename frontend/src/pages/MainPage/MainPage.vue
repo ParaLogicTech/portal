@@ -31,6 +31,7 @@ import CustomerSelection from "@/components/Customer/CustomerSelection.vue";
 import CartSidebar from "@/components/Cart/CartSidebar.vue";
 import SideBarNavigation from "@/components/SideBarNavigation.vue";
 import {cart} from "@/data/cart";
+import {createAlert} from "@/utils/alerts";
 
 export default {
 	name: "MainPage",
@@ -49,6 +50,11 @@ export default {
 
 	methods: {
 		async handle_item_selected(item) {
+			if (!cart.customer && !cart.cart_id) {
+				createAlert({"title": "Please select customer first", "variant": "warning"});
+				return;
+			}
+
 			if (!cart.has_item(item.item_code)) {
 				await cart.update_item_qty(item.item_code, 1);
 			}

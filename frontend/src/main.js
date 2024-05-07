@@ -39,6 +39,11 @@ import {
 	reload_customer_data,
 } from "@/data/customers";
 
+import {
+	sales_person_list,
+	reload_sales_person_data
+} from "@/data/sales_persons";
+
 import {settings, reload_settings_data} from "@/data/settings";
 
 import {cart, setup_cart_realtime} from "@/data/cart";
@@ -80,6 +85,7 @@ if (import.meta.env.DEV) {
 	window.$standard_prices = standard_prices;
 	window.$item_stock = item_stock;
 	window.$customer_list = customer_list;
+	window.$sales_person_list = sales_person_list;
 	window.$cart = cart;
 	window.$settings = settings;
 	window.$alert = createAlert;
@@ -130,6 +136,7 @@ if (!session.isLoggedIn) {
 	reload_currency_data();
 	reload_customer_data();
 	reload_items_data();
+	reload_sales_person_data();
 
 	// Set last selected customer
 	customer_list.list.promise.then(() => {

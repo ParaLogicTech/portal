@@ -20,7 +20,7 @@
 
 <script>
 import OrderList from "@/components/Order/OrderList.vue";
-import {on_doctype_list_update, unsubscribe_doc} from "@/socket";
+import {subscribe_doctype} from "@/socket";
 import {createAlert} from "@/utils/alerts";
 import {cart, _selected_customer} from "@/data/cart";
 import OrderFilters from "@/components/Order/OrderFilters.vue";
@@ -75,6 +75,13 @@ export default {
 				this.list_resource.filters.push(["Sales Team", "sales_person", "subtree of", this.filters.sales_person.value]);
 			}
 		},
+
+		handle_realtime_update(data) {
+			if (data.doctype != "Sales Order") {
+				return;
+			}
+			this.debounced_reload();
+		},
 	},
 
 	computed: {
@@ -93,16 +100,12 @@ export default {
 
 	activated() {
 		this.reload();
-		// on_doctype_list_update($socket, "Sales Order", (name) => {
-		// 	if (this.list_resource.originalData?.find((d) => d.name === name)) {
-		// 		this.list_resource.fetchOne.submit(name)
-		// 	}
-		// })
+		subscribe_doctype($socket, "Sales Order");
+		$socket.on('list_update', this.handle_realtime_update);
 	},
 
 	deactivated() {
-		// unsubscribe_doc($socket, 'Sales Order', this.name);
-		// $socket.off("doc_update", this.handle_realtime_update);
+		$socket.off('list_update', this.handle_realtime_update);
 	},
 
 	resources: {
@@ -122,6 +125,7 @@ export default {
 				'delivery_status',
 				'currency',
 				'status',
+				'docstatus',
 			],
 			orderBy: 'transaction_date desc, name desc',
 			groupBy: 'name',

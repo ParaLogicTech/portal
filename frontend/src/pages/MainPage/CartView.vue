@@ -147,6 +147,10 @@ export default {
 				this.refresh_form();
 			}
 		});
+
+		this.$watch(() => cart.customer, () => {
+			this.refresh_form();
+		});
 	}
 }
 </script>

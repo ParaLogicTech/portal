@@ -123,15 +123,25 @@ export default {
 		},
 
 		options() {
-			return {
+			let options = {
 				selectable: false,
 				showTooltip: false,
 				// resizeColumn: true,
 				rowHeight: 50,
 				emptyState: {
-					title: 'No items in order',
+					description: 'No items in order',
 				},
+			};
+
+			if (!this.read_only) {
+				options.emptyState.button = {
+					label: 'Explore items',
+					variant: 'subtle',
+					onClick: () => this.$router.push({name: 'ItemListView'}),
+				};
 			}
+
+			return options;
 		},
 	},
 }

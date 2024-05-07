@@ -107,7 +107,7 @@ export default {
 				showTooltip: false,
 				rowHeight: 40,
 				emptyState: {
-					title: 'No orders found',
+					description: 'No orders found',
 				},
 				getRowRoute: (row) => {
 					return {

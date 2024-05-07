@@ -2,7 +2,7 @@
 	<div>
 		<div v-if="read_only">
 			<div class="section">
-				<div class="section-grid grid-cols-2">
+				<div class="section-grid @2xl:grid-cols-2">
 					<div class="col flex flex-col h-full">
 						<div class="section-heading">Address</div>
 						<AddressCard
@@ -43,7 +43,7 @@
 				<div v-if="!addresses?.length" class="section-message">
 					Customer has no address
 				</div>
-				<div v-else class="section-grid grid-cols-3">
+				<div v-else class="section-grid @lg:grid-cols-2 @4xl:grid-cols-3">
 					<AddressCard
 						v-for="d in addresses"
 						:address="d"
@@ -64,7 +64,7 @@
 				</div>
 				<div
 					v-else
-					class="section-grid grid-cols-3"
+					class="section-grid @lg:grid-cols-2 @4xl:grid-cols-3"
 				>
 					<ContactCard
 						v-for="d in contacts"

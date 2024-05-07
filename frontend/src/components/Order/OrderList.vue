@@ -90,7 +90,7 @@ export default {
 				{
 					label: "Sales Person",
 					key: "sales_person",
-					width: "minmax(110px, 1fr)",
+					width: "minmax(120px, 1fr)",
 				},
 			];
 

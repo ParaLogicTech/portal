@@ -23,6 +23,12 @@
 			@change="this.handle_qty_change"
 		/>
 	</div>
+	<div
+		v-else-if="column.key == 'qty' && read_only"
+		class="flex items-center justify-end text-right text-base h-[45px] overflow-hidden"
+	>
+		{{ formatted_value }}
+	</div>
 	<div v-else-if="column.key == 'rate' && !read_only">
 		<CurrencyField
 			v-model="row.rate"

@@ -1,5 +1,5 @@
 <template>
-	<div class="order-form">
+	<div class="order-form @container">
 		<div
 			class="loading-overlay"
 			v-if="loading"
@@ -9,7 +9,7 @@
 
 		<!-- First Section -->
 		<div class="section">
-			<div class="section-grid grid-cols-3">
+			<div class="section-grid @2xl:grid-cols-3">
 				<div class="col">
 					<FormControl
 						v-if="read_only"
@@ -93,7 +93,7 @@
 
 		<!-- Totals Section -->
 		<div class="section">
-			<div class="section-grid grid-cols-4">
+			<div class="section-grid @sm:grid-cols-2 @2xl:grid-cols-4">
 				<div class="col">
 					<div class="col-row">
 						<label>Total Qty</label>

@@ -3,6 +3,7 @@
 		<div
 			class="flex p-2 gap-2 transition-marginLeft duration-100 ease w-full bg-white relative z-20"
 			:class="selected_class"
+			:style="{ 'margin-left': this.margin_left }"
 			@click="this.select_row(false)"
 			@focusin="this.handle_focusin"
 
@@ -86,8 +87,9 @@ export default {
 			selected: false,
 
 			/* Used for cart item moved element */
-			startX: null,
-			currentX: null,
+			start_x: null,
+			current_x: null,
+			margin_left: null
 		}
 	},
 
@@ -103,36 +105,32 @@ export default {
 		},
 
 		handle_pointer_start(e) {
-			this.startX = e.touches[0].clientX;
-			this.currentX = this.startX;
+			this.start_x = e.touches[0].clientX;
+			this.current_x = this.start_x;
 		},
 
 		handle_pointer_move(e) {
-			this.currentX = e.touches[0].clientX;
-			const deltaX = this.currentX - this.startX;
+			this.current_x = e.touches[0].clientX;
+			const deltaX = this.current_x - this.start_x;
 			// Set Max Enough to trigger touch
 			const threshold = 15;
 
 			if (deltaX < threshold) {
-				this.$refs.cart_item.style.marginLeft = `${Math.min(Math.max(deltaX, -55), 0)}px`;
+				this.margin_left = `${Math.min(Math.max(deltaX, -55), 0)}px`;
 			} else if (deltaX > threshold) {
-				this.$refs.cart_item.style.marginLeft = 0
+				this.this.margin_left = 0
 			}
 		},
 
 		handle_pointer_end() {
-			// Reset values
-			this. startX = null
-			this. currentX = null
-
 			// Snap back if not swipe enough
 			if(this.$refs.cart_item.style.marginLeft < "-55px") {
-				this.$refs.cart_item.style.marginLeft = 0
+				this.margin_left = 0
 			}
 		},
 
 		handle_cart_item_trash() {
-			cart.update_item_qty(this.row.item_code, this.qty_model.qty = 0)
+			cart.update_item_qty(this.row.item_code, 0)
 		},
 
 		handle_arrow_up() {

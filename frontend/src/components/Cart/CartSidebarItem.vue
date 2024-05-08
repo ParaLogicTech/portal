@@ -1,59 +1,76 @@
 <template>
-	<div
-		class="flex border-b border-gray-400 p-2 gap-2 transition-bg duration-100 ease-in-out"
-		:class="selected_class"
-		@click="this.select_row(false)"
-		@focusin="this.handle_focusin"
-	>
-		<ItemImage
-			:item="item"
-			class="w-[65px] h-[65px] flex-none border border-gray-300"
-			rounded="rounded"
-			font="text-md"
-		/>
+	<div class="w-full border-b border-gray-400 relative">
+		<div
+			class="flex p-2 gap-2 transition-marginLeft duration-100 ease w-full bg-white relative z-20"
+			:class="selected_class"
+			@click="this.select_row(false)"
+			@focusin="this.handle_focusin"
 
-		<div class="flex flex-col justify-between w-full">
-			<div class="text-sm font-semibold">{{ row.item_name }}</div>
-			<div class="flex justify-between gap-1.5">
-				<div class="min-w-[40%] self-end">
-					<QtyField
-						v-model:qty="qty_model.qty"
-						v-model:uom="qty_model.uom"
-						:uoms="uoms"
-						class="h-[30px]"
-						ref="qty_field"
-						@arrow-up="this.handle_arrow_up"
-						@arrow-down="this.handle_arrow_down"
-						@focus="this.handle_qty_focused"
-						@blur="this.handle_qty_blurred"
-						@change="this.handle_qty_change"
-						@click="(e) => e.stopPropagation()"
-					/>
-				</div>
-				<div class="basis-[25%]">
-					<div class="text-2xs font-semibold text-gray-600">Rate</div>
-					<div class="text-md text-[13.5px]">{{ format_currency(row.rate, cart.currency) }}</div>
-				</div>
-				<div class="basis-[35%] text-right">
-					<div class="text-2xs font-semibold text-gray-600">Amount</div>
-					<div class="text-md font-semibold text-[13.5px]">{{ format_currency(row.amount, cart.currency) }}</div>
+			@touchstart="this.handle_pointer_start"
+			@touchmove="this.handle_pointer_move"
+			@touchend="this.handle_pointer_end"
+			ref="cart_item"
+		>
+			<ItemImage
+				:item="item"
+				class="w-[65px] h-[65px] flex-none border border-gray-300"
+				rounded="rounded"
+				font="text-md"
+			/>
+
+			<div class="flex flex-col justify-between w-full">
+				<div class="text-sm font-semibold">{{ row.item_name }}</div>
+				<div class="flex justify-between gap-1.5">
+					<div class="min-w-[40%] self-end">
+						<QtyField
+							v-model:qty="qty_model.qty"
+							v-model:uom="qty_model.uom"
+							:uoms="uoms"
+							class="h-[30px]"
+							ref="qty_field"
+							@arrow-up="this.handle_arrow_up"
+							@arrow-down="this.handle_arrow_down"
+							@focus="this.handle_qty_focused"
+							@blur="this.handle_qty_blurred"
+							@change="this.handle_qty_change"
+						/>
+					</div>
+					<div class="basis-[25%]">
+						<div class="text-2xs font-semibold text-gray-600">Rate</div>
+						<div class="text-md text-[13.5px]">{{ format_currency(row.rate, cart.currency) }}</div>
+					</div>
+					<div class="basis-[35%] text-right">
+						<div class="text-2xs font-semibold text-gray-600">Amount</div>
+						<div class="text-md font-semibold text-[13.5px]">{{ format_currency(row.amount, cart.currency) }}</div>
+					</div>
 				</div>
 			</div>
+		</div>
+		<!-- Trash Icon -->
+		<div
+			class="pe-4 absolute top-0 right-0 h-full bg-red-500 w-full flex items-center justify-end z-10 hover:bg-red-600 transition-bg duration-200 ease cursor-pointer" 
+			@click="this.handle_cart_item_trash"
+		>
+			<Trash2 class="text-white"/>
 		</div>
 	</div>
 </template>
 
 <script>
+import {Trash2} from 'lucide-vue-next';
 import ItemImage from "@/components/Item/ItemImage.vue";
 import QtyField from "@/components/Fields/QtyField.vue";
 import {item_list} from "@/data/items";
 import {cart} from "@/data/cart";
-import {watch} from "vue";
 
 export default {
 	name: "CartSidebarItem",
 
-	components: {QtyField, ItemImage},
+	components: {
+		QtyField,
+		ItemImage,
+		Trash2
+	},
 
 	props: {
 		row: Object,
@@ -65,10 +82,12 @@ export default {
 				qty: this.row.qty,
 				uom: this.row.uom,
 			},
-
 			cart: cart,
-
 			selected: false,
+
+			/* Used for cart item moved element */
+			startX: null,
+			currentX: null,
 		}
 	},
 
@@ -81,6 +100,39 @@ export default {
 
 		handle_focusin() {
 			this.$el.scrollIntoView({behavior: "instant", block: "nearest"});
+		},
+
+		handle_pointer_start(e) {
+			this.startX = e.touches[0].clientX;
+			this.currentX = this.startX;
+		},
+
+		handle_pointer_move(e) {
+			this.currentX = e.touches[0].clientX;
+			const deltaX = this.currentX - this.startX;
+			// Set Max Enough to trigger touch
+			const threshold = 15;
+
+			if (deltaX < threshold) {
+				this.$refs.cart_item.style.marginLeft = `${Math.min(Math.max(deltaX, -55), 0)}px`;
+			} else if (deltaX > threshold) {
+				this.$refs.cart_item.style.marginLeft = 0
+			}
+		},
+
+		handle_pointer_end() {
+			// Reset values
+			this. startX = null
+			this. currentX = null
+
+			// Snap back if not swipe enough
+			if(this.$refs.cart_item.style.marginLeft < "-55px") {
+				this.$refs.cart_item.style.marginLeft = 0
+			}
+		},
+
+		handle_cart_item_trash() {
+			cart.update_item_qty(this.row.item_code, this.qty_model.qty = 0)
 		},
 
 		handle_arrow_up() {

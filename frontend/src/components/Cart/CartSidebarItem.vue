@@ -20,7 +20,29 @@
 			/>
 
 			<div class="flex flex-col justify-between w-full">
-				<div class="text-sm font-semibold">{{ row.item_name }}</div>
+				<div class="flex items-center justify-between">
+					<div class="text-sm font-semibold">{{ row.item_name }}</div>
+					<!-- Delete Menu Only Desktop Screens -->
+					<div class="delete-menu hidden cursor-pointer">
+						<Popover>
+							<template #target="{ togglePopover }">
+								<EllipsisVertical size="16px" @click.stop="togglePopover()" />
+							</template>
+							<template #body-main>
+								<Button
+									:variant="'ghost'"
+									theme="red"
+									size="sm"
+									label="Remove"
+									iconLeft="trash"
+									@click.stop="this.handle_cart_item_trash"
+									class="outline outline-gray-300 outline-1"
+								>
+								</Button>
+							</template>
+						</Popover>
+					</div>
+				</div>
 				<div class="flex justify-between gap-1.5">
 					<div class="min-w-[40%] self-end">
 						<QtyField
@@ -64,11 +86,12 @@
 </template>
 
 <script>
-import {Trash2} from 'lucide-vue-next';
+import {Trash2, EllipsisVertical} from 'lucide-vue-next';
 import ItemImage from "@/components/Item/ItemImage.vue";
 import QtyField from "@/components/Fields/QtyField.vue";
 import {item_list} from "@/data/items";
 import {cart} from "@/data/cart";
+import {Popover, Button} from "frappe-ui";
 
 export default {
 	name: "CartSidebarItem",
@@ -76,7 +99,10 @@ export default {
 	components: {
 		QtyField,
 		ItemImage,
-		Trash2
+		Trash2,
+		EllipsisVertical,
+		Popover,
+		Button
 	},
 
 	props: {
@@ -91,6 +117,7 @@ export default {
 			},
 			cart: cart,
 			selected: false,
+			popover: false,
 
 			/* Used for cart item moved element */
 			move_threshold: 20,
@@ -194,3 +221,11 @@ export default {
 	}
 }
 </script>
+
+<style scoped>
+@media screen and (min-width: 1025px) {
+	.delete-menu {
+		display: flex;
+	}
+}
+</style>

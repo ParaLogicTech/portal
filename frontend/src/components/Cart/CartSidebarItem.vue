@@ -1,15 +1,16 @@
 <template>
-	<div class="w-full border-b border-gray-400 relative">
+	<div
+		class="w-full border-b border-gray-400 overflow-x-hidden flex h-[81px]"
+		@touchstart="this.handle_touch_start"
+		@touchmove="this.handle_touch_move"
+		@touchend="this.handle_touch_end"
+	>
 		<div
-			class="flex p-2 gap-2 w-full bg-white relative z-20 transition-all duration-200 ease"
+			class="flex p-2 gap-2 w-full transition-bg duration-100 ease"
 			:class="selected_class"
-			:style="{ 'margin-left': this.margin_left }"
+			:style="{ 'margin-left': `${-this.move}px` }"
 			@click="this.select_row(false)"
 			@focusin="this.handle_focusin"
-			@touchstart="this.handle_pointer_start"
-			@touchmove="this.handle_pointer_move"
-			@touchend="this.handle_pointer_end"
-			ref="cart_item"
 		>
 			<ItemImage
 				:item="item"
@@ -47,13 +48,18 @@
 				</div>
 			</div>
 		</div>
+
 		<!-- Trash Icon -->
-		<div
-			class="pe-4 absolute top-0 right-0 h-full bg-red-500 w-full flex items-center justify-end z-10 hover:bg-red-600 transition-bg duration-200 ease cursor-pointer" 
-			@click="this.handle_cart_item_trash"
+		<button
+			class="h-full bg-red-500 hover:bg-red-600 flex flex-none items-center justify-center transition-bg duration-200 ease"
+			@click="this.handle_delete_button"
+			:style="{
+				'margin-right': `${-delete_icon_width}px`,
+				width: `${delete_icon_width}px`,
+			}"
 		>
-			<Trash2 class="text-white"/>
-		</div>
+			<Trash2 class="text-white h-[45px]"/>
+		</button>
 	</div>
 </template>
 
@@ -87,9 +93,10 @@ export default {
 			selected: false,
 
 			/* Used for cart item moved element */
+			move_threshold: 20,
+			delete_icon_width: 65,
 			start_x: null,
-			current_x: null,
-			margin_left: null
+			move: 0
 		}
 	},
 
@@ -104,33 +111,31 @@ export default {
 			this.$el.scrollIntoView({behavior: "instant", block: "nearest"});
 		},
 
-		handle_pointer_start(e) {
+		handle_touch_start(e) {
 			this.start_x = e.touches[0].clientX;
-			this.current_x = this.start_x;
+			this.$refs.qty_field?.focus();
 		},
 
-		handle_pointer_move(e) {
-			this.current_x = e.touches[0].clientX;
-			const deltaX = this.current_x - this.start_x;
-			// Set Max Enough to trigger touch
-			const threshold = 15;
+		handle_touch_move(e) {
+			if (this.start_x == null) {
+				return;
+			}
 
-			if (deltaX < threshold) {
-				this.margin_left = `${Math.min(Math.max(deltaX, -55), 0)}px`;
-			} else if (deltaX > threshold) {
-				this.margin_left = "0"
+			const current_x = e.touches[0].clientX;
+			const move_x = this.start_x - current_x;
+			const move_with_threshold = move_x - this.move_threshold;
+			this.move = Math.max(Math.min(move_with_threshold, this.delete_icon_width), 0);
+		},
+
+		handle_touch_end() {
+			// Snap back if not moved enough
+			if(this.move < this.delete_icon_width) {
+				this.reset_move();
 			}
 		},
 
-		handle_pointer_end() {
-			// Snap back if not swipe enough
-			if(this.margin_left < "-55px") {
-				this.margin_left = "0"
-			}
-		},
-
-		handle_cart_item_trash() {
-			cart.update_item_qty(this.row.item_code, 0)
+		handle_delete_button() {
+			cart.update_item_qty(this.row.item_code, 0);
 		},
 
 		handle_arrow_up() {
@@ -143,10 +148,12 @@ export default {
 
 		handle_qty_focused() {
 			this.selected = true;
+			this.reset_move();
 		},
 
 		handle_qty_blurred() {
 			this.selected = false;
+			setTimeout(() => this.reset_move(), 100);
 		},
 
 		handle_qty_change() {
@@ -158,6 +165,10 @@ export default {
 			this.qty_model.uom = this.row.uom;
 			this.$refs.qty_field?.refresh();
 		},
+
+		reset_move() {
+			this.move = 0;
+		}
 	},
 
 	computed: {

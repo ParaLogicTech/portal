@@ -6,7 +6,7 @@
 			<CustomerSelection/>
 		</div>
 
-		<div class="h-full overflow-y-scroll overflow-x-hidden">
+		<div class="h-full overflow-y-scroll">
 			<div
 				v-if="is_empty"
 				class="h-full flex items-center justify-center text-gray-400 text-xl font-medium"

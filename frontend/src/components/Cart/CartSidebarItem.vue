@@ -1,12 +1,11 @@
 <template>
 	<div class="w-full border-b border-gray-400 relative">
 		<div
-			class="flex p-2 gap-2 transition-marginLeft duration-100 ease w-full bg-white relative z-20"
+			class="flex p-2 gap-2 w-full bg-white relative z-20 transition-all duration-200 ease"
 			:class="selected_class"
 			:style="{ 'margin-left': this.margin_left }"
 			@click="this.select_row(false)"
 			@focusin="this.handle_focusin"
-
 			@touchstart="this.handle_pointer_start"
 			@touchmove="this.handle_pointer_move"
 			@touchend="this.handle_pointer_end"
@@ -118,14 +117,14 @@ export default {
 			if (deltaX < threshold) {
 				this.margin_left = `${Math.min(Math.max(deltaX, -55), 0)}px`;
 			} else if (deltaX > threshold) {
-				this.this.margin_left = 0
+				this.margin_left = "0"
 			}
 		},
 
 		handle_pointer_end() {
 			// Snap back if not swipe enough
-			if(this.$refs.cart_item.style.marginLeft < "-55px") {
-				this.margin_left = 0
+			if(this.margin_left < "-55px") {
+				this.margin_left = "0"
 			}
 		},
 

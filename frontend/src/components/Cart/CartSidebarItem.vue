@@ -33,6 +33,7 @@
 							@focus="this.handle_qty_focused"
 							@blur="this.handle_qty_blurred"
 							@change="this.handle_qty_change"
+							@click="(e) => e.stopPropagation()"
 						/>
 					</div>
 					<div class="basis-[25%]">

@@ -19,29 +19,35 @@
 				font="text-md"
 			/>
 
-			<div class="flex flex-col justify-between w-full">
-				<div class="flex items-center justify-between">
-					<div class="text-sm font-semibold">{{ row.item_name }}</div>
-					<!-- Delete Menu Only Desktop Screens -->
-					<div class="delete-menu hidden cursor-pointer">
-						<Popover>
-							<template #target="{ togglePopover }">
-								<EllipsisVertical size="16px" @click.stop="togglePopover()" />
-							</template>
-							<template #body-main>
-								<Button
-									:variant="'ghost'"
-									theme="red"
-									size="sm"
-									label="Remove"
-									iconLeft="trash"
-									@click="this.handle_delete_button"
-									class="outline outline-gray-300 outline-1"
-								>
-								</Button>
-							</template>
-						</Popover>
-					</div>
+			<div class="flex flex-col justify-between w-full relative">
+				<div class="text-sm font-semibold">{{ row.item_name }}</div>
+				<!-- Delete Menu Only Desktop Screens -->
+				<div class="cursor-pointer absolute -top-1 -right-1">
+					<Popover>
+						<template #target="{ togglePopover }">
+							<Button
+								:variant="'ghost'"
+								theme="gray"
+								size="sm"
+								@click.stop="togglePopover()"
+								class="w-[10px]"
+							>
+								<EllipsisVertical size="16px" />
+							</Button>
+						</template>
+						<template #body-main>
+							<Button
+								:variant="'ghost'"
+								theme="red"
+								size="sm"
+								label="Remove"
+								iconLeft="trash"
+								@click="this.handle_delete_button"
+								class="outline outline-gray-300 outline-1 top-5"
+							>
+							</Button>
+						</template>
+					</Popover>
 				</div>
 				<div class="flex justify-between gap-1.5">
 					<div class="min-w-[40%] self-end">
@@ -221,11 +227,3 @@ export default {
 	}
 }
 </script>
-
-<style scoped>
-@media screen and (min-width: 1025px) {
-	.delete-menu {
-		display: flex;
-	}
-}
-</style>

@@ -35,7 +35,7 @@
 									size="sm"
 									label="Remove"
 									iconLeft="trash"
-									@click.stop="this.handle_cart_item_trash"
+									@click="this.handle_delete_button"
 									class="outline outline-gray-300 outline-1"
 								>
 								</Button>

@@ -5,10 +5,11 @@
 		@touchmove="this.handle_touch_move"
 		@touchend="this.handle_touch_end"
 	>
+		<!-- Slidable Row -->
 		<div
-			class="flex p-2 gap-2 w-full transition-bg duration-100 ease"
+			class="flex p-2 gap-2 w-full transition-bg duration-100 ease relative"
 			:class="selected_class"
-			:style="{ 'margin-left': `${-this.move}px` }"
+			:style="{ 'margin-left': `${-this.slide}px` }"
 			@click="this.select_row(false)"
 			@focusin="this.handle_focusin"
 		>
@@ -50,6 +51,7 @@
 
 			<div class="flex flex-col justify-between w-full">
 				<div class="text-sm font-semibold">{{ row.item_name }}</div>
+
 				<div class="flex justify-between gap-1.5">
 					<div class="min-w-[40%] self-end">
 						<QtyField
@@ -63,13 +65,15 @@
 							@focus="this.handle_qty_focused"
 							@blur="this.handle_qty_blurred"
 							@change="this.handle_qty_change"
-							@click="(e) => e.stopPropagation()"
+							@click.stop
 						/>
 					</div>
+
 					<div class="basis-[25%]">
 						<div class="text-2xs font-semibold text-gray-600">Rate</div>
 						<div class="text-md text-[13.5px]">{{ format_currency(row.rate, cart.currency) }}</div>
 					</div>
+
 					<div class="basis-[35%] text-right">
 						<div class="text-2xs font-semibold text-gray-600">Amount</div>
 						<div class="text-md font-semibold text-[13.5px]">{{ format_currency(row.amount, cart.currency) }}</div>
@@ -78,13 +82,13 @@
 			</div>
 		</div>
 
-		<!-- Trash Icon -->
+		<!-- Hidden Trash Icon -->
 		<button
 			class="h-full bg-red-500 hover:bg-red-600 flex flex-none items-center justify-center transition-bg duration-200 ease"
 			@click="this.handle_delete_button"
 			:style="{
-				'margin-right': `${-delete_icon_width}px`,
-				width: `${delete_icon_width}px`,
+				'margin-right': `${-drawer_width}px`,
+				width: `${drawer_width}px`,
 			}"
 		>
 			<Trash2 class="text-white h-[45px]"/>
@@ -126,11 +130,11 @@ export default {
 			selected: false,
 			popover: false,
 
-			/* Used for cart item moved element */
-			move_threshold: 20,
-			delete_icon_width: 65,
+			/* Slidable drawer */
+			slide_threshold: 20,
+			drawer_width: 65,
 			start_x: null,
-			move: 0
+			slide: 0
 		}
 	},
 
@@ -156,15 +160,15 @@ export default {
 			}
 
 			const current_x = e.touches[0].clientX;
-			const move_x = this.start_x - current_x;
-			const move_with_threshold = move_x - this.move_threshold;
-			this.move = Math.max(Math.min(move_with_threshold, this.delete_icon_width), 0);
+			const slide_x = this.start_x - current_x;
+			const slide_with_threshold = slide_x - this.slide_threshold;
+			this.slide = Math.max(Math.min(slide_with_threshold, this.drawer_width), 0);
 		},
 
 		handle_touch_end() {
 			// Snap back if not moved enough
-			if(this.move < this.delete_icon_width) {
-				this.reset_move();
+			if(this.slide < this.drawer_width) {
+				this.reset_slide();
 			}
 		},
 
@@ -182,12 +186,12 @@ export default {
 
 		handle_qty_focused() {
 			this.selected = true;
-			this.reset_move();
+			this.reset_slide();
 		},
 
 		handle_qty_blurred() {
 			this.selected = false;
-			setTimeout(() => this.reset_move(), 100);
+			setTimeout(() => this.reset_slide(), 100);
 		},
 
 		handle_qty_change() {
@@ -200,8 +204,8 @@ export default {
 			this.$refs.qty_field?.refresh();
 		},
 
-		reset_move() {
-			this.move = 0;
+		reset_slide() {
+			this.slide = 0;
 		}
 	},
 

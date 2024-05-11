@@ -17,11 +17,11 @@
 
 			<CartSidebarItem
 				v-else
-				v-for="row in doc.items || []"
+				v-for="row in items"
 				:row="row"
 				:key="row.name || row.item_code"
-				@select-next-row="this.select_next_row"
-				@select-previous-row="this.select_previous_row"
+				@select-next-row="select_next_row"
+				@select-previous-row="select_previous_row"
 				ref="items"
 			/>
 		</div>
@@ -77,35 +77,54 @@ export default {
 		},
 
 		select_item(item_code) {
-			let component = (this.$refs["items"] || []).find(d => d.row.item_code === item_code);
-			if (component) {
-				component.select_row(true);
-			}
+			this.select_row(this.get_row_by_item_code(item_code), true);
 		},
 
 		select_next_row(current_row) {
-			let current_row_idx = (this.$refs["items"] || []).findIndex(d => d.row == current_row);
-			if (current_row_idx != -1 && current_row_idx + 1 < this.$refs["items"].length) {
-				this.$refs["items"][current_row_idx + 1].select_row();
-			}
+			this.select_row(this.get_next_row(current_row));
 		},
 
 		select_previous_row(current_row) {
-			let current_row_idx = (this.$refs["items"] || []).findIndex(d => d.row == current_row);
+			this.select_row(this.get_previous_row(current_row));
+		},
+
+		get_row_by_item_code(item_code) {
+			return this.items.find(d => d.item_code === item_code);
+		},
+
+		get_next_row(current_row) {
+			let current_row_idx = this.items.findIndex(d => d == current_row);
+			if (current_row_idx != -1 && current_row_idx + 1 < this.items.length) {
+				return this.items[current_row_idx + 1];
+			}
+		},
+
+		get_previous_row(current_row) {
+			let current_row_idx = this.items.findIndex(d => d == current_row);
 			if (current_row_idx != -1 && current_row_idx - 1 >= 0) {
-				this.$refs["items"][current_row_idx - 1].select_row();
+				return this.items[current_row_idx - 1];
+			}
+		},
+
+		select_row(row, center=false) {
+			if (row) {
+				(this.$refs["items"] || []).find(d => d.row == row)?.select_row(center);
 			}
 		},
 	},
 
 	computed: {
 		is_empty() {
-			return !this.doc.items?.length;
+			return !this.items?.length;
+		},
+
+		items() {
+			return this.doc.items || [];
 		},
 
 		doc() {
 			return this.cart.doc || {};
-		}
+		},
 	}
 }
 </script>

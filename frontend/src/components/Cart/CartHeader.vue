@@ -15,22 +15,83 @@
 				{{ items_count }}
 			</div>
 		</div>
-		<Spinner class="w-4" v-if="cart.loading" />
+
+		<div class="flex items-center gap-1.5">
+			<Spinner class="w-4" v-if="cart.loading" />
+
+			<Popover>
+				<template #target="{ togglePopover }">
+					<Button
+						variant="ghost"
+						theme="gray"
+						size="sm"
+						class="w-[26px]"
+						@click="togglePopover()"
+					>
+						<Ellipsis class="w-[18px]" stroke-width="2.5px"/>
+					</Button>
+				</template>
+				<template #body="{ close }">
+					<div class="bg-white border border-gray-300 rounded shadow-sm p-1">
+						<Button
+							v-if="items_count > 0"
+							variant="ghost"
+							theme="red"
+							size="sm"
+							label="Clear Cart"
+							@click="close(); clear_cart_dialog = true;"
+						>
+							<template #prefix>
+								<Trash2 class="h-[15px] w-[15px]" />
+							</template>
+						</Button>
+					</div>
+				</template>
+			</Popover>
+		</div>
+
+		<Dialog
+			v-model="clear_cart_dialog"
+			:options="{
+				title: 'Confirm Clear Cart',
+				message: 'Are you sure you want to clear all items from the cart?',
+				size: 'xl',
+				actions: [
+					{
+						label: 'Confirm',
+						variant: 'solid',
+						theme: 'red',
+						onClick: () => {
+							this.clear_cart();
+						},
+					},
+				],
+			}"
+		/>
 	</div>
 </template>
 
 <script>
 import {cart} from "@/data/cart";
-import {ShoppingBag} from "lucide-vue-next";
+import {ShoppingBag, Ellipsis, Trash2} from "lucide-vue-next";
+import {Popover, Button} from "frappe-ui";
 
 export default {
 	name: "CartHeader",
 
-	components: {ShoppingBag},
+	components: {Trash2, Popover, Button, ShoppingBag, Ellipsis},
 
 	data() {
 		return {
 			cart: cart,
+			clear_cart_dialog: false,
+		}
+	},
+
+	methods: {
+		clear_cart() {
+			this.$emit("clear-cart");
+			this.clear_cart_dialog = false;
 		}
 	},
 

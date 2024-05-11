@@ -27,19 +27,20 @@
 							<EllipsisVertical class="h-[16px]" />
 						</Button>
 					</template>
-					<template #body-main>
-						<Button
-							variant="ghost"
-							theme="red"
-							size="sm"
-							label="Remove"
-							@click="this.handle_delete_button"
-							class="outline outline-gray-300 outline-1 top-5"
-						>
-							<template #prefix>
-								<Trash2 class="h-[15px] w-[15px]" />
-							</template>
-						</Button>
+					<template #body="{ close }">
+						<div class="bg-white border border-gray-300 rounded shadow-sm p-0.5">
+							<Button
+								variant="ghost"
+								theme="red"
+								size="sm"
+								label="Remove"
+								@click="this.handle_delete_button(); close();"
+							>
+								<template #prefix>
+									<Trash2 class="h-[15px] w-[15px]" />
+								</template>
+							</Button>
+						</div>
 					</template>
 				</Popover>
 			</div>
@@ -52,7 +53,7 @@
 			/>
 
 			<div class="flex flex-col justify-between w-full">
-				<div class="text-sm font-semibold">{{ row.item_name }}</div>
+				<div class="text-sm font-semibold pr-1">{{ row.item_name }}</div>
 
 				<div class="flex justify-between gap-1.5">
 					<div class="min-w-[40%] self-end">

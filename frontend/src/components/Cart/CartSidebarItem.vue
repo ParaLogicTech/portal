@@ -33,10 +33,12 @@
 							theme="red"
 							size="sm"
 							label="Remove"
-							iconLeft="trash"
 							@click="this.handle_delete_button"
 							class="outline outline-gray-300 outline-1 top-5"
 						>
+							<template #prefix>
+								<Trash2 class="h-[15px] w-[15px]" />
+							</template>
 						</Button>
 					</template>
 				</Popover>

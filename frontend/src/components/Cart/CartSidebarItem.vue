@@ -154,7 +154,6 @@ export default {
 
 		handle_touch_start(e) {
 			this.start_x = e.touches[0].clientX;
-			this.$refs.qty_field?.focus();
 		},
 
 		handle_touch_move(e) {
@@ -172,6 +171,8 @@ export default {
 			// Snap back if not moved enough
 			if(this.slide < this.drawer_width) {
 				this.reset_slide();
+			} else {
+				this.$refs.qty_field?.focus();
 			}
 		},
 
@@ -189,7 +190,6 @@ export default {
 
 		handle_qty_focused() {
 			this.selected = true;
-			this.reset_slide();
 		},
 
 		handle_qty_blurred() {

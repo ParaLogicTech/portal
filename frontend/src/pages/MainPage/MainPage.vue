@@ -2,7 +2,9 @@
 	<div class="h-full overflow-hidden flex flex-col">
 		<div class="flex h-full min-h-0">
 			<SideBarNavigation
-				class="h-full w-[76px] flex-none border-r border-gray-400 hidden md:block"
+				v-if="!is_mobile"
+				:horizontal="false"
+				class="h-full w-[76px] flex-none border-r border-gray-400"
 			/>
 
 			<RouterView
@@ -19,17 +21,16 @@
 
 			<CartSidebar
 				v-if="show_cart_sidebar"
-				class="h-full w-[370px] flex-none border-l border-gray-400 hidden md:flex"
+				class="h-full w-[370px] flex-none border-l border-gray-400"
 				ref="cart_sidebar"
 			/>
 		</div>
 
-		<!-- Footer Navigation's for Mobile Screen's -->
-		<div class="flex-none border-t border-gray-400">
-			<SideBarNavigation
-				class="w-full block md:hidden"
-			/>
-		</div>
+		<SideBarNavigation
+			v-if="is_mobile"
+			:horizontal="true"
+			class="w-full flex-none border-t border-gray-400 min-h-[60px]"
+		/>
 	</div>
 </template>
 
@@ -39,6 +40,7 @@ import CartSidebar from "@/components/Cart/CartSidebar.vue";
 import SideBarNavigation from "@/components/SideBarNavigation.vue";
 import {cart} from "@/data/cart";
 import {createAlert} from "@/utils/alerts";
+import {is_mobile} from "@/utils/is_mobile";
 
 export default {
 	name: "MainPage",
@@ -85,8 +87,12 @@ export default {
 
 	computed: {
 		show_cart_sidebar() {
-			return this.$route.meta.show_cart_sidebar;
-		}
+			return this.$route.meta.show_cart_sidebar && !this.is_mobile;
+		},
+
+		is_mobile() {
+			return is_mobile.value;
+		},
 	},
 
 	pageMeta() {

@@ -1,7 +1,7 @@
 <template>
-	<aside class="p-2 controls-bg small-scroll-bar overflow-x-auto md:overflow-x-hidden">
-		<nav class="sidebar-nav">
-			<ul class="flex flex-nowrap justify-around md:block">
+	<aside class="controls-bg small-scroll-bar overflow-auto">
+		<nav class="sidebar-nav" :class="{'horizontal': horizontal}">
+			<ul class="flex flex-nowrap">
 				<router-link :to="{ name: 'ItemListView' }">
 					<li>
 						<PackageSearch class="icon" stroke-width="1.8px"/>
@@ -11,7 +11,7 @@
 				<router-link :to="{ name: 'ItemGroupListView' }">
 					<li>
 						<Boxes class="icon" stroke-width="1.5px"/>
-						<h4>Item Groups</h4>
+						<h4>{{ horizontal ? "Groups": "Item Groups" }}</h4>
 					</li>
 				</router-link>
 				<router-link :to="{ name: 'BrandListView' }">
@@ -23,13 +23,13 @@
 				<router-link :to="{ name: 'OrderListView' }">
 					<li>
 						<History class="icon" stroke-width="1.8px" />
-						<h4>Order History</h4>
+						<h4>{{ horizontal ? "History" : "Order History"}}</h4>
 					</li>
 				</router-link>
 				<router-link :to="{ name: 'CartView' }">
 					<li>
 						<ShoppingBag class="icon" stroke-width="1.8px"/>
-						<h4>Order Cart</h4>
+						<h4>{{ horizontal ? "Cart" : "Order Cart" }}</h4>
 					</li>
 				</router-link>
 			</ul>
@@ -43,6 +43,10 @@ import {PackageSearch, ShoppingBag, Boxes, Award, History} from 'lucide-vue-next
 export default {
 	name: "SideBarNavigation",
 
+	props: {
+		horizontal: Boolean,
+	},
+
 	components: {
 		ShoppingBag,
 		PackageSearch,
@@ -55,24 +59,30 @@ export default {
 
 <style lang="scss">
 	.sidebar-nav {
+		@apply p-2;
+
+		ul {
+			@apply flex flex-col flex-nowrap gap-2 items-center;
+		}
+
 		li {
-			@apply p-2 mb-2 text-gray-600 text-center rounded-sm;
+			@apply flex flex-col items-center text-center;
+			@apply p-2 text-gray-600 rounded-sm;
 			@apply outline outline-1 outline-transparent;
 
 			transition-property: color, background-color, border-color, outline-color, fill, stroke, box-shadow;
 			@apply duration-200 ease-in-out;
 
 			list-style: none;
+		}
 
-			.icon {
-				margin: auto;
-				width: 25px;
-				height: 25px;
-			}
+		h4 {
+			@apply text-xs font-medium mt-1;
+		}
 
-			h4 {
-				@apply text-xs font-medium mt-1;
-			}
+		.icon {
+			width: 25px;
+			height: 25px;
 		}
 
 		a:hover:not(.router-link-active) li {
@@ -82,16 +92,31 @@ export default {
 		.router-link-active li {
 			@apply text-violet-700 shadow-md outline-gray-500;
 		}
-	}
 
-	@media screen and (max-width: 768px){
-		.sidebar-nav {
+		&.horizontal {
+			@apply h-full p-1.5;
+
+			ul {
+				@apply flex-row justify-evenly h-full;
+			}
+
 			a {
-				@apply px-1
+				@apply h-full;
+				min-width: 50px;
 			}
 
 			li {
-				@apply p-1.5 max-w-[95px] mb-0;
+				@apply py-1.5 h-full;
+			}
+
+			h4 {
+				@apply text-2xs;
+			}
+
+			.icon {
+				@apply flex-none;
+				width: 20px;
+				height: 20px;
 			}
 		}
 	}

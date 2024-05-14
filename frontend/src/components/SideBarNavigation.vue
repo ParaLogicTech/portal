@@ -1,7 +1,7 @@
 <template>
-	<aside class="p-2 controls-bg overflow-x-scroll md:overflow-x-hidden">
+	<aside class="p-2 controls-bg small-scroll-bar overflow-x-auto md:overflow-x-hidden">
 		<nav class="sidebar-nav">
-			<ul class="flex justify-around md:block">
+			<ul class="flex flex-nowrap justify-around md:block">
 				<router-link :to="{ name: 'ItemListView' }">
 					<li>
 						<PackageSearch class="icon" stroke-width="1.8px"/>
@@ -86,12 +86,8 @@ export default {
 
 	@media screen and (max-width: 768px){
 		.sidebar-nav {
-			a {
-				@apply px-1.5
-			}
-
 			li {
-				@apply p-1.5 w-[95px] mb-0;
+				@apply p-1.5 max-w-[95px] mb-0;
 			}
 		}
 	}

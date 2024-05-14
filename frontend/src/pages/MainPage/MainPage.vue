@@ -1,8 +1,8 @@
 <template>
-	<div class="h-full overflow-hidden">
-		<div class="flex h-full">
+	<div class="h-full overflow-hidden flex flex-col">
+		<div class="flex h-full min-h-0">
 			<SideBarNavigation
-				class="h-full w-[76px] flex-none border-r border-gray-400"
+				class="h-full w-[76px] flex-none border-r border-gray-400 hidden md:block"
 			/>
 
 			<RouterView
@@ -19,8 +19,15 @@
 
 			<CartSidebar
 				v-if="show_cart_sidebar"
-				class="h-full w-[370px] flex-none border-l border-gray-400"
+				class="h-full w-[370px] flex-none border-l border-gray-400 hidden md:flex"
 				ref="cart_sidebar"
+			/>
+		</div>
+
+		<!-- Footer Navigation's for Mobile Screen's -->
+		<div class="flex-none border-t border-gray-400">
+			<SideBarNavigation
+				class="w-full block md:hidden"
 			/>
 		</div>
 	</div>

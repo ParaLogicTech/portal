@@ -1,7 +1,7 @@
 <template>
-	<aside class="p-2 controls-bg">
+	<aside class="p-2 controls-bg overflow-x-scroll-scroll md:overflow-x-hidden">
 		<nav class="sidebar-nav">
-			<ul>
+			<ul class="flex justify-around md:block">
 				<router-link :to="{ name: 'ItemListView' }">
 					<li>
 						<PackageSearch class="icon" stroke-width="1.8px"/>
@@ -81,6 +81,18 @@ export default {
 
 		.router-link-active li {
 			@apply text-violet-700 shadow-md outline-gray-500;
+		}
+	}
+
+	@media screen and (max-width: 768px){
+		.sidebar-nav {
+			a {
+				@apply px-1.5
+			}
+
+			li {
+				@apply p-1.5 w-[95px] mb-0;
+			}
 		}
 	}
 </style>

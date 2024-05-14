@@ -93,36 +93,36 @@
 
 		<!-- Totals Section -->
 		<div class="section">
-			<div class="section-grid @sm:grid-cols-2 @2xl:grid-cols-4">
+			<div class="section-grid @xs:grid-cols-2 @2xl:grid-cols-4">
 				<div class="col">
-					<div class="col-row">
+					<div class="col-row space-y-1.5">
 						<label>Total Qty</label>
-						{{ format_number(doc.total_qty) }}
+						<div>{{ format_number(doc.total_qty) }}</div>
 					</div>
-<!--					<div class="col-row">-->
+<!--					<div class="col-row space-y-1.5">-->
 <!--						<label>Total Contents Qty</label>-->
-<!--						{{ format_number(doc.total_alt_uom_qty) }}-->
+<!--						<div>{{ format_number(doc.total_alt_uom_qty) }}</div>>-->
 <!--					</div>-->
 				</div>
 
 				<div class="col">
-					<div class="col-row">
+					<div class="col-row space-y-1.5">
 						<label>Total Amount</label>
-						{{ format_currency(doc.total, doc.currency) }}
+						<div>{{ format_currency(doc.total, doc.currency) }}</div>
 					</div>
 				</div>
 
 				<div class="col">
-					<div class="col-row">
+					<div class="col-row space-y-1.5">
 						<label>Taxes and Charges</label>
-						{{ format_currency(doc.total_taxes_and_charges, doc.currency) }}
+						<div>{{ format_currency(doc.total_taxes_and_charges, doc.currency) }}</div>
 					</div>
 				</div>
 
 				<div class="col">
-					<div class="col-row">
+					<div class="col-row space-y-1">
 						<label>Grand Total</label>
-						{{ format_currency(doc.grand_total, doc.currency) }}
+						<div class="font-medium text-lg">{{ format_currency(doc.grand_total, doc.currency) }}</div>
 					</div>
 				</div>
 			</div>

@@ -1,10 +1,10 @@
 <template>
 	<div class="h-full overflow-hidden flex flex-col">
 		<div class="flex h-full min-h-0">
-			<SideBarNavigation
-				v-if="!is_mobile"
+			<NavigationMenu
+				v-if="!is_mobile_or_tablet"
 				:horizontal="false"
-				class="h-full w-[76px] flex-none border-r border-gray-400"
+				class="h-full w-[76px] flex-none border-r border-gray-400 shadow"
 			/>
 
 			<RouterView
@@ -26,10 +26,10 @@
 			/>
 		</div>
 
-		<SideBarNavigation
-			v-if="is_mobile"
+		<NavigationMenu
+			v-if="is_mobile_or_tablet"
 			:horizontal="true"
-			class="w-full flex-none border-t border-gray-400 min-h-[60px]"
+			class="w-full flex-none border-t border-gray-400 shadow-sm-up"
 		/>
 	</div>
 </template>
@@ -37,10 +37,10 @@
 <script>
 import CustomerSelection from "@/components/Customer/CustomerSelection.vue";
 import CartSidebar from "@/components/Cart/CartSidebar.vue";
-import SideBarNavigation from "@/components/SideBarNavigation.vue";
+import NavigationMenu from "@/components/NavigationMenu.vue";
 import {cart} from "@/data/cart";
 import {createAlert} from "@/utils/alerts";
-import {is_mobile} from "@/utils/is_mobile";
+import {is_mobile, is_mobile_or_tablet} from "@/utils/responsive";
 
 export default {
 	name: "MainPage",
@@ -48,7 +48,7 @@ export default {
 	components: {
 		CustomerSelection,
 		CartSidebar,
-		SideBarNavigation,
+		NavigationMenu,
 	},
 
 	data() {
@@ -92,6 +92,10 @@ export default {
 
 		is_mobile() {
 			return is_mobile.value;
+		},
+
+		is_mobile_or_tablet() {
+			return is_mobile_or_tablet.value;
 		},
 	},
 

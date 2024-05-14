@@ -1,6 +1,6 @@
 <template>
 	<aside class="controls-bg small-scroll-bar overflow-auto">
-		<nav class="sidebar-nav" :class="{'horizontal': horizontal}">
+		<nav class="navigation-menu" :class="{'horizontal': horizontal}">
 			<ul class="flex flex-nowrap">
 				<router-link :to="{ name: 'ItemListView' }">
 					<li>
@@ -41,7 +41,7 @@
 import {PackageSearch, ShoppingBag, Boxes, Award, History} from 'lucide-vue-next';
 
 export default {
-	name: "SideBarNavigation",
+	name: "NavigationMenu",
 
 	props: {
 		horizontal: Boolean,
@@ -58,7 +58,7 @@ export default {
 </script>
 
 <style lang="scss">
-	.sidebar-nav {
+	.navigation-menu {
 		@apply p-2;
 
 		ul {
@@ -66,7 +66,7 @@ export default {
 		}
 
 		li {
-			@apply flex flex-col items-center text-center;
+			@apply flex flex-col items-center text-center gap-1;
 			@apply p-2 text-gray-600 rounded-sm;
 			@apply outline outline-1 outline-transparent;
 
@@ -77,7 +77,7 @@ export default {
 		}
 
 		h4 {
-			@apply text-xs font-medium mt-1;
+			@apply text-xs font-medium;
 		}
 
 		.icon {
@@ -94,19 +94,19 @@ export default {
 		}
 
 		&.horizontal {
-			@apply h-full p-1.5;
+			@apply p-1.5;
 
 			ul {
-				@apply flex-row justify-evenly h-full;
+				@apply flex-row justify-center;
+				@apply sm:gap-5;
 			}
 
 			a {
-				@apply h-full;
-				min-width: 50px;
+				@apply min-w-[50px] sm:min-w-[60px];
 			}
 
 			li {
-				@apply py-1.5 h-full;
+				@apply py-1;
 			}
 
 			h4 {

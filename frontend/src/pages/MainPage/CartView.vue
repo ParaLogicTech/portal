@@ -1,6 +1,9 @@
 <template>
 	<div class="flex flex-col h-full">
-		<CartHeader class="top-bar-height px-3 py-1 border-b border-gray-400 shadow-sm"/>
+		<CartHeader
+			class="top-bar-height px-3 py-1 border-b border-gray-400 shadow-sm"
+			@clear-cart="handle_clear_cart"
+		/>
 
 		<OrderForm
 			class="h-full overflow-y-auto"
@@ -14,7 +17,7 @@
 			ref="order_form"
 		/>
 
-		<div class="top-bar-height flex justify-end items-center px-3 py-1 border-t border-gray-400 shadow-sm">
+		<div class="top-bar-height flex justify-end items-center px-3 py-1 border-t border-gray-400 shadow-sm-up">
 			<Button
 				variant="solid"
 				theme="blue"
@@ -86,6 +89,10 @@ export default {
 
 		handle_item_value_change(row, field, value) {
 			cart.update_item_value(row.item_code, field, value)
+		},
+
+		handle_clear_cart() {
+			// TODO
 		},
 
 		refresh_form() {

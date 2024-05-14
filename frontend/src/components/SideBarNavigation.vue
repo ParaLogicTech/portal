@@ -86,6 +86,10 @@ export default {
 
 	@media screen and (max-width: 768px){
 		.sidebar-nav {
+			a {
+				@apply px-1
+			}
+
 			li {
 				@apply p-1.5 max-w-[95px] mb-0;
 			}

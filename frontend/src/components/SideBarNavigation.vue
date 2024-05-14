@@ -1,5 +1,5 @@
 <template>
-	<aside class="p-2 controls-bg overflow-x-scroll-scroll md:overflow-x-hidden">
+	<aside class="p-2 controls-bg overflow-x-scroll md:overflow-x-hidden">
 		<nav class="sidebar-nav">
 			<ul class="flex justify-around md:block">
 				<router-link :to="{ name: 'ItemListView' }">

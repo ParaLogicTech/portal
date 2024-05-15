@@ -67,19 +67,19 @@ export default {
 			if (!cart.has_item(item.item_code)) {
 				await cart.update_item_qty(item.item_code, 1);
 			}
-			this.$refs.cart_sidebar.select_item(item.item_code);
+			this.$refs.cart_sidebar?.select_item(item.item_code);
 		},
 
 		async handle_item_group_selected(item_group) {
 			await this.$router.push({name: 'ItemListView'});
-			if (this.$refs.router_view.set_item_group_filter) {
+			if (this.$refs.router_view?.set_item_group_filter) {
 				this.$refs.router_view.set_item_group_filter(item_group);
 			}
 		},
 
 		async handle_brand_selected(brand) {
 			await this.$router.push({name: 'ItemListView'});
-			if (this.$refs.router_view.set_brand_filter) {
+			if (this.$refs.router_view?.set_brand_filter) {
 				this.$refs.router_view.set_brand_filter(brand);
 			}
 		},

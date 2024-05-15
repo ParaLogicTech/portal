@@ -1,6 +1,6 @@
 <template>
 <div class="@container filter-area-container top-bar-height controls-bg">
-	<div class="flex flex-row flex-wrap @xl:flex-nowrap gap-1">
+	<div class="flex flex-row flex-wrap @2xl:flex-nowrap gap-1">
 		<div class="w-full">
 			<TextInput
 				type="text"
@@ -10,6 +10,10 @@
 				:debounce="150"
 				v-model="this.filters.txt"
 			/>
+		</div>
+
+		<div v-if="is_mobile" class="w-full">
+			<CustomerSelection />
 		</div>
 
 		<div class="w-full">
@@ -48,6 +52,8 @@
 </template>
 
 <script>
+import CustomerSelection from "@/components/Customer/CustomerSelection.vue";
+import {is_mobile} from "@/utils/responsive";
 import {Autocomplete, Button, TextInput} from "frappe-ui";
 import {active_brands, active_item_groups} from "@/data/items";
 import debounce from "frappe-ui/src/utils/debounce"
@@ -59,6 +65,7 @@ export default {
 		Autocomplete,
 		TextInput,
 		Button,
+		CustomerSelection
 	},
 
 	props: {
@@ -96,6 +103,10 @@ export default {
 					value: d.name,
 				}
 			});
+		},
+
+		is_mobile() {
+			return is_mobile.value;
 		},
 	}
 }

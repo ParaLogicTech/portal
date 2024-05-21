@@ -85,6 +85,9 @@ export default {
 			height: 25px;
 		}
 
+		a {
+			@apply w-full;
+		}
 		a:hover:not(.router-link-active) li {
 			@apply text-gray-800 shadow outline-gray-300;
 		}
@@ -102,7 +105,7 @@ export default {
 			}
 
 			a {
-				@apply min-w-[50px] sm:min-w-[60px];
+				@apply w-auto min-w-[50px] sm:min-w-[60px];
 			}
 
 			li {

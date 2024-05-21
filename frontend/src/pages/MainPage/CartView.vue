@@ -3,6 +3,7 @@
 		<CartHeader
 			class="top-bar-height px-3 py-1 border-b border-gray-400 shadow-sm"
 			@clear-cart="handle_clear_cart"
+			@reload-cart="handle_reload_cart"
 		/>
 
 		<OrderForm
@@ -93,6 +94,10 @@ export default {
 
 		handle_clear_cart() {
 			// TODO
+		},
+
+		handle_reload_cart() {
+			cart.reload_cart();
 		},
 
 		refresh_form() {

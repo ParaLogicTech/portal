@@ -48,14 +48,10 @@ export let cart = reactive({
 			return;
 		}
 
-		if (cart_queue.running) {
-			return cart_queue.promise;
-		} else {
-			return cart_queue.add("get_cart", {
-				customer: this.customer,
-				cart_id: this.cart_id
-			});
-		}
+		return cart_queue.add("get_cart", {
+			customer: this.customer,
+			cart_id: this.cart_id
+		});
 	},
 
 	update_item_qty(item_code, qty, uom=null) {
@@ -140,14 +136,14 @@ export const cart_queue = reactive({
 
 	running_action: null,
 	queued_actions: [],
-	queued_customer_change: null,
+	queued_get_cart: null,
 	queued_place_order: null,
 
 	pending_actions: computed(() => {
 		return [
 			cart_queue.running_action,
 			...cart_queue.queued_actions,
-			cart_queue.queued_customer_change,
+			cart_queue.queued_get_cart,
 			cart_queue.queued_place_order,
 		].filter(d => d);
 	}),
@@ -173,14 +169,18 @@ export const cart_queue = reactive({
 		action_obj.promise = promise;
 
 		// Add to queue
-		if (action == "set_customer") {
-			if (this.queued_place_order) {
+		if (["set_customer", "get_cart"].includes(action)) {
+			if (this.queued_place_order && action == "set_customer") {
 				action_obj.reject("Cannot change customer while placing order");
 				return promise;
 			}
-			this.queued_customer_change = action_obj;
+			this.queued_get_cart = action_obj;
 		} else if (action == "place_order") {
-			if (this.queued_customer_change) {
+			if (
+				this.queued_get_cart
+				&& this.queued_get_cart.params.customer
+				&& this.queued_get_cart.params.customer != cart.doc?.customer
+			) {
 				action_obj.reject("Cannot place order while changing customer");
 				return promise;
 			}
@@ -211,10 +211,13 @@ export const cart_queue = reactive({
 				existing_action.params.uom = params.uom;
 				return existing_action.promise;
 			}
-		} else if (action == "set_customer") {
-			if (this.queued_customer_change) {
-				this.queued_customer_change.params.customer = params.customer;
-				return this.queued_customer_change.promise;
+		} else if (["set_customer", "get_cart"].includes(action)) {
+			if (this.queued_get_cart) {
+				if (action == "set_customer") {
+					delete this.queued_get_cart.params.cart_id;
+					this.queued_get_cart.params.customer = params.customer;
+				}
+				return this.queued_get_cart.promise;
 			}
 		} else if (action == "update_cart_value") {
 			let existing_action = this.queued_actions.find(q => (
@@ -256,11 +259,11 @@ export const cart_queue = reactive({
 			await this.run_action(action_obj);
 		}
 
-		if (this.queued_customer_change) {
-			let action_obj = this.queued_customer_change;
-			this.queued_customer_change = null;
+		if (this.queued_get_cart) {
+			let action_obj = this.queued_get_cart;
+			this.queued_get_cart = null;
 
-			if (action_obj.params.customer) {
+			if (action_obj.params.customer || action_obj.params.cart_id) {
 				await this.run_action(action_obj);
 			} else {
 				update_cart_data(null);
@@ -431,6 +434,9 @@ const place_order_resource = createResource({
 	validate(params) {
 		validate_cart_id_or_customer(params);
 	},
+	onSuccess(data) {
+		createAlert({"title": "Order Placed", "message": `Order ${data.sales_order} placed successfully`, "variant": "success"});
+	}
 });
 
 const update_cart_data = (data) => {

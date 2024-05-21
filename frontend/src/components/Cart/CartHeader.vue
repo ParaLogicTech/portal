@@ -32,13 +32,26 @@
 					</Button>
 				</template>
 				<template #body="{ close }">
-					<div class="bg-white border border-gray-300 rounded shadow-sm p-1">
+					<div class="bg-white border border-gray-300 rounded shadow-sm p-1 flex flex-col">
+						<Button
+							variant="ghost"
+							theme="gray"
+							size="sm"
+							label="Reload Cart"
+							class="!justify-start"
+							@click="close(); reload_cart();"
+						>
+							<template #prefix>
+								<RefreshCw class="h-[15px] w-[15px]" stroke-width="1.7px" />
+							</template>
+						</Button>
 						<Button
 							v-if="items_count > 0"
 							variant="ghost"
 							theme="red"
 							size="sm"
 							label="Clear Cart"
+							class="!justify-start"
 							@click="close(); clear_cart_dialog = true;"
 						>
 							<template #prefix>
@@ -73,13 +86,13 @@
 
 <script>
 import {cart} from "@/data/cart";
-import {ShoppingBag, Ellipsis, Trash2} from "lucide-vue-next";
+import {ShoppingBag, Ellipsis, Trash2, RefreshCw} from "lucide-vue-next";
 import {Popover, Button} from "frappe-ui";
 
 export default {
 	name: "CartHeader",
 
-	components: {Trash2, Popover, Button, ShoppingBag, Ellipsis},
+	components: {RefreshCw, Trash2, Popover, Button, ShoppingBag, Ellipsis},
 
 	data() {
 		return {
@@ -92,7 +105,11 @@ export default {
 		clear_cart() {
 			this.$emit("clear-cart");
 			this.clear_cart_dialog = false;
-		}
+		},
+
+		reload_cart() {
+			this.$emit("reload-cart");
+		},
 	},
 
 	computed: {

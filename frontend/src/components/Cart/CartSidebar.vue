@@ -1,6 +1,10 @@
 <template>
 	<div class="flex flex-col h-full">
-		<CartHeader class="top-bar-height controls-bg px-2 py-1 border-b border-gray-400"/>
+		<CartHeader
+			class="top-bar-height controls-bg px-2 py-1 border-b border-gray-400"
+			@clear-cart="handle_clear_cart"
+			@reload-cart="handle_reload_cart"
+		/>
 
 		<div class="p-2 border-b border-gray-400 shadow-sm">
 			<CustomerSelection/>
@@ -57,7 +61,8 @@ export default {
 	name: "CartSidebar",
 
 	components: {
-		SendHorizontal, Button,
+		SendHorizontal,
+		Button,
 		CartHeader,
 		CustomerSelection,
 		CartSidebarItem,
@@ -110,6 +115,14 @@ export default {
 			if (row) {
 				(this.$refs["items"] || []).find(d => d.row == row)?.select_row(center);
 			}
+		},
+
+		handle_clear_cart() {
+			// TODO
+		},
+
+		handle_reload_cart() {
+			cart.reload_cart();
 		},
 	},
 

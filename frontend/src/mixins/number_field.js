@@ -1,5 +1,3 @@
-import {nextTick} from "vue";
-
 const number_field = {
 	props: {
 		modelValue: {
@@ -38,16 +36,13 @@ const number_field = {
 		debounced_change(wait) {
 			wait = wait || 150;
 			this.clear_timeout();
-			this.change_timeout = setTimeout(this.trigger_change, wait || 250);
+			this.change_timeout = setTimeout(this.trigger_change, wait);
 		},
 
 		trigger_change() {
 			this.clear_timeout();
 
-			if (this.display_value == null || this.display_value === "") {
-				return;
-			}
-			if (flt(this.display_value, this.precision) == flt(this.modelValue, this.precision)) {
+			if (!this.is_changed()) {
 				return;
 			}
 
@@ -64,11 +59,16 @@ const number_field = {
 
 		handle_focus() {
 			this.set_is_focused();
-			nextTick(() => this.select_input());
+			this.$nextTick(() => this.select_input());
 		},
 
 		set_is_focused() {
+			let previous_focused = this.focused;
 			this.focused = document.activeElement == this.$el;
+
+			if (previous_focused != this.focused && !this.focused && this.is_changed()) {
+				this.debounced_change(150);
+			}
 		},
 
 		focus() {
@@ -77,6 +77,16 @@ const number_field = {
 
 		select_input() {
 			this.$el.select();
+		},
+
+		is_changed() {
+			if (this.display_value == null || this.display_value === "") {
+				return false;
+			}
+			if (flt(this.display_value, this.precision) == flt(this.modelValue, this.precision)) {
+				return false;
+			}
+			return true;
 		},
 
 		refresh() {

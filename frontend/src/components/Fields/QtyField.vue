@@ -98,10 +98,7 @@ export default {
 		trigger_qty_change() {
 			this.clear_timeout();
 
-			if (this.display_value.qty == null || this.display_value.qty === "") {
-				return;
-			}
-			if (this.display_value.qty == this.qty && this.display_value.uom == this.uom) {
+			if (!this.is_changed()) {
 				return;
 			}
 
@@ -131,6 +128,9 @@ export default {
 					this.$emit('focus');
 				} else {
 					this.$emit('blur');
+					if (this.is_changed()) {
+						this.debounced_qty_change(150);
+					}
 				}
 			}
 		},
@@ -139,7 +139,20 @@ export default {
 			this.$refs.qty_input?.select();
 		},
 
+		is_changed() {
+			if (this.display_value.qty == null || this.display_value.qty === "") {
+				return false;
+			}
+			if (this.display_value.qty == this.qty && this.display_value.uom == this.uom) {
+				return false;
+			}
+			return true;
+		},
+
 		refresh() {
+			if (this.focused) {
+				return;
+			}
 			this.display_value.qty = this.qty;
 			this.display_value.uom = this.uom;
 		},

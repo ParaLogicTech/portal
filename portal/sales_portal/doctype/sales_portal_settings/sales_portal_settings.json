@@ -9,6 +9,9 @@
  "field_order": [
   "company",
   "show_customer_description",
+  "column_break_4clnz",
+  "stock_availability_based_on",
+  "show_stock_availability",
   "column_break_n8pgn",
   "hide_items_without_image"
  ],
@@ -36,12 +39,30 @@
    "fieldtype": "Select",
    "label": "Show Customer Description",
    "options": "No Description\nAddress Line 1"
+  },
+  {
+   "default": "Stock Qty",
+   "fieldname": "stock_availability_based_on",
+   "fieldtype": "Select",
+   "label": "Stock Availability Based On",
+   "options": "Stock Qty\nProjected Qty"
+  },
+  {
+   "default": "Show Availability with Qty",
+   "fieldname": "show_stock_availability",
+   "fieldtype": "Select",
+   "label": "Show Stock Availability",
+   "options": "Show Availability with Qty\nShow Availability without Qty\nHide Stock Availability"
+  },
+  {
+   "fieldname": "column_break_4clnz",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-05-21 05:07:00.659078",
+ "modified": "2024-05-21 16:44:11.592668",
  "modified_by": "Administrator",
  "module": "Sales Portal",
  "name": "Sales Portal Settings",

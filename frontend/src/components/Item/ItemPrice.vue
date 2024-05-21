@@ -20,7 +20,7 @@ export default {
 			} else if (this.price?.price_list_rate) {
 				return format_currency(this.price.price_list_rate, this.currency);
 			} else {
-				return "";
+				return "N/A";
 			}
 		},
 

@@ -25,6 +25,7 @@
 		>
 			<option
 				v-for="uom in uom_options"
+				:key="uom"
 				:selected="uom == display_value.uom"
 			>
 				{{ uom }}

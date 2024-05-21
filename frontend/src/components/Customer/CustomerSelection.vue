@@ -18,6 +18,7 @@ import {customer_list, active_customers} from "@/data/customers";
 import {cart, _selected_customer} from "@/data/cart";
 import {watch} from "vue"
 import {CircleUser} from "lucide-vue-next"
+import {settings} from "@/data/settings";
 
 export default {
 	name: "CustomerSelection",
@@ -48,10 +49,16 @@ export default {
 		},
 
 		get_option(d) {
-			return {
+			let opt = {
 				label: d.customer_name,
 				value: d.name,
 			}
+
+			if (settings.value.show_customer_description == "Address Line 1") {
+				opt.description = d.address_line1;
+			}
+
+			return opt;
 		},
 	},
 

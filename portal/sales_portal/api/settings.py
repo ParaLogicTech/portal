@@ -10,6 +10,7 @@ def get_settings():
 	out = frappe._dict({
 		"company": settings_doc.company or get_default_company(),
 		"hide_items_without_image": settings_doc.hide_items_without_image,
+		"show_customer_description": settings_doc.show_customer_description,
 
 		# Formatting settings
 		"number_format": frappe.get_system_settings("number_format"),

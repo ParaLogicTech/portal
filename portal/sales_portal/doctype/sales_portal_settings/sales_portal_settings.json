@@ -8,6 +8,7 @@
  "engine": "InnoDB",
  "field_order": [
   "company",
+  "show_customer_description",
   "column_break_n8pgn",
   "hide_items_without_image"
  ],
@@ -28,12 +29,19 @@
    "fieldname": "hide_items_without_image",
    "fieldtype": "Check",
    "label": "Hide Items without Image"
+  },
+  {
+   "default": "No Description",
+   "fieldname": "show_customer_description",
+   "fieldtype": "Select",
+   "label": "Show Customer Description",
+   "options": "No Description\nAddress Line 1"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-04-16 14:58:26.594028",
+ "modified": "2024-05-21 05:07:00.659078",
  "modified_by": "Administrator",
  "module": "Sales Portal",
  "name": "Sales Portal Settings",

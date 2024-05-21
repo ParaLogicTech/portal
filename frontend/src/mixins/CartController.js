@@ -51,7 +51,7 @@ const CartController = {
 		},
 
 		handle_clear_cart() {
-			// TODO
+			cart.clear_cart();
 		},
 
 		handle_reload_cart() {

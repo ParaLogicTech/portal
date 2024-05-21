@@ -180,6 +180,20 @@ def _update_cart_value(cart_doc, fieldname, value):
 
 
 @frappe.whitelist()
+def clear_cart(customer=None, cart_id=None):
+	cart_doc = get_cart_doc(customer, cart_id)
+	cart_doc.validate_can_modify()
+
+	_clear_cart(cart_doc)
+
+	return update_cart(cart_doc)
+
+
+def _clear_cart(cart_doc):
+	cart_doc.items = []
+
+
+@frappe.whitelist()
 def place_order(customer=None, cart_id=None):
 	cart_doc = get_cart_doc(customer, cart_id)
 	cart_doc.validate_can_modify()

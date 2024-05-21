@@ -104,6 +104,17 @@ export const cart = reactive({
 		});
 	},
 
+	clear_cart() {
+		if (!this.customer && !this.cart_id) {
+			return;
+		}
+
+		return cart_queue.add("clear_cart", {
+			cart_id: this.cart_id,
+			customer: this.customer,
+		});
+	},
+
 	place_order() {
 		if (!this.customer && !this.cart_id) {
 			return;
@@ -244,6 +255,15 @@ export const cart_queue = reactive({
 				existing_action.params.value = params.value;
 				return existing_action.promise;
 			}
+		} else if (action == "clear_cart") {
+			let existing_action = this.queued_actions.find(q => (
+				q.action == "clear_cart"
+				&& q.params.customer == params.customer
+				&& q.params.cart_id == params.cart_id
+			));
+			if (existing_action) {
+				return existing_action.promise;
+			}
 		} else if (action == "place_order") {
 			if (this.queued_place_order) {
 				return this.queued_place_order.promise;
@@ -295,6 +315,8 @@ export const cart_queue = reactive({
 				resource = update_item_value_resource;
 			} else if (action_obj.action == "place_order") {
 				resource = place_order_resource;
+			} else if (action_obj.action == "clear_cart") {
+				resource = clear_cart_resource;
 			}
 
 			if (!resource) {
@@ -414,6 +436,29 @@ const update_item_value_resource = createResource({
 			return 'Fieldname is required';
 		}
 	},
+});
+
+const clear_cart_resource = createResource({
+	url: 'portal.sales_portal.api.cart.clear_cart',
+	method: 'POST',
+	makeParams({ customer, cart_id }) {
+		let params = {};
+
+		if (customer) {
+			params.customer = customer;
+		}
+		if (cart_id) {
+			params.cart_id = cart_id;
+		}
+
+		return params;
+	},
+	validate(params) {
+		validate_cart_id_or_customer(params);
+	},
+	onSuccess(data) {
+		createAlert({"title": "Order Cart Cleared", "message": `Items cleared`, "variant": "info"});
+	}
 });
 
 const place_order_resource = createResource({

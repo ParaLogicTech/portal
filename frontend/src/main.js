@@ -37,11 +37,13 @@ import {
 import {
 	customer_list,
 	reload_customer_data,
+	setup_customer_data_realtime,
 } from "@/data/customers";
 
 import {
 	sales_person_list,
-	reload_sales_person_data
+	reload_sales_person_data,
+	setup_sales_person_data_realtime,
 } from "@/data/sales_persons";
 
 import {settings, reload_settings_data} from "@/data/settings";
@@ -129,6 +131,8 @@ if (!session.isLoggedIn) {
 	window.$socket = socket;
 
 	setup_item_data_realtime();
+	setup_customer_data_realtime();
+	setup_sales_person_data_realtime();
 	setup_cart_realtime();
 
 	// Load Data

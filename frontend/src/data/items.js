@@ -4,9 +4,10 @@ import {createAlert} from "@/utils/alerts";
 import {on_doctype_list_update} from "@/socket";
 import {settings} from "@/data/settings";
 import {reactive} from "vue";
+import debounce from "frappe-ui/src/utils/debounce";
 
 // Item Data
-export let item_list = createListResource({
+export const item_list = createListResource({
 	doctype: 'Item',
 	cache: 'Items',
 	url: 'portal.sales_portal.api.items.get_item_list',
@@ -44,11 +45,11 @@ export let item_list = createListResource({
 	},
 });
 
-export let get_item = (item_code) => {
+export const get_item = (item_code) => {
 	return (item_list.dataMap || {})[item_code];
 }
 
-export let active_items = computed(() => {
+export const active_items = computed(() => {
 	let active_items = (item_list.data || []).filter((d) => {
 		return !d.disabled
 			&& d.is_sales_item
@@ -63,7 +64,7 @@ export let active_items = computed(() => {
 });
 
 // Item Group Data
-export let item_group_list = createListResource({
+export const item_group_list = createListResource({
 	doctype: 'Item Group',
 	cache: 'Item Groups',
 	fields: [
@@ -77,7 +78,7 @@ export let item_group_list = createListResource({
 	pageLength: 99999,
 });
 
-export let in_item_group = (item_group_item, item_group_filter) => {
+export const in_item_group = (item_group_item, item_group_filter) => {
 	if (!item_group_filter) {
 		return true;
 	}
@@ -97,11 +98,11 @@ export let in_item_group = (item_group_item, item_group_filter) => {
 	}
 }
 
-export let get_item_group = (item_group) => {
+export const get_item_group = (item_group) => {
 	return (item_group_list.dataMap || {})[item_group];
 }
 
-export let active_item_groups = computed(() => {
+export const active_item_groups = computed(() => {
 	let item_groups_with_items = new Set();
 
 	// Item Groups with directly linked items
@@ -125,7 +126,7 @@ export let active_item_groups = computed(() => {
 	})
 })
 
-let get_item_group_ancestors = (item_group) => {
+const get_item_group_ancestors = (item_group) => {
 	let ig = get_item_group(item_group);
 
 	let ancestors = [];
@@ -138,7 +139,7 @@ let get_item_group_ancestors = (item_group) => {
 }
 
 // Brand Data
-export let brand_list = createListResource({
+export const brand_list = createListResource({
 	doctype: 'Brand',
 	cache: 'Brands',
 	fields: [
@@ -149,11 +150,11 @@ export let brand_list = createListResource({
 	pageLength: 99999,
 });
 
-export let get_brand = (brand) => {
+export const get_brand = (brand) => {
 	return (brand_list.dataMap || {})[brand];
 }
 
-export let active_brands = computed(() => {
+export const active_brands = computed(() => {
 	let brands_with_items = new Set();
 	for (let item of active_items.value) {
 		brands_with_items.add(item.brand);
@@ -163,7 +164,7 @@ export let active_brands = computed(() => {
 });
 
 // Price Data
-export let standard_prices = createResource({
+export const standard_prices = createResource({
 	url: 'portal.sales_portal.api.items.get_item_prices',
 	cache: 'Standard Selling Prices',
 });
@@ -192,21 +193,16 @@ export const get_item_prices_resource = (customer) => {
 };
 
 // Stock Data
-export let item_stock = createResource({
+export const item_stock = createResource({
 	url: 'portal.sales_portal.api.items.get_item_stock_data',
 });
 
 // Reload Items
-export let reload_items_data = () => {
-	item_list.reload().catch(e => {
-		createAlert({"title": "Error loading Items", "message": e, "variant": "error"});
-	});
-	item_group_list.reload().catch(e => {
-		createAlert({"title": "Error loading Item Groups", "message": e, "variant": "error"});
-	});
-	brand_list.reload().catch(e => {
-		createAlert({"title": "Error loading Brands", "message": e, "variant": "error"});
-	});
+export const reload_items_data = () => {
+	reload_items();
+	reload_item_groups();
+	reload_brands();
+
 	item_stock.reload().catch(e => {
 		createAlert({"title": "Error loading Item Stock", "message": e, "variant": "error"});
 	});
@@ -215,10 +211,46 @@ export let reload_items_data = () => {
 	});
 }
 
-export let setup_item_data_realtime = () => {
+const reload_items = () => {
+	item_list.reload().catch(e => {
+		createAlert({"title": "Error loading Items", "message": e, "variant": "error"});
+	});
+}
+
+const debounced_reload_items = debounce(reload_items, 500);
+
+const reload_item_groups = () => {
+	item_group_list.reload().catch(e => {
+		createAlert({"title": "Error loading Item Groups", "message": e, "variant": "error"});
+	});
+}
+
+const debounced_reload_item_groups = debounce(reload_item_groups, 500);
+
+const reload_brands = () => {
+	brand_list.reload().catch(e => {
+		createAlert({"title": "Error loading Brands", "message": e, "variant": "error"});
+	});
+}
+
+const debounced_reload_brands = debounce(reload_brands, 500);
+
+export const setup_item_data_realtime = () => {
 	on_doctype_list_update($socket, "Item", (name) => {
-		if (item_list.originalData?.find((d) => d.name === name)) {
-			item_list.fetchOne.submit(name)
+		if (!item_list.list.loading) {
+			debounced_reload_items();
 		}
-	})
+	});
+
+	on_doctype_list_update($socket, "Item Group", (name) => {
+		if (!item_group_list.list.loading) {
+			debounced_reload_item_groups();
+		}
+	});
+
+	on_doctype_list_update($socket, "Brand", (name) => {
+		if (!brand_list.list.loading) {
+			debounced_reload_brands();
+		}
+	});
 };

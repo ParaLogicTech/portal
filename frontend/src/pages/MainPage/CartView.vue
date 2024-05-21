@@ -64,12 +64,12 @@ import {cart} from "@/data/cart";
 import OrderForm from "@/components/Order/OrderForm.vue";
 import {Button} from "frappe-ui";
 import {SendHorizontal} from "lucide-vue-next"
-import cart_model from "@/mixins/cart_model";
+import CartController from "@/mixins/CartController";
 
 export default {
 	name: "CartView",
 
-	mixins: [cart_model],
+	mixins: [CartController],
 
 	components: {OrderForm, CartHeader, Button, SendHorizontal},
 

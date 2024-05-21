@@ -42,12 +42,12 @@ import CartHeader from "@/components/Cart/CartHeader.vue";
 import {Button} from "frappe-ui";
 import {ShoppingBag} from "lucide-vue-next"
 import CompactOrderItemsList from "@/components/Order/CompactOrderItemsList.vue";
-import cart_model from "@/mixins/cart_model";
+import CartController from "@/mixins/CartController";
 
 export default {
 	name: "CartSidebar",
 
-	mixins: [cart_model],
+	mixins: [CartController],
 
 	components: {
 		CartHeader,

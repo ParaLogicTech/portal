@@ -20,7 +20,7 @@
 import SearchFilter from "@/components/Utils/SearchFilter.vue";
 import ItemGroupGrid from "@/components/ItemGroup/ItemGroupGrid.vue";
 import {active_item_groups, item_group_list} from "@/data/items";
-import fuzzy_search from "@/mixins/fuzzy_search";
+import FuzzySearch from "@/mixins/FuzzySearch";
 
 export default {
 	name: "ItemGroupListView",
@@ -30,7 +30,7 @@ export default {
 		ItemGroupGrid
 	},
 
-	mixins: [fuzzy_search],
+	mixins: [FuzzySearch],
 
 	data() {
 		return {

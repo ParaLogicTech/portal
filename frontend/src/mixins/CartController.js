@@ -1,7 +1,7 @@
 import cloneDeep from "lodash.clonedeep";
 import {cart} from "@/data/cart";
 
-const cart_model = {
+const CartController = {
 	data() {
 		return {
 			model: this.make_cart_model(),
@@ -76,4 +76,4 @@ const cart_model = {
 	},
 }
 
-export default cart_model;
+export default CartController;

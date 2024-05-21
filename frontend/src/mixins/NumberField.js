@@ -1,4 +1,4 @@
-const number_field = {
+const NumberField = {
 	props: {
 		modelValue: {
 			type: Number,
@@ -110,4 +110,4 @@ const number_field = {
 	}
 }
 
-export default number_field;
+export default NumberField;

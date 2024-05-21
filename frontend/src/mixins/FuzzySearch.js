@@ -1,6 +1,6 @@
 import Fuse from 'fuse.js'
 
-const fuzzy_search = {
+const FuzzySearch = {
 	data() {
 		return {
 			filters: {
@@ -69,4 +69,4 @@ const fuzzy_search = {
 	},
 }
 
-export default fuzzy_search;
+export default FuzzySearch;

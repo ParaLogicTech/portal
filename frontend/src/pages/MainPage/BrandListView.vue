@@ -20,7 +20,7 @@
 import SearchFilter from "@/components/Utils/SearchFilter.vue";
 import BrandGrid from "@/components/Brand/BrandGrid.vue";
 import {active_brands, brand_list} from "@/data/items";
-import fuzzy_search from "@/mixins/fuzzy_search";
+import FuzzySearch from "@/mixins/FuzzySearch";
 
 export default {
 	name: "BrandListView",
@@ -30,7 +30,7 @@ export default {
 		BrandGrid
 	},
 
-	mixins: [fuzzy_search],
+	mixins: [FuzzySearch],
 
 	data() {
 		return {

@@ -14,12 +14,12 @@
 </template>
 
 <script>
-import number_field from "@/mixins/number_field";
+import NumberField from "@/mixins/NumberField";
 
 export default {
 	name: "PercentField",
 
-	mixins: [number_field],
+	mixins: [NumberField],
 
 	props: {
 		precision: {

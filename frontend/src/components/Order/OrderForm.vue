@@ -155,10 +155,12 @@ export default {
 		},
 
 		handle_qty_change(row) {
+			this.emit_update();
 			this.$emit("qty-changed", row);
 		},
 
 		handle_item_value_change(row, field, value) {
+			this.emit_update();
 			this.$emit("item-value-changed", row, field, value);
 		},
 
@@ -209,6 +211,10 @@ export default {
 
 		.section {
 			@apply py-4 px-5 border-b border-gray-300 text-md;
+
+			&:last-child {
+				@apply border-b-0;
+			}
 
 			.section-heading {
 				@apply font-medium text-lg text-md mb-2 text-gray-700;

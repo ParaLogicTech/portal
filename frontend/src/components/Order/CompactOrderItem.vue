@@ -34,7 +34,7 @@
 								theme="red"
 								size="sm"
 								label="Remove"
-								@click="this.handle_delete_button(); close();"
+								@click="this.handle_remove_button(); close();"
 							>
 								<template #prefix>
 									<Trash2 class="h-[15px] w-[15px]" />
@@ -58,8 +58,8 @@
 				<div class="flex justify-between gap-1.5">
 					<div class="min-w-[40%] self-end">
 						<QtyField
-							v-model:qty="qty_model.qty"
-							v-model:uom="qty_model.uom"
+							v-model:qty="row.qty"
+							v-model:uom="row.uom"
 							:uoms="uoms"
 							class="h-[30px]"
 							ref="qty_field"
@@ -74,12 +74,12 @@
 
 					<div class="basis-[25%]">
 						<div class="text-2xs font-semibold text-gray-600">Rate</div>
-						<div class="text-md text-[13.5px]">{{ format_currency(row.rate, cart.currency) }}</div>
+						<div class="text-md text-[13.5px]">{{ format_currency(row.rate, doc.currency) }}</div>
 					</div>
 
 					<div class="basis-[35%] text-right">
 						<div class="text-2xs font-semibold text-gray-600">Amount</div>
-						<div class="text-md font-semibold text-[13.5px]">{{ format_currency(row.amount, cart.currency) }}</div>
+						<div class="text-md font-semibold text-[13.5px]">{{ format_currency(row.amount, doc.currency) }}</div>
 					</div>
 				</div>
 			</div>
@@ -88,7 +88,7 @@
 		<!-- Hidden Trash Icon -->
 		<button
 			class="h-full bg-red-500 hover:bg-red-600 flex flex-none items-center justify-center transition-bg duration-200 ease"
-			@click="this.handle_delete_button"
+			@click="this.handle_remove_button"
 			:style="{
 				'margin-right': `${-drawer_width}px`,
 				width: `${drawer_width}px`,
@@ -104,11 +104,10 @@ import {Trash2, EllipsisVertical} from 'lucide-vue-next';
 import ItemImage from "@/components/Item/ItemImage.vue";
 import QtyField from "@/components/Fields/QtyField.vue";
 import {item_list} from "@/data/items";
-import {cart} from "@/data/cart";
 import {Popover, Button} from "frappe-ui";
 
 export default {
-	name: "CartSidebarItem",
+	name: "CompactOrderItem",
 
 	components: {
 		QtyField,
@@ -121,15 +120,11 @@ export default {
 
 	props: {
 		row: Object,
+		doc: Object,
 	},
 
 	data() {
 		return {
-			qty_model: {
-				qty: this.row.qty,
-				uom: this.row.uom,
-			},
-			cart: cart,
 			selected: false,
 			popover: false,
 
@@ -176,10 +171,6 @@ export default {
 			}
 		},
 
-		handle_delete_button() {
-			cart.update_item_qty(this.row.item_code, 0);
-		},
-
 		handle_arrow_up() {
 			this.$emit("select-previous-row", this.row);
 		},
@@ -197,13 +188,15 @@ export default {
 			setTimeout(() => this.reset_slide(), 100);
 		},
 
+		handle_remove_button() {
+			this.$emit("item-removed", this.row);
+		},
+
 		handle_qty_change() {
-			cart.update_item_qty(this.row.item_code, this.qty_model.qty, this.qty_model.uom);
+			this.$emit("qty-changed", this.row);
 		},
 
 		refresh_view() {
-			this.qty_model.qty = this.row.qty;
-			this.qty_model.uom = this.row.uom;
 			this.$refs.qty_field?.refresh();
 		},
 
@@ -225,13 +218,5 @@ export default {
 			return this.selected ? "bg-yellow-100" : "";
 		},
 	},
-
-	created() {
-		this.$watch(() => cart.loading, () => {
-			if (!cart.loading) {
-				this.refresh_view();
-			}
-		})
-	}
 }
 </script>

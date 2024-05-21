@@ -10,25 +10,13 @@
 			<CustomerSelection/>
 		</div>
 
-		<div class="h-full overflow-y-scroll">
-			<div
-				v-if="is_empty"
-				class="h-full flex items-center justify-center text-gray-400 text-xl font-medium"
-			>
-				<CircleSlash class="h-5 w-5 mr-2" />
-				<div>Cart is empty</div>
-			</div>
-
-			<CartSidebarItem
-				v-else
-				v-for="row in items"
-				:row="row"
-				:key="row.name || row.item_code"
-				@select-next-row="select_next_row"
-				@select-previous-row="select_previous_row"
-				ref="items"
-			/>
-		</div>
+		<CompactOrderItemsList
+			v-model:doc="model"
+			class="h-full overflow-y-scroll"
+			ref="items"
+			@qty-changed="handle_qty_change"
+			@item-removed="handle_item_removed"
+		/>
 
 		<div class="h-[43px] flex-none p-1.5 border-t border-gray-400">
 			<Button
@@ -49,31 +37,24 @@
 </template>
 
 <script>
-import CartSidebarItem from "@/components/Cart/CartSidebarItem.vue";
 import CustomerSelection from "@/components/Customer/CustomerSelection.vue";
-import {cart} from "@/data/cart";
-import {CircleSlash, SendHorizontal} from "lucide-vue-next"
 import CartHeader from "@/components/Cart/CartHeader.vue";
 import {Button} from "frappe-ui";
 import {ShoppingBag} from "lucide-vue-next"
+import CompactOrderItemsList from "@/components/Order/CompactOrderItemsList.vue";
+import cart_model from "@/mixins/cart_model";
 
 export default {
 	name: "CartSidebar",
 
-	components: {
-		SendHorizontal,
-		Button,
-		CartHeader,
-		CustomerSelection,
-		CartSidebarItem,
-		CircleSlash,
-		ShoppingBag,
-	},
+	mixins: [cart_model],
 
-	data() {
-		return {
-			cart: cart
-		}
+	components: {
+		CartHeader,
+		CompactOrderItemsList,
+		Button,
+		CustomerSelection,
+		ShoppingBag,
 	},
 
 	methods: {
@@ -82,62 +63,15 @@ export default {
 		},
 
 		select_item(item_code) {
-			this.select_row(this.get_row_by_item_code(item_code), true);
+			this.$refs.items?.select_item(item_code);
 		},
 
-		select_next_row(current_row) {
-			this.select_row(this.get_next_row(current_row));
-		},
-
-		select_previous_row(current_row) {
-			this.select_row(this.get_previous_row(current_row));
-		},
-
-		get_row_by_item_code(item_code) {
-			return this.items.find(d => d.item_code === item_code);
-		},
-
-		get_next_row(current_row) {
-			let current_row_idx = this.items.findIndex(d => d == current_row);
-			if (current_row_idx != -1 && current_row_idx + 1 < this.items.length) {
-				return this.items[current_row_idx + 1];
-			}
-		},
-
-		get_previous_row(current_row) {
-			let current_row_idx = this.items.findIndex(d => d == current_row);
-			if (current_row_idx != -1 && current_row_idx - 1 >= 0) {
-				return this.items[current_row_idx - 1];
-			}
-		},
-
-		select_row(row, center=false) {
-			if (row) {
-				(this.$refs["items"] || []).find(d => d.row == row)?.select_row(center);
-			}
-		},
-
-		handle_clear_cart() {
-			// TODO
-		},
-
-		handle_reload_cart() {
-			cart.reload_cart();
+		refresh_view() {
+			this.refresh_cart_model();
+			this.$nextTick(() => {
+				this.$refs.items?.refresh_view();
+			});
 		},
 	},
-
-	computed: {
-		is_empty() {
-			return !this.items?.length;
-		},
-
-		items() {
-			return this.doc.items || [];
-		},
-
-		doc() {
-			return this.cart.doc || {};
-		},
-	}
 }
 </script>

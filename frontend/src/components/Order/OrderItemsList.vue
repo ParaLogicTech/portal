@@ -129,13 +129,13 @@ export default {
 				// resizeColumn: true,
 				rowHeight: 50,
 				emptyState: {
-					description: 'No items in order',
+					description: 'Order is empty',
 				},
 			};
 
 			if (!this.read_only) {
 				options.emptyState.button = {
-					label: 'Explore items',
+					label: 'Explore Items',
 					variant: 'subtle',
 					onClick: () => this.$router.push({name: 'ItemListView'}),
 				};

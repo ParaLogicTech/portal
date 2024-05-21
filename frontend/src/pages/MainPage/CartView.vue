@@ -13,6 +13,7 @@
 			:contacts="contacts"
 			:loading="placing_order"
 			@qty-changed="handle_qty_change"
+			@item-removed="handle_item_removed"
 			@cart-value-changed="handle_cart_value_change"
 			@item-value-changed="handle_item_value_change"
 			ref="order_form"
@@ -62,53 +63,29 @@ import CartHeader from "@/components/Cart/CartHeader.vue";
 import {cart} from "@/data/cart";
 import OrderForm from "@/components/Order/OrderForm.vue";
 import {Button} from "frappe-ui";
-import cloneDeep from "lodash.clonedeep"
 import {SendHorizontal} from "lucide-vue-next"
+import cart_model from "@/mixins/cart_model";
 
 export default {
 	name: "CartView",
+
+	mixins: [cart_model],
 
 	components: {OrderForm, CartHeader, Button, SendHorizontal},
 
 	data() {
 		return {
-			cart: cart,
-			model: this.make_cart_model(),
 			placing_order: false,
 			confirmation_dialog: false,
 		}
 	},
 
 	methods: {
-		handle_qty_change(row) {
-			cart.update_item_qty(row.item_code, row.qty, row.uom);
-		},
-
-		handle_cart_value_change(field, value) {
-			cart.update_cart_value(field, value);
-		},
-
-		handle_item_value_change(row, field, value) {
-			cart.update_item_value(row.item_code, field, value)
-		},
-
-		handle_clear_cart() {
-			// TODO
-		},
-
-		handle_reload_cart() {
-			cart.reload_cart();
-		},
-
-		refresh_form() {
-			this.model = this.make_cart_model();
+		refresh_view() {
+			this.refresh_cart_model();
 			this.$nextTick(() => {
 				this.$refs.order_form.refresh_view();
 			});
-		},
-
-		make_cart_model() {
-			return cloneDeep(cart.doc || {});
 		},
 
 		async place_order() {
@@ -133,13 +110,6 @@ export default {
 	},
 
 	computed: {
-		can_submit() {
-			return (
-				this.doc.customer
-				&& (this.doc.items || []).length
-			)
-		},
-
 		addresses() {
 			return cart.addresses || [];
 		},
@@ -147,22 +117,6 @@ export default {
 		contacts() {
 			return cart.contacts || [];
 		},
-
-		doc() {
-			return cart.doc || {};
-		},
 	},
-
-	created() {
-		this.$watch(() => cart.loading, () => {
-			if (!cart.loading) {
-				this.refresh_form();
-			}
-		});
-
-		this.$watch(() => cart.customer, () => {
-			this.refresh_form();
-		});
-	}
 }
 </script>

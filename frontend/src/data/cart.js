@@ -4,9 +4,9 @@ import { ref } from 'vue';
 import {createAlert} from "@/utils/alerts";
 import {subscribe_doc, unsubscribe_doc} from "@/socket";
 
-export let _selected_customer = ref(null);
+export const _selected_customer = ref(null);
 
-export let cart = reactive({
+export const cart = reactive({
 	doc: null,
 	addresses: [],
 	contacts: [],

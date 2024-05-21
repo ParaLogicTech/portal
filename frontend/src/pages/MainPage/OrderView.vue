@@ -50,10 +50,10 @@ export default {
 			} catch (e) {
 				createAlert({"title": "Error loading Sales Order", "message": e, "variant": "error"});
 			}
-			this.refresh_form();
+			this.refresh_view();
 		},
 
-		refresh_form() {
+		refresh_view() {
 			this.$nextTick(() => {
 				this.$refs.order_form.refresh_view();
 			});

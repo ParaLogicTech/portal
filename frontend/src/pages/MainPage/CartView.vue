@@ -6,35 +6,36 @@
 			@reload-cart="handle_reload_cart"
 		/>
 
-		<OrderForm
-			class="h-full overflow-y-auto"
-			v-model:doc="model"
-			:addresses="addresses"
-			:contacts="contacts"
-			:loading="placing_order"
-			@qty-changed="handle_qty_change"
-			@item-removed="handle_item_removed"
-			@cart-value-changed="handle_cart_value_change"
-			@item-value-changed="handle_item_value_change"
-			ref="order_form"
-		/>
+		<div class="overflow-y-auto h-full">
+			<OrderForm
+				v-model:doc="model"
+				:addresses="addresses"
+				:contacts="contacts"
+				:loading="placing_order"
+				@qty-changed="handle_qty_change"
+				@item-removed="handle_item_removed"
+				@cart-value-changed="handle_cart_value_change"
+				@item-value-changed="handle_item_value_change"
+				ref="order_form"
+			/>
 
-		<div class="top-bar-height flex justify-end items-center px-3 py-1 border-t border-gray-400 shadow-sm-up">
-			<Button
-				variant="solid"
-				theme="blue"
-				size="sm"
-				label="Submit Order"
-				:disabled="!can_submit"
-				:link="null"
-				:loading="confirmation_dialog || placing_order"
-				@click="confirmation_dialog = true"
-				class="h-[30px]"
-			>
-				<template #suffix>
-					<SendHorizontal class="h-4" />
-				</template>
-			</Button>
+			<div class="top-bar-height flex justify-end items-center px-3 py-1 border-t border-gray-400">
+				<Button
+					variant="solid"
+					theme="blue"
+					size="sm"
+					label="Submit Order"
+					:disabled="!can_submit"
+					:link="null"
+					:loading="confirmation_dialog || placing_order"
+					@click="confirmation_dialog = true"
+					class="h-[30px]"
+				>
+					<template #suffix>
+						<SendHorizontal class="h-4" />
+					</template>
+				</Button>
+			</div>
 		</div>
 
 		<Dialog

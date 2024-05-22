@@ -42,7 +42,7 @@
 							@click="close(); reload_cart();"
 						>
 							<template #prefix>
-								<RefreshCw class="h-[15px] w-[15px]" stroke-width="1.7px" />
+								<RefreshCw class="h-[15px] w-[15px]" stroke-width="1.9px" />
 							</template>
 						</Button>
 						<Button

@@ -1,36 +1,34 @@
 <template>
 	<div>
-		<div v-if="read_only">
-			<div class="section">
-				<div class="section-grid @2xl:grid-cols-2">
-					<div class="col flex flex-col h-full">
-						<div class="section-heading">Address</div>
-						<AddressCard
-							v-for="d in addresses"
-							:address="d"
-							:selectable="!read_only"
-							:key="d.name"
-							@address-selected="handle_address_selected"
-							class="flex-1"
-						/>
-						<div v-if="!addresses?.length" class="section-message">
-							No address selected
-						</div>
+		<div v-if="read_only" class="section">
+			<div class="section-grid @2xl:grid-cols-2">
+				<div class="col flex flex-col h-full">
+					<div class="section-heading">Address</div>
+					<AddressCard
+						v-for="d in addresses"
+						:address="d"
+						:selectable="!read_only"
+						:key="d.name"
+						@address-selected="handle_address_selected"
+						class="flex-1"
+					/>
+					<div v-if="!addresses?.length" class="section-message">
+						No address selected
 					</div>
+				</div>
 
-					<div class="col flex flex-col h-full">
-						<div class="section-heading">Contact Person</div>
-						<ContactCard
-							v-for="d in contacts"
-							:contact="d"
-							:selectable="!read_only"
-							:key="d.name"
-							@contact-selected="handle_contact_selected"
-							class="flex-1"
-						/>
-						<div v-if="!contacts?.length" class="section-message">
-							No contact selected
-						</div>
+				<div class="col flex flex-col h-full">
+					<div class="section-heading">Contact Person</div>
+					<ContactCard
+						v-for="d in contacts"
+						:contact="d"
+						:selectable="!read_only"
+						:key="d.name"
+						@contact-selected="handle_contact_selected"
+						class="flex-1"
+					/>
+					<div v-if="!contacts?.length" class="section-message">
+						No contact selected
 					</div>
 				</div>
 			</div>

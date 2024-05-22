@@ -5,6 +5,7 @@
 			:name="name"
 			:doc="doc"
 			:loading="loading"
+			@reload="reload"
 		/>
 
 		<OrderForm

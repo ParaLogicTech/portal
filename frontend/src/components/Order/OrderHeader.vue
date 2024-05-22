@@ -21,18 +21,20 @@
 		<div class="flex items-center gap-1.5">
 			<Spinner class="w-4" v-if="loading" />
 
-			<Button
-				variant="ghost"
-				theme="gray"
-				size="sm"
-				label="Print"
-				title="Print"
-				:link="print_link"
-			>
-				<template #icon>
-					<Printer class="w-[18px]" stroke-width="1.9px" />
-				</template>
-			</Button>
+			<div class="hidden sm:block">
+				<Button
+					variant="ghost"
+					theme="gray"
+					size="sm"
+					label="Print"
+					title="Print"
+					:link="print_link"
+				>
+					<template #icon>
+						<Printer class="w-[18px]" stroke-width="1.9px" />
+					</template>
+				</Button>
+			</div>
 
 			<Popover>
 				<template #target="{ togglePopover }">
@@ -66,6 +68,19 @@
 							variant="ghost"
 							theme="gray"
 							size="sm"
+							label="Reload"
+							class="!justify-start"
+							@click="close(); $emit('reload');"
+						>
+							<template #prefix>
+								<RefreshCw class="h-[15px] w-[15px]" stroke-width="1.9px" />
+							</template>
+						</Button>
+
+						<Button
+							variant="ghost"
+							theme="gray"
+							size="sm"
 							label="Open in Desk View"
 							:link="desk_link"
 							@click="close()"
@@ -83,14 +98,14 @@
 </template>
 
 <script>
-import {Ellipsis, FileText, ExternalLink, Printer} from "lucide-vue-next";
+import {Ellipsis, FileText, ExternalLink, Printer, RefreshCw} from "lucide-vue-next";
 import OrderStatusBadge from "@/components/Order/OrderStatusBadge.vue";
 import {Button, Popover} from "frappe-ui";
 
 export default {
 	name: "OrderHeader",
 
-	components: {ExternalLink, Ellipsis, Button, OrderStatusBadge, FileText, Popover, Printer},
+	components: {RefreshCw, ExternalLink, Ellipsis, Button, OrderStatusBadge, FileText, Popover, Printer},
 
 	props: {
 		name: {

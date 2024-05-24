@@ -62,13 +62,14 @@ export default {
 			this.$router.push({name: "CartView"});
 		},
 
-		select_item(item_code) {
+		async select_item(item_code) {
+			await this.refresh_view();
 			this.$refs.items?.select_item(item_code);
 		},
 
-		refresh_view() {
+		async refresh_view() {
 			this.refresh_cart_model();
-			this.$nextTick(() => {
+			return this.$nextTick(() => {
 				this.$refs.items?.refresh_view();
 			});
 		},

@@ -40,8 +40,8 @@ export default {
 			return this.matches ? this.matches[d.name] : [];
 		},
 
-		handle_item_selected(item) {
-			this.$emit('item-selected', item);
+		handle_item_selected(item, open_cart) {
+			this.$emit('item-selected', item, open_cart);
 		}
 	}
 }

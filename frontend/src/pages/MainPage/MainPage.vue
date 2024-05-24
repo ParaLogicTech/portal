@@ -58,7 +58,7 @@ export default {
 	},
 
 	methods: {
-		async handle_item_selected(item) {
+		async handle_item_selected(item, open_cart) {
 			if (!cart.customer && !cart.cart_id) {
 				createAlert({"title": "Please select customer first", "variant": "warning"});
 				return;
@@ -67,7 +67,15 @@ export default {
 			if (!cart.has_item(item.item_code)) {
 				await cart.update_item_qty(item.item_code, 1);
 			}
-			this.$refs.cart_sidebar?.select_item(item.item_code);
+
+			if (this.$refs.cart_sidebar) {
+				this.$refs.cart_sidebar.select_item(item.item_code);
+			} else if (open_cart) {
+				await this.$router.push({name: 'CartView'});
+				if (this.$refs.router_view?.select_item) {
+					this.$refs.router_view.select_item(item.item_code);
+				}
+			}
 		},
 
 		async handle_item_group_selected(item_group) {

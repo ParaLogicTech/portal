@@ -2,6 +2,7 @@
 	<div
 		class="card item-card clickable"
 		@click="this.handle_click"
+		@dblclick="this.handle_double_click"
 	>
 		<div class="card-top-right">
 			<div
@@ -65,8 +66,12 @@ export default {
 
 	methods: {
 		handle_click() {
-			this.$emit('item-selected', this.item);
-		}
+			this.$emit('item-selected', this.item, false);
+		},
+
+		handle_double_click() {
+			this.$emit('item-selected', this.item, true);
+		},
 	},
 
 	computed: {

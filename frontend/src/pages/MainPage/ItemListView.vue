@@ -79,8 +79,8 @@ export default {
 	},
 
 	methods: {
-		handle_item_selected(item) {
-			this.$emit('item-selected', item);
+		handle_item_selected(item, open_cart) {
+			this.$emit('item-selected', item, open_cart);
 		},
 
 		set_item_group_filter(value) {

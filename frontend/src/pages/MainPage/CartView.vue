@@ -82,9 +82,14 @@ export default {
 	},
 
 	methods: {
-		refresh_view() {
+		async select_item(item_code) {
+			await this.refresh_view();
+			this.$refs.order_form.select_item(item_code);
+		},
+
+		async refresh_view() {
 			this.refresh_cart_model();
-			this.$nextTick(() => {
+			return this.$nextTick(() => {
 				this.$refs.order_form.refresh_view();
 			});
 		},

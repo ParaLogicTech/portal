@@ -166,6 +166,11 @@ export default {
 	},
 
 	methods: {
+		select_item(item_code) {
+			this.$refs.items?.select_item(item_code);
+			this.$refs.compact_items?.select_item(item_code);
+		},
+
 		refresh_view() {
 			this.$refs.items?.refresh_view();
 			this.$refs.compact_items?.refresh_view();

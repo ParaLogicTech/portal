@@ -30,11 +30,14 @@ import mitt from 'mitt';
 import {ListView} from "frappe-ui";
 import QtyField from "@/components/Fields/QtyField.vue";
 import OrderRowItem from "@/components/Order/OrderRowItem.vue";
+import SelectableItems from "@/mixins/SelectableItems";
 
 export default {
 	name: "OrderItemsList",
 
 	components: {OrderRowItem, QtyField, ListView},
+
+	mixins: [SelectableItems],
 
 	props: {
 		doc: Object,
@@ -48,28 +51,30 @@ export default {
 	},
 
 	methods: {
+		select_item(item_code) {
+			this.select_row(this.get_row_by_item_code(item_code), "qty", true);
+		},
+
+		select_next_row(current_row, field) {
+			this.select_row(this.get_next_row(current_row), field);
+		},
+
+		select_previous_row(current_row, field) {
+			this.select_row(this.get_previous_row(current_row), field);
+		},
+
+		select_row(row, field="qty", center=false) {
+			if (row) {
+				this.events.emit("selected", {row, field, center});
+			}
+		},
+
 		handle_qty_change(row) {
 			this.$emit("qty-changed", row);
 		},
 
 		handle_value_change(row, field, value) {
 			this.$emit("value-changed", row, field, value);
-		},
-
-		select_next_row(current_row, field) {
-			let current_row_idx = this.items.findIndex(d => d == current_row);
-			if (current_row_idx != -1 && current_row_idx + 1 < this.items.length) {
-				let row = this.items[current_row_idx + 1];
-				this.events.emit("selected", {row, field});
-			}
-		},
-
-		select_previous_row(current_row, field) {
-			let current_row_idx = this.items.findIndex(d => d == current_row);
-			if (current_row_idx != -1 && current_row_idx - 1 >= 0) {
-				let row = this.items[current_row_idx - 1];
-				this.events.emit("selected", {row, field});
-			}
 		},
 
 		refresh_view() {
@@ -79,7 +84,7 @@ export default {
 
 	computed: {
 		items() {
-			return this.doc.items || [];
+			return this.doc?.items || [];
 		},
 
 		columns() {

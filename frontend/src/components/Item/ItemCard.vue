@@ -19,12 +19,12 @@
 		<div class="flex flex-col h-full">
 			<ItemImage
 				:item="item"
-				class="h-[220px] flex-none"
+				class="h-[220px] @sm:h-[200px] @md:h-[220px] flex-none"
 				rounded="rounded rounded-b-none"
 			/>
 
 			<div class="flex flex-col justify-between h-full card-separator">
-				<h1 class="text-sm font-medium px-3 py-2.5">
+				<h1 class="text-sm @sm:text-[11px] @md:text-sm font-medium px-3 py-2.5">
 					<HighlightedMatchText
 						:text="item.item_name"
 						:matches="item_name_matches"
@@ -32,8 +32,8 @@
 				</h1>
 
 				<div class="flex flex-wrap gap-1 justify-between items-center px-3 py-2.5 card-separator">
-					<ItemStock :item="item" class="text-xs" />
-					<ItemPrice :item="item" class="text-md font-semibold text-violet-900" />
+					<ItemStock :item="item" class="text-xs @sm:text-2xs @md:text-xs" />
+					<ItemPrice :item="item" class="text-md @sm:text-sm @md:text-md !font-semibold text-violet-900" />
 				</div>
 			</div>
 		</div>

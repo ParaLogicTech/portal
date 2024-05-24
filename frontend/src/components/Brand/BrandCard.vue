@@ -5,7 +5,7 @@
 	>
 		<ItemImage
 			:item="brand_list"
-			class="h-[220px] flex-none"
+			class="h-[220px] @sm:h-[200px] @md:h-[220px] flex-none"
 			rounded="rounded rounded-b-none"
 		/>
 

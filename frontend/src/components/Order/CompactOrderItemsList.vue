@@ -2,10 +2,21 @@
 	<div>
 		<div
 			v-if="is_empty"
-			class="h-full flex items-center justify-center text-gray-400 text-xl font-medium"
+			class="h-full flex flex-col items-center justify-center text-gray-400 text-xl font-medium py-5 gap-3"
 		>
-			<CircleSlash class="h-5 w-5 mr-2" />
-			<div>Order is empty</div>
+			<div class="flex gap-2">
+				<CircleSlash class="h-5 w-5" />
+				<div>Order is empty</div>
+			</div>
+			<div v-if="show_empty_explore_button">
+				<Button
+					variant="subtle"
+					theme="gray"
+					size="sm"
+					label="Explore Items"
+					@click="this.$router.push({name: 'ItemListView'})"
+				/>
+			</div>
 		</div>
 
 		<CompactOrderItem
@@ -14,6 +25,9 @@
 			:row="row"
 			:doc="doc"
 			:key="row.name || row.item_code"
+			:read_only="read_only"
+			:border_color_class="border_color_class"
+			:no_last_border="no_last_border"
 			@select-next-row="select_next_row"
 			@select-previous-row="select_previous_row"
 			@qty-changed="handle_qty_change"
@@ -26,14 +40,19 @@
 <script>
 import {CircleSlash} from "lucide-vue-next";
 import CompactOrderItem from "@/components/Order/CompactOrderItem.vue";
+import {Button} from "frappe-ui";
 
 export default {
 	name: "CompactOrderItemsList",
 
-	components: {CompactOrderItem, CircleSlash},
+	components: {CompactOrderItem, CircleSlash, Button},
 
 	props: {
 		doc: Object,
+		read_only: Boolean,
+		show_empty_explore_button: Boolean,
+		border_color_class: String,
+		no_last_border: Boolean,
 	},
 
 	methods: {
@@ -74,13 +93,13 @@ export default {
 		},
 
 		handle_item_removed(row) {
-			this.$emit("item-removed", row);
 			this.emit_update();
+			this.$emit("item-removed", row);
 		},
 
 		handle_qty_change(row) {
-			this.$emit("qty-changed", row);
 			this.emit_update();
+			this.$emit("qty-changed", row);
 		},
 
 		refresh_view() {

@@ -81,15 +81,29 @@
 		/>
 
 		<!-- Items Section -->
-		<div class="section">
-			<OrderItemsList
-				:doc="doc"
-				:read_only="read_only"
-				ref="items"
-				@qty-changed="handle_qty_change"
-				@value-changed="handle_item_value_change"
-			/>
-		</div>
+		<OrderItemsList
+			v-if="!is_mobile"
+			:doc="doc"
+			:read_only="read_only"
+			ref="items"
+			class="section"
+			@qty-changed="handle_qty_change"
+			@value-changed="handle_item_value_change"
+			@item-removed="handle_item_removed"
+		/>
+		<CompactOrderItemsList
+			v-else
+			:doc="doc"
+			:read_only="read_only"
+			:show_empty_explore_button="!read_only"
+			border_color_class="border-gray-300"
+			:no_last_border="true"
+			ref="compact_items"
+			class="section !p-0"
+			@qty-changed="handle_qty_change"
+			@value-changed="handle_item_value_change"
+			@item-removed="handle_item_removed"
+		/>
 
 		<!-- Totals Section -->
 		<div class="section">
@@ -135,11 +149,13 @@ import CustomerSelection from "@/components/Customer/CustomerSelection.vue";
 import {FormControl} from "frappe-ui";
 import OrderItemsList from "@/components/Order/OrderItemsList.vue";
 import AddressAndContact from "@/components/Order/AddressAndContact.vue";
+import {is_mobile} from "@/utils/responsive";
+import CompactOrderItemsList from "@/components/Order/CompactOrderItemsList.vue";
 
 export default {
 	name: "OrderForm",
 
-	components: {AddressAndContact, OrderItemsList, CustomerSelection, FormControl},
+	components: {CompactOrderItemsList, AddressAndContact, OrderItemsList, CustomerSelection, FormControl},
 
 	props: {
 		doc: Object,
@@ -151,12 +167,18 @@ export default {
 
 	methods: {
 		refresh_view() {
-			this.$refs.items.refresh_view();
+			this.$refs.items?.refresh_view();
+			this.$refs.compact_items?.refresh_view();
 		},
 
 		handle_qty_change(row) {
 			this.emit_update();
 			this.$emit("qty-changed", row);
+		},
+
+		handle_item_removed(row) {
+			this.emit_update();
+			this.$emit("item-removed", row);
 		},
 
 		handle_item_value_change(row, field, value) {
@@ -194,6 +216,9 @@ export default {
 	},
 
 	computed: {
+		is_mobile() {
+			return is_mobile.value;
+		},
 		sales_person() {
 			if (this.doc.doctype == "Cart") {
 				return this.doc.sales_person;

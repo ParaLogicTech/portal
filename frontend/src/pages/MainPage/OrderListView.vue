@@ -8,11 +8,12 @@
 			@reload="reload"
 		/>
 
-		<div class="p-2">
+		<div class="overflow-y-auto">
 			<OrderList
 				:rows="rows"
 				:show_customers="!this.customer"
 				ref="orders"
+				class="p-1.5"
 			/>
 		</div>
 	</div>

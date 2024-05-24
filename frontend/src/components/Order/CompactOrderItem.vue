@@ -1,6 +1,7 @@
 <template>
 	<div
-		class="w-full border-b border-gray-400 overflow-x-hidden flex h-[81px]"
+		class="w-full overflow-x-hidden flex h-[81px]"
+		:class="border_classes"
 		@touchstart="this.handle_touch_start"
 		@touchmove="this.handle_touch_move"
 		@touchend="this.handle_touch_end"
@@ -14,7 +15,10 @@
 			@focusin="this.handle_focusin"
 		>
 			<!-- Menu -->
-			<div class="absolute top-0.5 right-0.5">
+			<div
+				v-if="!read_only"
+				class="absolute top-0.5 right-0.5"
+			>
 				<Popover>
 					<template #target="{ togglePopover }">
 						<Button
@@ -57,7 +61,12 @@
 
 				<div class="flex justify-between gap-1.5">
 					<div class="min-w-[40%] self-end">
+						<div v-if="read_only">
+							<div class="text-2xs font-semibold text-gray-600">Qty</div>
+							<div class="text-md text-[13.5px]">{{ format_number(row.qty, null, 2) }} {{ row.uom }}</div>
+						</div>
 						<QtyField
+							v-else
 							v-model:qty="row.qty"
 							v-model:uom="row.uom"
 							:uoms="uoms"
@@ -121,6 +130,9 @@ export default {
 	props: {
 		row: Object,
 		doc: Object,
+		read_only: Boolean,
+		border_color_class: String,
+		no_last_border: Boolean,
 	},
 
 	data() {
@@ -148,10 +160,18 @@ export default {
 		},
 
 		handle_touch_start(e) {
+			if (this.read_only) {
+				this.reset_slide();
+				return;
+			}
 			this.start_x = e.touches[0].clientX;
 		},
 
 		handle_touch_move(e) {
+			if (this.read_only) {
+				this.reset_slide();
+				return;
+			}
 			if (this.start_x == null) {
 				return;
 			}
@@ -163,6 +183,11 @@ export default {
 		},
 
 		handle_touch_end() {
+			if (this.read_only) {
+				this.reset_slide();
+				return;
+			}
+
 			// Snap back if not moved enough
 			if(this.slide < this.drawer_width) {
 				this.reset_slide();
@@ -216,6 +241,18 @@ export default {
 
 		selected_class() {
 			return this.selected ? "bg-yellow-100" : "";
+		},
+
+		border_classes() {
+			let classes = ['border-b', this.border_color_class || 'border-gray-400'];
+			if (this.no_last_border) {
+				classes.push('last:border-b-0');
+			}
+			return classes;
+		},
+
+		border_class_fallback() {
+			return this.border_color_class || "border-gray-400";
 		},
 	},
 }

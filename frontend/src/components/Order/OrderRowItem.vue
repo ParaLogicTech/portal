@@ -1,7 +1,13 @@
 <template>
 	<div
-		v-if="column.key == 'item_name'"
-		class="flex items-center gap-2.5 h-[45px] overflow-hidden"
+		v-if="column.key == 'idx'"
+		class="text-xs font-normal"
+	>
+		{{ row.idx }}
+	</div>
+	<div
+		v-else-if="column.key == 'item_name'"
+		class="flex items-center gap-2 h-[45px] overflow-hidden text-gray-900"
 	>
 		<ItemImage
 			:item="item"

@@ -85,6 +85,11 @@ export default {
 		columns() {
 			return [
 				{
+					label: "#",
+					key: "idx",
+					width: "8px",
+				},
+				{
 					label: "Item",
 					key: "item_name",
 					width: "minmax(200px, 1fr)",

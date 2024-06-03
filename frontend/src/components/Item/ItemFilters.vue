@@ -6,7 +6,7 @@
 				type="text"
 				size="sm"
 				variant="outline"
-				placeholder="Search Items..."
+				placeholder="Search by Item Name"
 				:debounce="150"
 				v-model="this.filters.txt"
 			/>

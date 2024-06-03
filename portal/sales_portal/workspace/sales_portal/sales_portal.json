@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"id\":\"OF6wyJ4ijJ\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Sales Portal</span>\",\"col\":12}},{\"id\":\"sO_jfSEqkS\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Portal\",\"col\":3}},{\"id\":\"KV7S3aWtTF\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Cart\",\"col\":3}},{\"id\":\"V3Xzn030Ff\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Portal Settings\",\"col\":3}}]",
+ "content": "[{\"id\":\"OF6wyJ4ijJ\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Sales Portal</span>\",\"col\":12}},{\"id\":\"sO_jfSEqkS\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Portal\",\"col\":3}},{\"id\":\"T22g0X-La0\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Order\",\"col\":3}},{\"id\":\"KV7S3aWtTF\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Cart\",\"col\":3}},{\"id\":\"V3Xzn030Ff\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Portal Settings\",\"col\":3}}]",
  "creation": "2024-04-16 14:45:21.933755",
  "custom_blocks": [],
  "docstatus": 0,
@@ -12,7 +12,7 @@
  "is_hidden": 0,
  "label": "Sales Portal",
  "links": [],
- "modified": "2024-04-16 15:24:56.007151",
+ "modified": "2024-06-03 05:50:00.882384",
  "modified_by": "Administrator",
  "module": "Sales Portal",
  "name": "Sales Portal",
@@ -35,6 +35,15 @@
    "stats_filter": "",
    "type": "URL",
    "url": "/sales-portal"
+  },
+  {
+   "color": "Orange",
+   "doc_view": "List",
+   "format": "{} Draft",
+   "label": "Sales Order",
+   "link_to": "Sales Order",
+   "stats_filter": "[[\"Sales Order\",\"docstatus\",\"=\",\"0\",false]]",
+   "type": "DocType"
   },
   {
    "color": "Grey",

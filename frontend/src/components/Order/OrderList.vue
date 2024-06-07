@@ -22,21 +22,38 @@
 			/>
 		</template>
 	</ListView>
+	<!-- Load More Button -->
+	<div class="w-100 text-center">
+		<Button
+			v-if="!(rows.length < no_display_rows) || loading"
+			variant="outline"
+			theme="gray"
+			size="sm"
+			label="Load More"
+			:loading="loading"
+			class="my-1.5"
+			@click="this.handle_load_more"
+		/>
+	</div>
 </template>
 
 <script>
-import {ListView, ListRowItem} from "frappe-ui"
+import {ListView, ListRowItem, Button, Spinner} from "frappe-ui"
 import OrderStatusBadge from "@/components/Order/OrderStatusBadge.vue";
 
 export default {
 	name: "OrderList",
 
-	components: {OrderStatusBadge, ListView, ListRowItem},
+	components: {OrderStatusBadge, ListView, ListRowItem, Button, Spinner},
 
 	props: {
 		rows: Array,
 		show_customers: Boolean,
+		no_display_rows: Number,
+		loading: Boolean
 	},
+
+	inheritAttrs: false,
 
 	methods: {
 		get_formatted_value(column, row, value) {
@@ -50,6 +67,10 @@ export default {
 				return value;
 			}
 		},
+
+		handle_load_more() {
+			this.$emit("load-more");
+		}
 	},
 
 	computed: {

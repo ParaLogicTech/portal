@@ -12,7 +12,10 @@
 			<OrderList
 				:rows="rows"
 				:show_customers="!this.customer"
+				:no_display_rows="this.$resources.order_list.pageLength"
+				:loading="this.$resources.order_list.list.loading"
 				ref="orders"
+				@load-more="this.handle_load_more"
 				class="p-1.5"
 			/>
 		</div>
@@ -83,6 +86,11 @@ export default {
 			}
 			this.debounced_reload();
 		},
+
+		handle_load_more() {
+			this.$resources.order_list.pageLength += 20;
+			this.reload()
+		}
 	},
 
 	computed: {

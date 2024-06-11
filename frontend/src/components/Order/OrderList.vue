@@ -29,7 +29,7 @@
 			variant="outline"
 			theme="gray"
 			size="sm"
-			label="Load More"
+			:label="loading ? 'Loading' : 'Load More'"
 			:loading="loading"
 			class="my-1.5"
 			@click="this.handle_load_more"

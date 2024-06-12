@@ -86,7 +86,7 @@ export default {
 			for (let k of Object.keys(this.filters)) {
 				this.filters[k] = null;
 			}
-			this.$emit("reload");
+			this.emit_change();
 		},
 
 		emit_change() {

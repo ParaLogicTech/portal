@@ -27,7 +27,7 @@
 		<!-- Load More Button -->
 		<div class="w-100 text-center">
 			<Button
-				v-if="has_more || loading"
+				v-if="has_more"
 					variant="outline"
 					theme="gray"
 					size="sm"

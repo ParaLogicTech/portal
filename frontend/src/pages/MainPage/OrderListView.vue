@@ -10,9 +10,12 @@
 
 		<div class="overflow-y-auto">
 			<OrderList
-				:rows="rows"
-				:show_customers="!this.customer"
+				:rows="rows_to_show"
+				:has_more="has_more"
+				:show_customers="!customer"
+				:loading="list_resource.list.loading"
 				ref="orders"
+				@load-more="handle_load_more"
 				class="p-1.5"
 			/>
 		</div>
@@ -27,6 +30,8 @@ import {cart, _selected_customer} from "@/data/cart";
 import OrderFilters from "@/components/Order/OrderFilters.vue";
 import debounce from "frappe-ui/src/utils/debounce";
 
+const initial_page_length = 20;
+
 export default {
 	name: "OrderListView",
 
@@ -38,12 +43,14 @@ export default {
 				name: null,
 				sales_person: null,
 			},
+			page_length: initial_page_length,
 			debounced_reload: debounce(this.reload, 250),
 		}
 	},
 
 	methods: {
 		handle_filter_change() {
+			this.list_resource.pageLength = initial_page_length + 1;
 			this.debounced_reload();
 		},
 
@@ -54,7 +61,8 @@ export default {
 
 			try {
 				this.set_resource_filters();
-				await this.list_resource.fetch();
+				await this.list_resource.reload();
+				this.page_length = this.list_resource.pageLength - 1;
 			} catch (e) {
 				createAlert({"title": "Error loading Sales Orders", "message": e, "variant": "error"});
 			}
@@ -83,11 +91,24 @@ export default {
 			}
 			this.debounced_reload();
 		},
+
+		handle_load_more() {
+			this.list_resource.pageLength += initial_page_length;
+			this.reload();
+		},
 	},
 
 	computed: {
 		rows() {
 			return this.list_resource.data || [];
+		},
+
+		rows_to_show() {
+			return this.rows.slice(0, this.page_length);
+		},
+
+		has_more() {
+			return this.rows.length > this.page_length;
 		},
 
 		customer() {
@@ -130,12 +151,13 @@ export default {
 			],
 			orderBy: 'transaction_date desc, name desc',
 			groupBy: 'name',
+			pageLength: initial_page_length + 1,
 		},
 	},
 
 	watch: {
 		customer() {
-			this.debounced_reload();
+			this.handle_filter_change();
 		}
 	}
 }

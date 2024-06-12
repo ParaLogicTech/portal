@@ -1,41 +1,59 @@
 <template>
-	<ListView
-		class="list-view-fix"
-		row-key="name"
-		:columns="columns"
-		:rows="rows || []"
-		:options="options"
-		ref="list_view"
-	>
-		<template #cell="{ column, row, item, align }">
-			<OrderStatusBadge
-				v-if="column.key == 'status'"
-				:doc="row"
-				class="w-fit"
-			/>
-			<ListRowItem
-				v-else
-				:column="column"
-				:row="row"
-				:item="get_formatted_value(column, row, item)"
-				:align="align"
-			/>
-		</template>
-	</ListView>
+	<div>
+		<ListView
+			class="list-view-fix"
+			row-key="name"
+			:columns="columns"
+			:rows="rows || []"
+			:options="options"
+			ref="list_view"
+		>
+			<template #cell="{ column, row, item, align }">
+				<OrderStatusBadge
+					v-if="column.key == 'status'"
+					:doc="row"
+					class="w-fit"
+				/>
+				<ListRowItem
+					v-else
+					:column="column"
+					:row="row"
+					:item="get_formatted_value(column, row, item)"
+					:align="align"
+				/>
+			</template>
+		</ListView>
+
+		<!-- Load More Button -->
+		<div class="w-100 text-center">
+			<Button
+				v-if="has_more"
+					variant="outline"
+					theme="gray"
+					size="sm"
+					:label="loading ? 'Loading' : 'Load More'"
+					:loading="loading"
+					class="my-1.5"
+					@click="this.handle_load_more"
+				/>
+		</div>
+	</div>
 </template>
 
 <script>
-import {ListView, ListRowItem} from "frappe-ui"
+import {ListView, ListRowItem, Button} from "frappe-ui"
 import OrderStatusBadge from "@/components/Order/OrderStatusBadge.vue";
 
 export default {
 	name: "OrderList",
 
-	components: {OrderStatusBadge, ListView, ListRowItem},
+	components: {OrderStatusBadge, ListView, ListRowItem, Button},
 
 	props: {
 		rows: Array,
 		show_customers: Boolean,
+		has_more: Boolean,
+		loading: Boolean,
 	},
 
 	methods: {
@@ -50,6 +68,10 @@ export default {
 				return value;
 			}
 		},
+
+		handle_load_more() {
+			this.$emit("load-more");
+		}
 	},
 
 	computed: {

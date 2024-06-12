@@ -10,12 +10,12 @@
 
 		<div class="overflow-y-auto">
 			<OrderList
-				:rows="rows"
-				:show_customers="!this.customer"
-				:no_display_rows="this.$resources.order_list.pageLength"
-				:loading="this.$resources.order_list.list.loading"
+				:rows="rows_to_show"
+				:has_more="has_more"
+				:show_customers="!customer"
+				:loading="list_resource.list.loading"
 				ref="orders"
-				@load-more="this.handle_load_more"
+				@load-more="handle_load_more"
 				class="p-1.5"
 			/>
 		</div>
@@ -88,14 +88,22 @@ export default {
 		},
 
 		handle_load_more() {
-			this.$resources.order_list.pageLength += 20;
-			this.reload()
-		}
+			this.list_resource.pageLength += 21;
+			this.reload();
+		},
 	},
 
 	computed: {
 		rows() {
 			return this.list_resource.data || [];
+		},
+
+		rows_to_show() {
+			return this.rows.slice(0, this.list_resource.pageLength - 1);
+		},
+
+		has_more() {
+			return this.rows.length >= this.list_resource.pageLength;
 		},
 
 		customer() {
@@ -138,6 +146,7 @@ export default {
 			],
 			orderBy: 'transaction_date desc, name desc',
 			groupBy: 'name',
+			pageLength: 21,
 		},
 	},
 

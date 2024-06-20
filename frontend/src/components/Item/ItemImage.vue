@@ -19,7 +19,7 @@
 		<!-- Image Full View -->
 		<Expand
 			v-if="item.image"
-			class="absolute top-[5px] right-[5px] w-[23px] h-[23px] hover:scale-105 transition-transform ease-linear duration-200 text-gray-700"
+			class="absolute top-[5px] right-[5px] w-[21px] h-[21px] hover:scale-105 transition-transform ease-linear duration-200 text-gray-700"
 			@click.stop="this.modal=true"
 		/>
 

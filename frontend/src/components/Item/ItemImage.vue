@@ -2,7 +2,7 @@
 	<div class="bg-white" :class="rounded">
 		<img
 			v-if="item.image"
-			class="w-auto h-full mx-auto object-cover"
+			class="w-auto h-full mx-auto object-cover relative"
 			:class="rounded"
 			:src="item.image"
 			:alt="item.item_name || item.name"
@@ -15,12 +15,46 @@
 		>
 			{{ item.name }}
 		</div>
+
+		<!-- Image Full View -->
+		<Expand
+			v-if="item.image"
+			class="absolute top-[5px] right-[5px] w-[23px] h-[23px] hover:scale-105 transition-transform ease-linear duration-200 text-gray-700"
+			@click.stop="this.modal=true"
+		/>
+
+		<Teleport to="#modals">
+			<vue-easy-lightbox
+				:visible="this.modal"
+				:imgs="[this.item.image]"
+				:zoom-disabled="true"
+				:move-disabled="true"
+				:dblclick-disabled="true"
+				@hide="this.modal=false"
+			>
+				<template v-slot:toolbar=""></template>
+			</vue-easy-lightbox>
+		</Teleport>
 	</div>
 </template>
 
 <script>
+import VueEasyLightbox from 'vue-easy-lightbox';
+import { Expand } from 'lucide-vue-next';
+
 export default {
 	name: "ItemImage",
+
+	components: {
+		VueEasyLightbox,
+		Expand
+	},
+
+	data() {
+		return {
+			modal: false,
+		}
+	},
 
 	props: {
 		item: Object,
@@ -29,3 +63,9 @@ export default {
 	},
 }
 </script>
+
+<style>
+	.vel-img-wrapper img {
+		cursor: default;
+	}
+</style>

@@ -2,7 +2,7 @@
 	<div class="bg-white" :class="rounded">
 		<img
 			v-if="item.image"
-			class="w-auto h-full mx-auto object-cover relative"
+			class="w-auto h-full mx-auto object-cover"
 			:class="rounded"
 			:src="item.image"
 			:alt="item.item_name || item.name"
@@ -19,7 +19,7 @@
 		<!-- Image Full View -->
 		<Expand
 			v-if="item.image"
-			class="absolute top-[5px] right-[5px] w-[21px] h-[21px] hover:scale-105 transition-transform ease-linear duration-200 text-gray-700"
+			class="absolute top-[7px] left-[7px] w-[21px] h-[21px] hover:scale-105 transition-transform ease-linear duration-200 text-gray-700"
 			@click.stop="this.modal=true"
 		/>
 

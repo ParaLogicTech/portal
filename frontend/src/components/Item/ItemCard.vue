@@ -21,6 +21,7 @@
 				:item="item"
 				class="h-[220px] @sm:h-[200px] @md:h-[220px] flex-none"
 				rounded="rounded rounded-b-none"
+				:full_view_enable="true"
 			/>
 
 			<div class="flex flex-col justify-between h-full card-separator">

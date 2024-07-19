@@ -67,6 +67,7 @@ export const active_items = computed(() => {
 export const item_group_list = createListResource({
 	doctype: 'Item Group',
 	cache: 'Item Groups',
+	url: 'portal.sales_portal.api.items.get_item_group_list',
 	fields: [
 		'name',
 		'parent_item_group',
@@ -142,6 +143,7 @@ const get_item_group_ancestors = (item_group) => {
 export const brand_list = createListResource({
 	doctype: 'Brand',
 	cache: 'Brands',
+	url: 'portal.sales_portal.api.items.get_brand_list',
 	fields: [
 		'name',
 		'image',

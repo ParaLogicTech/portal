@@ -1,6 +1,7 @@
 import frappe
 from erpnext import get_default_company
 from frappe.utils import get_system_timezone
+from portal.permissions import is_system_user
 
 
 @frappe.whitelist()
@@ -13,6 +14,9 @@ def get_settings():
 		"show_customer_description": settings_doc.show_customer_description,
 		"stock_availability_based_on": settings_doc.stock_availability_based_on,
 		"show_stock_availability": settings_doc.show_stock_availability,
+
+		# Permissions
+		"is_system_user": is_system_user(),
 
 		# Formatting settings
 		"number_format": frappe.get_system_settings("number_format"),

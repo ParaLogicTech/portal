@@ -5,6 +5,9 @@ from frappe.client import get_list
 
 @frappe.whitelist()
 def get_sales_order_list(doctype="Sales Order", fields=None, filters=None, order_by=None, start=0, limit=20, group_by=None, parent=None, debug=False):
+	doctype = "Sales Order"
+	parent = None
+
 	filters = frappe.parse_json(filters)
 
 	out = get_list(
@@ -15,7 +18,7 @@ def get_sales_order_list(doctype="Sales Order", fields=None, filters=None, order
 		limit_start=start,
 		limit_page_length=limit,
 		group_by=group_by,
-		parent=parent
+		parent=parent,
 	)
 
 	sales_order_map = {}
@@ -49,6 +52,7 @@ def get_sales_order_list(doctype="Sales Order", fields=None, filters=None, order
 @frappe.whitelist()
 def get_sales_order(name):
 	doc = frappe.get_doc("Sales Order", name)
+	doc.check_permission("read")
 	return get_output(doc)
 
 

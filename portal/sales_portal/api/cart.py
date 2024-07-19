@@ -1,8 +1,9 @@
 import frappe
 from frappe import _
-from frappe.utils import getdate, flt, cast
+from frappe.utils import getdate, flt, cast, cint
 from portal.sales_portal.doctype.cart.cart import validate_item_uom, make_sales_order
 from erpnext.stock.get_item_details import get_conversion_factor
+from portal.permissions import is_system_user
 
 
 @frappe.whitelist()
@@ -36,9 +37,20 @@ def get_cart_by_customer(customer, check_customer_exists=False):
 	if check_customer_exists and not frappe.db.exists("Customer", customer):
 		frappe.throw(_("Customer {0} does not exist").format(customer), exc=frappe.DoesNotExistError)
 
-	cart_id = frappe.db.get_value("Cart", filters={
-		"customer": customer, "status": "Draft", "docstatus": 0,
-	}, fieldname="name", order_by="creation desc")
+	carts = frappe.get_list("Cart", filters={
+		"customer": customer,
+		"status": "Draft",
+		"docstatus": 0,
+		"is_customer_cart": cint(not is_system_user())
+	}, fields=["name", "owner"], order_by="creation desc")
+
+	cart_same_owner = [d for d in carts if d.owner == frappe.session.user]
+
+	cart_id = None
+	if cart_same_owner:
+		cart_id = cart_same_owner[0].name
+	elif carts:
+		cart_id = carts[0].name
 
 	if not cart_id:
 		return None
@@ -52,6 +64,7 @@ def get_cart_by_id(cart_id):
 
 	try:
 		cart_doc = frappe.get_doc("Cart", cart_id)
+		cart_doc.check_permission("read")
 		if cart_doc.docstatus == 0 and cart_doc.status == "Draft":
 			return cart_doc
 
@@ -141,6 +154,9 @@ def _update_item_value(cart_doc, item_code, fieldname, value):
 	if not row:
 		return
 
+	if not row.has_permlevel_access_to(fieldname, permission_type="write"):
+		return
+
 	df = frappe.get_meta("Cart Item").get_field(fieldname) or frappe._dict()
 	value = cast(df.fieldtype, value)
 	row.set(fieldname, value)
@@ -190,6 +206,7 @@ def clear_cart(customer=None, cart_id=None):
 
 
 def _clear_cart(cart_doc):
+	cart_doc.sales_person = None
 	cart_doc.items = []
 
 
@@ -203,6 +220,7 @@ def place_order(customer=None, cart_id=None):
 	cart_doc.submit()
 
 	sales_order = make_sales_order(cart_doc.name, ignore_permissions=True)
+	sales_order.flags.ignore_mandatory = True
 	sales_order.save()
 
 	new_cart_doc = get_cart_doc(customer)
@@ -219,6 +237,8 @@ def update_cart(cart_doc):
 
 
 def process_cart(cart_doc, for_save):
+	cart_doc.check_permission("write" if for_save else "read")
+
 	cart_doc.transaction_date = getdate()
 
 	if not for_save:

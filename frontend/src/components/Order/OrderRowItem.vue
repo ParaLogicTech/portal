@@ -17,7 +17,7 @@
 		/>
 		<div class="text-ellipsis">{{ row.item_name }}</div>
 	</div>
-	<div v-else-if="column.key == 'qty' && !read_only">
+	<div v-else-if="column.key == 'qty' && editable">
 		<QtyField
 			v-model:qty="row.qty"
 			v-model:uom="row.uom"
@@ -30,12 +30,12 @@
 		/>
 	</div>
 	<div
-		v-else-if="column.key == 'qty' && read_only"
+		v-else-if="column.key == 'qty' && !editable"
 		class="flex items-center justify-end text-right text-base h-[45px] overflow-hidden"
 	>
 		{{ formatted_value }}
 	</div>
-	<div v-else-if="column.key == 'rate' && !read_only">
+	<div v-else-if="column.key == 'rate' && editable">
 		<CurrencyField
 			v-model="row.rate"
 			:currency="doc.currency"
@@ -46,7 +46,7 @@
 			@update:modelValue="(v) => this.handle_value_change('rate', v)"
 		/>
 	</div>
-	<div v-else-if="column.key == 'discount_percentage' && !read_only">
+	<div v-else-if="column.key == 'discount_percentage' && editable">
 		<PercentField
 			v-model="row.discount_percentage"
 			class="h-[35px]"
@@ -72,6 +72,7 @@ import {item_list} from "@/data/items";
 import ItemImage from "@/components/Item/ItemImage.vue";
 import CurrencyField from "@/components/Fields/CurrencyField.vue";
 import PercentField from "@/components/Fields/PercentField.vue";
+import {settings} from "@/data/settings";
 
 export default {
 	name: "OrderRowItem",
@@ -147,6 +148,21 @@ export default {
 			} else {
 				return cstr(this.value);
 			}
+		},
+
+		editable() {
+			if (this.read_only) {
+				return false;
+			}
+
+			if (
+				["price_list_rate", "rate", "discount_percentage"].includes(this.column.key)
+				&& !settings.is_system_user
+			) {
+				return false;
+			}
+
+			return true;
 		},
 	},
 

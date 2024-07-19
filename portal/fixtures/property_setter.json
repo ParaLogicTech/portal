@@ -1,0 +1,19 @@
+[
+ {
+  "creation": "2024-07-19 08:47:42.869163",
+  "default_value": null,
+  "doc_type": "Item",
+  "docstatus": 0,
+  "doctype": "Property Setter",
+  "doctype_or_field": "DocType",
+  "field_name": null,
+  "is_system_generated": 0,
+  "modified": "2024-07-19 08:47:42.869163",
+  "module": null,
+  "name": "Item-main-make_attachments_public",
+  "property": "make_attachments_public",
+  "property_type": "Check",
+  "row_name": null,
+  "value": "1"
+ }
+]

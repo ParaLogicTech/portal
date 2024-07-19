@@ -142,15 +142,25 @@ if (!session.isLoggedIn) {
 	reload_items_data();
 	reload_sales_person_data();
 
-	// Set last selected customer
+	// Set default customer or last selected customer
 	customer_list.list.promise.then(() => {
 		let last_selected_customer = localStorage.getItem('last_selected_customer');
-		if (!customer_list.dataMap[last_selected_customer]) {
+		if (last_selected_customer && !customer_list.dataMap[last_selected_customer]) {
 			localStorage.removeItem('last_selected_customer');
-			return;
+			last_selected_customer = null;
 		}
-		if (last_selected_customer && !cart.customer) {
-			cart.set_customer(last_selected_customer);
+
+		let default_customer = last_selected_customer;
+
+		if (!default_customer && (customer_list.data || []).length == 1) {
+			let one_customer = customer_list.data[0].name;
+			if (one_customer) {
+				default_customer = one_customer;
+			}
+		}
+
+		if (default_customer && !cart.customer) {
+			cart.set_customer(default_customer);
 		}
 	});
 }

@@ -85,6 +85,7 @@
 							:link="desk_link"
 							@click="close()"
 							class="!justify-start"
+							v-if="settings.is_system_user"
 						>
 							<template #prefix>
 								<ExternalLink class="h-[15px] w-[15px]" />
@@ -101,6 +102,7 @@
 import {Ellipsis, FileText, ExternalLink, Printer, RefreshCw} from "lucide-vue-next";
 import OrderStatusBadge from "@/components/Order/OrderStatusBadge.vue";
 import {Button, Popover} from "frappe-ui";
+import {settings} from "@/data/settings";
 
 export default {
 	name: "OrderHeader",
@@ -117,6 +119,12 @@ export default {
 			required: true,
 		},
 		loading: Boolean,
+	},
+
+	data() {
+		return {
+			settings: settings,
+		}
 	},
 
 	computed: {

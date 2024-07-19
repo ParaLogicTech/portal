@@ -7,6 +7,7 @@ import debounce from "frappe-ui/src/utils/debounce";
 export const sales_person_list = createListResource({
 	doctype: 'Sales Person',
 	cache: 'Sales Persons',
+	url: 'portal.sales_portal.api.sales_persons.get_sales_person_list',
 	fields: [
 		'name',
 		'enabled',

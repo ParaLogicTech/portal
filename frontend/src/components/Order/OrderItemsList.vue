@@ -31,6 +31,7 @@ import {ListView} from "frappe-ui";
 import QtyField from "@/components/Fields/QtyField.vue";
 import OrderRowItem from "@/components/Order/OrderRowItem.vue";
 import SelectableItems from "@/mixins/SelectableItems";
+import {settings} from "@/data/settings";
 
 export default {
 	name: "OrderItemsList",
@@ -88,7 +89,7 @@ export default {
 		},
 
 		columns() {
-			return [
+			let columns = [
 				{
 					label: "#",
 					key: "idx",
@@ -129,7 +130,13 @@ export default {
 					align: "right",
 					width: "110px",
 				},
-			]
+			];
+
+			if (!settings.is_system_user) {
+				columns = columns.filter(c => !['price_list_rate', 'discount_percentage'].includes(c.key))
+			}
+
+			return columns;
 		},
 
 		options() {

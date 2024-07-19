@@ -1,14 +1,18 @@
 import frappe
 from frappe.utils import cint
 from frappe.client import get_list
+from portal.permissions import check_customer_permission
 from erpnext.accounts.party import get_address_display
 
 
 @frappe.whitelist()
-def get_customer_list(doctype="Customer", fields=None, filters=None, order_by=None, start=0, limit=20, group_by=None, parent=None, debug=False):
+def get_customer_list(doctype="Customer", fields=None, filters=None, order_by=None, start=0, limit=20, group_by=None, parent=None):
+	doctype = "Customer"
+	parent = None
+
 	filters = frappe.parse_json(filters)
 
-	out = get_list(
+	return get_list(
 		doctype=doctype,
 		fields=fields,
 		filters=filters,
@@ -16,13 +20,14 @@ def get_customer_list(doctype="Customer", fields=None, filters=None, order_by=No
 		limit_start=start,
 		limit_page_length=limit,
 		group_by=group_by,
-		parent=parent
+		parent=parent,
 	)
-	return out
 
 
 @frappe.whitelist()
 def get_customer_address_and_contact(customer=None):
+	check_customer_permission(customer)
+
 	return {
 		"addresses": get_customer_addresses(customer),
 		"contacts": get_customer_contacts(customer),

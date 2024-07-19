@@ -1,0 +1,53 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-07-17 04:52:04.086419",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "user",
+  "user_contact",
+  "user_contact_display"
+ ],
+ "fields": [
+  {
+   "columns": 4,
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "User",
+   "options": "User",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "columns": 2,
+   "fieldname": "user_contact",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Contact Person",
+   "options": "Contact"
+  },
+  {
+   "columns": 4,
+   "fieldname": "user_contact_display",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Contact Name",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-07-19 02:50:08.903721",
+ "modified_by": "Administrator",
+ "module": "Sales Portal",
+ "name": "Customer Portal User",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

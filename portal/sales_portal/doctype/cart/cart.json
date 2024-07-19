@@ -14,6 +14,7 @@
   "customer_name",
   "po_no",
   "po_date",
+  "is_customer_cart",
   "column_break1",
   "remarks",
   "order_confirmed",
@@ -1157,12 +1158,19 @@
    "in_standard_filter": 1,
    "label": "Sales Person",
    "options": "Sales Person"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_customer_cart",
+   "fieldtype": "Check",
+   "label": "Is Customer Cart",
+   "read_only": 1
   }
  ],
  "icon": "fa fa-file-text",
  "is_submittable": 1,
  "links": [],
- "modified": "2024-05-02 12:55:28.881947",
+ "modified": "2024-07-19 07:00:32.481593",
  "modified_by": "Administrator",
  "module": "Sales Portal",
  "name": "Cart",
@@ -1185,6 +1193,12 @@
    "write": 1
   },
   {
+   "permlevel": 2,
+   "read": 1,
+   "role": "Sales User",
+   "write": 1
+  },
+  {
    "amend": 1,
    "cancel": 1,
    "create": 1,
@@ -1197,6 +1211,12 @@
    "role": "Accounts User",
    "share": 1,
    "submit": 1,
+   "write": 1
+  },
+  {
+   "permlevel": 2,
+   "read": 1,
+   "role": "Accounts User",
    "write": 1
   },
   {
@@ -1215,12 +1235,36 @@
    "write": 1
   },
   {
+   "permlevel": 2,
+   "read": 1,
+   "role": "Cashier"
+  },
+  {
    "email": 1,
    "export": 1,
    "print": 1,
    "read": 1,
    "report": 1,
    "role": "Sales User (Read Only)"
+  },
+  {
+   "permlevel": 2,
+   "read": 1,
+   "role": "Sales User (Read Only)"
+  },
+  {
+   "create": 1,
+   "if_owner": 1,
+   "read": 1,
+   "role": "Customer",
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "if_owner": 1,
+   "permlevel": 2,
+   "read": 1,
+   "role": "Customer"
   },
   {
    "permlevel": 1,

@@ -1,8 +1,10 @@
 import frappe
 from frappe import _
+from frappe.utils import cint
 from erpnext.controllers.selling_controller import SellingController
 from frappe.model.mapper import get_mapped_doc
 from crm.crm.doctype.sales_person.sales_person import get_sales_person_from_user
+from portal.permissions import is_system_user
 
 
 class Cart(SellingController):
@@ -21,6 +23,7 @@ class Cart(SellingController):
 	def validate(self):
 		super().validate()
 		self.validate_uom_is_integer("stock_uom", "qty")
+		self.set_is_customer_cart()
 		self.set_sales_person_from_user()
 		self.validate_order_confirmed()
 		self.set_status()
@@ -34,6 +37,9 @@ class Cart(SellingController):
 	def on_cancel(self):
 		self.update_status_on_cancel()
 		self.db_set("order_confirmed", 0)
+
+	def set_is_customer_cart(self):
+		self.is_customer_cart = cint(not is_system_user(self.owner))
 
 	def set_sales_person_from_user(self):
 		if not self.get('sales_person'):
@@ -70,7 +76,7 @@ class Cart(SellingController):
 				break
 
 		if not row and add_row_if_missing:
-			row = self.append("items", {})
+			row = self.append("items", frappe.new_doc("Cart Item"))
 			row.item_code = item_code
 
 		return row

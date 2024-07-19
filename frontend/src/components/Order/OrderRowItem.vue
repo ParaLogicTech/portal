@@ -157,7 +157,7 @@ export default {
 
 			if (
 				["price_list_rate", "rate", "discount_percentage"].includes(this.column.key)
-				&& !settings.is_system_user
+				&& !settings.value.is_system_user
 			) {
 				return false;
 			}

@@ -188,8 +188,6 @@ def permission_query_conditions_contact_address(doctype, user):
 			and `tabDynamic Link`.link_name in ({formatted_customers})
 			) {user_condition})"""
 
-		print(condition)
-
 		return condition
 	else:
 		if doctype == "Contact":
@@ -234,6 +232,14 @@ def get_sales_persons_by_customers(customers):
 
 	sales_persons = list(set(customer_sales_persons + order_sales_persons))
 	return sales_persons
+
+
+def get_user_home_page(user):
+	if user == "Guest":
+		return
+
+	if not is_system_user(user) and "Customer" in frappe.get_roles(user):
+		return "/sales-portal"
 
 
 def is_system_user(user=None):

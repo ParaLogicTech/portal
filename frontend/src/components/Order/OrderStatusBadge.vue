@@ -25,7 +25,7 @@ export default {
 				return "Loading";
 			} else {
 				if (this.doc.docstatus == 0) {
-					return "Draft";
+					return "To Receive";
 				} else if (this.doc.docstatus == 2) {
 					return "Cancelled";
 				} else if (this.doc.status == "Closed") {
@@ -39,7 +39,7 @@ export default {
 		},
 
 		status_color() {
-			if (this.status_label == "Draft") {
+			if (this.status_label == "To Receive") {
 				return "bg-blue-200 text-blue-800";
 			} else if (["Closed", "Delivered"].includes(this.status_label)) {
 				return "bg-green-300 text-green-900";

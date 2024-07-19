@@ -30,6 +30,12 @@ export const active_customers = computed(() => {
 	});
 });
 
+export const active_customers_map = computed(() => {
+	let customer_map = {};
+	active_customers.value.forEach(c => customer_map[c.name] = c);
+	return customer_map;
+});
+
 // Reload Customers
 export const reload_customer_data = () => {
 	reload_customers();

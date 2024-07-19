@@ -11,6 +11,8 @@ website_route_rules = [
 	{"from_route": "/sales-portal/<path:app_path>", "to_route": "sales-portal"},
 ]
 
+get_website_user_home_page = "portal.permissions.get_user_home_page"
+
 doc_events = {
 	"Customer": {
 		"validate": "portal.overrides.customer_hooks.customer_validate",
@@ -18,6 +20,9 @@ doc_events = {
 	},
 	"User": {
 		"validate": "portal.overrides.user_hooks.validate_customer_role",
+	},
+	"Sales Order": {
+		"on_submit": "portal.overrides.sales_order_hooks.sales_order_on_submit",
 	}
 }
 
@@ -64,19 +69,9 @@ override_doctype_dashboards = {
 	"User": "portal.overrides.user_hooks.override_user_dashboard",
 }
 
-after_migrate = [
-	"portal.install.setup_customer_role_profile"
-]
+after_migrate = "portal.install.setup_customer_role_profile"
 
 fixtures = [
-	{
-		"doctype": "Role",
-		"filters": {
-			"name": ["in", [
-				'Customer',
-			]]
-		}
-	},
 	{
 		"doctype": "Custom Field",
 		"filters": {

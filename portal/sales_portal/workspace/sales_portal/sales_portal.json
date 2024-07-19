@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"id\":\"OF6wyJ4ijJ\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Sales Portal</span>\",\"col\":12}},{\"id\":\"sO_jfSEqkS\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Portal\",\"col\":3}},{\"id\":\"T22g0X-La0\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Order\",\"col\":3}},{\"id\":\"KV7S3aWtTF\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Cart\",\"col\":3}},{\"id\":\"V3Xzn030Ff\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Portal Settings\",\"col\":3}}]",
+ "content": "[{\"id\":\"OF6wyJ4ijJ\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Sales Portal</span>\",\"col\":12}},{\"id\":\"sO_jfSEqkS\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Portal\",\"col\":3}},{\"id\":\"T22g0X-La0\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Order\",\"col\":3}},{\"id\":\"KV7S3aWtTF\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Cart\",\"col\":3}},{\"id\":\"V3Xzn030Ff\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Portal Settings\",\"col\":3}},{\"id\":\"DzT61doV9Q\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"User\",\"col\":3}}]",
  "creation": "2024-04-16 14:45:21.933755",
  "custom_blocks": [],
  "docstatus": 0,
@@ -12,7 +12,7 @@
  "is_hidden": 0,
  "label": "Sales Portal",
  "links": [],
- "modified": "2024-06-03 05:50:00.882384",
+ "modified": "2024-07-19 17:07:36.825527",
  "modified_by": "Administrator",
  "module": "Sales Portal",
  "name": "Sales Portal",
@@ -28,6 +28,15 @@
  ],
  "sequence_id": 111.0,
  "shortcuts": [
+  {
+   "color": "Blue",
+   "doc_view": "List",
+   "format": "{} Customer Users",
+   "label": "User",
+   "link_to": "User",
+   "stats_filter": "[[\"Has Role\",\"role\",\"=\",\"Customer\",false]]",
+   "type": "DocType"
+  },
   {
    "color": "Grey",
    "doc_view": "List",

@@ -36,6 +36,8 @@ import {
 
 import {
 	customer_list,
+	active_customers,
+	active_customers_map,
 	reload_customer_data,
 	setup_customer_data_realtime,
 } from "@/data/customers";
@@ -145,15 +147,15 @@ if (!session.isLoggedIn) {
 	// Set default customer or last selected customer
 	customer_list.list.promise.then(() => {
 		let last_selected_customer = localStorage.getItem('last_selected_customer');
-		if (last_selected_customer && !customer_list.dataMap[last_selected_customer]) {
+		if (last_selected_customer && !active_customers_map.value[last_selected_customer]) {
 			localStorage.removeItem('last_selected_customer');
 			last_selected_customer = null;
 		}
 
 		let default_customer = last_selected_customer;
 
-		if (!default_customer && (customer_list.data || []).length == 1) {
-			let one_customer = customer_list.data[0].name;
+		if (!default_customer && active_customers.value.length == 1) {
+			let one_customer = active_customers.value[0].name;
 			if (one_customer) {
 				default_customer = one_customer;
 			}

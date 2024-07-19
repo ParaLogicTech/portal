@@ -132,7 +132,7 @@ export default {
 				},
 			];
 
-			if (!settings.is_system_user) {
+			if (!settings.value.is_system_user) {
 				columns = columns.filter(c => !['price_list_rate', 'discount_percentage'].includes(c.key))
 			}
 

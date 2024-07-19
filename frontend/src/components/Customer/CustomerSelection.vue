@@ -3,7 +3,7 @@
 		:options="this.customer_options"
 		v-model="customer_model"
 		placeholder="Select Customer"
-		variant="outline",
+		variant="outline"
 		@update:modelValue="this.update_cart_customer"
 	>
 		<template #prefix>
@@ -36,6 +36,13 @@ export default {
 
 	methods: {
 		update_cart_customer(value) {
+			// do not let customer user deselect if only one customer
+			// Todo make it read only instead
+			if (!value && !settings.value.is_system_user && active_customers.value.length == 1) {
+				this.customer_model = this.get_option_from_name(_selected_customer.value);
+				return;
+			}
+
 			cart.set_customer(value?.value);
 		},
 

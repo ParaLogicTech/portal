@@ -1,10 +1,10 @@
 <template>
 	<div class="bg-white" :class="rounded">
 		<img
-			v-if="item.image"
+			v-if="item.thumbnail || item.image"
 			class="w-auto h-full mx-auto object-cover"
 			:class="rounded"
-			:src="item.image"
+			:src="item.thumbnail || item.image"
 			:alt="item.item_name || item.name"
 			loading="lazy"
 		/>
@@ -18,7 +18,7 @@
 
 		<!-- Image Full View -->
 		<Expand
-			v-if="item.image && full_view_enable"
+			v-if="(this.item.image || item.thumbnail) && full_view_enable"
 			class="absolute top-[7px] left-[7px] w-[18px] h-[18px] hover:scale-105 transition-transform ease-linear duration-200 text-gray-700"
 			@click.stop="this.modal=true"
 		/>
@@ -26,7 +26,7 @@
 		<Teleport to="#modals">
 			<vue-easy-lightbox
 				:visible="this.modal"
-				:imgs="[this.item.image]"
+				:imgs="[this.item.image || item.thumbnail]"
 				:zoom-disabled="true"
 				:move-disabled="true"
 				:dblclick-disabled="true"

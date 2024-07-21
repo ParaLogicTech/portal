@@ -4,3 +4,4 @@
 portal.patches.setup_customer_portal
 portal.patches.remove_role_home_page
 portal.patches.update_cart_ordered_status
+portal.patches.set_optimized_and_thumbnail_images

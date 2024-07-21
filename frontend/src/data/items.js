@@ -15,6 +15,7 @@ export const item_list = createListResource({
 		'name',
 		'item_name',
 		'image',
+		'thumbnail',
 		'item_group',
 		'brand',
 		'stock_uom',
@@ -74,6 +75,7 @@ export const item_group_list = createListResource({
 		'lft',
 		'rgt',
 		'image',
+		'thumbnail',
 	],
 	orderBy: 'name',
 	pageLength: 99999,
@@ -147,6 +149,7 @@ export const brand_list = createListResource({
 	fields: [
 		'name',
 		'image',
+		'thumbnail',
 	],
 	orderBy: 'name',
 	pageLength: 99999,

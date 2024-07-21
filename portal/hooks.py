@@ -23,7 +23,16 @@ doc_events = {
 	},
 	"Sales Order": {
 		"on_submit": "portal.overrides.sales_order_hooks.sales_order_on_submit",
-	}
+	},
+	"Item": {
+		"validate": "portal.overrides.item_hooks.item_validate",
+	},
+	"Item Group": {
+		"validate": "portal.overrides.item_hooks.item_group_validate",
+	},
+	"Brand": {
+		"validate": "portal.overrides.item_hooks.brand_validate",
+	},
 }
 
 doctype_js = {
@@ -76,13 +85,20 @@ fixtures = [
 		"doctype": "Custom Field",
 		"filters": {
 			"name": ["in", [
-				'Sales Order-cart',
-				'Sales Order Item-cart_item',
+				'File-is_portal_optimized',
+
+				'Item-show_in_customer_portal',
+				'Item-thumbnail',
+
+				'Item Group-thumbnail',
+
+				'Brand-thumbnail',
 
 				'Customer-tab_sales_portal',
 				'Customer-portal_users',
 
-				'Item-show_in_customer_portal',
+				'Sales Order-cart',
+				'Sales Order Item-cart_item',
 			]]
 		}
 	},

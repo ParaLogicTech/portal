@@ -17,10 +17,6 @@
 				size="sm"
 				label="Reset"
 				icon-left="filter"
-				:disabled="false"
-				:link="null"
-				:loading="false"
-				:loadingText="null"
 				@click="this.debounced_reset_filters"
 				class="min-w-18"
 			/>

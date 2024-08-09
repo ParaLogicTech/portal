@@ -32,10 +32,6 @@
 				size="sm"
 				label="Reset"
 				icon-left="filter"
-				:disabled="false"
-				:link="null"
-				:loading="false"
-				:loadingText="null"
 				@click="reset_filters"
 			/>
 
@@ -45,10 +41,7 @@
 				size="sm"
 				label="Reload"
 				icon-left="refresh"
-				:disabled="false"
-				:link="null"
 				:loading="loading"
-				:loadingText="null"
 				@click="emit_reload"
 			>
 				<template #prefix>

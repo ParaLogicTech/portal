@@ -1,3 +1,51 @@
+.form {
+	@apply relative;
+
+	.section {
+		@apply py-4 px-5 border-b border-gray-300 text-md;
+
+		.section-heading {
+			@apply font-medium text-lg text-md mb-2 text-gray-700;
+			margin-top: -2px;
+		}
+
+		.section-message {
+			@apply font-normal text-gray-600;
+		}
+
+		.section-grid {
+			@apply grid gap-4;
+		}
+	}
+
+	&> .section:last-child {
+		@apply border-b-0;
+	}
+
+	.col-row:not(:first-child) {
+		@apply mt-3;
+	}
+
+	.loading-overlay {
+		@apply flex items-center justify-center bg-white opacity-70 z-10;
+		position: absolute;
+		height: 100%;
+		width: 100%;
+
+		.loading-text {
+			@apply drop-shadow text-gray-900 text-4xl font-normal;
+		}
+	}
+
+	label {
+		@apply block text-sm text-gray-700 font-medium mb-0.5;
+	}
+
+	input, textarea, select {
+		@apply text-gray-800;
+	}
+}
+
 .field {
 	@apply text-sm rounded-sm border border-gray-400 transition-colors duration-100;
 

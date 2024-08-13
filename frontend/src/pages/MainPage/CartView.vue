@@ -49,9 +49,7 @@
 						label: 'Confirm',
 						variant: 'solid',
 						theme: 'blue',
-						onClick: () => {
-							this.place_order();
-						},
+						onClick: () => this.place_order(),
 					},
 				],
 			}"

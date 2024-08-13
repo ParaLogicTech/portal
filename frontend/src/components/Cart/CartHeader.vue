@@ -74,9 +74,7 @@
 						label: 'Confirm',
 						variant: 'solid',
 						theme: 'red',
-						onClick: () => {
-							this.clear_cart();
-						},
+						onClick: () => this.clear_cart(),
 					},
 				],
 			}"

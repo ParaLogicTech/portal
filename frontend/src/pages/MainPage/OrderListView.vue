@@ -64,7 +64,7 @@ export default {
 				await this.list_resource.reload();
 				this.page_length = this.list_resource.pageLength - 1;
 			} catch (e) {
-				createAlert({"title": "Error loading Sales Orders", "message": e, "variant": "error"});
+				createAlert({"title": "Error Loading Sales Orders", "message": e, "variant": "error"});
 			}
 		},
 

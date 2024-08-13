@@ -328,7 +328,7 @@ export const cart_queue = reactive({
 			action_obj.resolve(data);
 		} catch (e) {
 			action_obj.reject(e);
-			createAlert({"title": "Error updating cart", "message": e, "variant": "error"});
+			createAlert({"title": "Error Updating Cart", "message": e, "variant": "error"});
 		} finally {
 			this.running_action = null;
 		}

@@ -190,7 +190,7 @@ export const get_item_prices_resource = (customer) => {
 		});
 
 		resource.reload().catch(e => {
-			createAlert({"title": `Error loading prices for Customer ${customer}`, "message": e, "variant": "error"});
+			createAlert({"title": `Error Loading Prices for Customer ${customer}`, "message": e, "variant": "error"});
 		});
 	}
 
@@ -209,16 +209,16 @@ export const reload_items_data = () => {
 	reload_brands();
 
 	item_stock.reload().catch(e => {
-		createAlert({"title": "Error loading Item Stock", "message": e, "variant": "error"});
+		createAlert({"title": "Error Loading Item Stock", "message": e, "variant": "error"});
 	});
 	standard_prices.reload().catch(e => {
-		createAlert({"title": "Error loading Standard Prices", "message": e, "variant": "error"});
+		createAlert({"title": "Error Loading Standard Prices", "message": e, "variant": "error"});
 	});
 }
 
 const reload_items = () => {
 	item_list.reload().catch(e => {
-		createAlert({"title": "Error loading Items", "message": e, "variant": "error"});
+		createAlert({"title": "Error Loading Items", "message": e, "variant": "error"});
 	});
 }
 
@@ -226,7 +226,7 @@ const debounced_reload_items = debounce(reload_items, 500);
 
 const reload_item_groups = () => {
 	item_group_list.reload().catch(e => {
-		createAlert({"title": "Error loading Item Groups", "message": e, "variant": "error"});
+		createAlert({"title": "Error Loading Item Groups", "message": e, "variant": "error"});
 	});
 }
 
@@ -234,7 +234,7 @@ const debounced_reload_item_groups = debounce(reload_item_groups, 500);
 
 const reload_brands = () => {
 	brand_list.reload().catch(e => {
-		createAlert({"title": "Error loading Brands", "message": e, "variant": "error"});
+		createAlert({"title": "Error Loading Brands", "message": e, "variant": "error"});
 	});
 }
 

@@ -16,6 +16,6 @@ export let currency_list = createListResource({
 // Reload Customers
 export let reload_currency_data = () => {
 	currency_list.reload().catch(e => {
-		createAlert({"title": "Error loading Currency data", "message": e, "variant": "error"});
+		createAlert({"title": "Error Loading Currency Data", "message": e, "variant": "error"});
 	});
 }

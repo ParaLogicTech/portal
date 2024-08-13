@@ -49,7 +49,7 @@ export default {
 			try {
 				await this.order_resource.fetch();
 			} catch (e) {
-				createAlert({"title": "Error loading Sales Order", "message": e, "variant": "error"});
+				createAlert({"title": "Error Loading Sales Order", "message": e, "variant": "error"});
 			}
 			this.refresh_view();
 		},

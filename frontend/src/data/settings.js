@@ -13,6 +13,6 @@ export const settings = computed(() => {
 
 export const reload_settings_data = () => {
 	settings_resource.reload().catch(e => {
-		createAlert({"title": "Error loading Sales Portal Settings", "message": e, "variant": "error"});
+		createAlert({"title": "Error Loading Sales Portal Settings", "message": e, "variant": "error"});
 	});
 }

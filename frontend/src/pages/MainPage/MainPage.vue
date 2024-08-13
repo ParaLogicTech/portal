@@ -60,7 +60,7 @@ export default {
 	methods: {
 		async handle_item_selected(item, open_cart) {
 			if (!cart.customer && !cart.cart_id) {
-				createAlert({"title": "Please select customer first", "variant": "warning"});
+				createAlert({"title": "Please Select Customer First", "variant": "warning"});
 				return;
 			}
 

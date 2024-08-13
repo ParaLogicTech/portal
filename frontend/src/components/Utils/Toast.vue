@@ -21,9 +21,8 @@
 						v-if="displayMessage"
 						class="text-base font-normal"
 						:class="textClass"
-					>
-						{{ displayMessage }}
-					</p>
+						v-html="displayMessage"
+					/>
 				</slot>
 			</div>
 			<div class="ml-auto pl-2 pointer-events-auto">

@@ -43,7 +43,7 @@ export const reload_customer_data = () => {
 
 const reload_customers = () => {
 	customer_list.reload().catch(e => {
-		createAlert({"title": "Error loading Customers", "message": e, "variant": "error"});
+		createAlert({"title": "Error Loading Customers", "message": e, "variant": "error"});
 	});
 }
 

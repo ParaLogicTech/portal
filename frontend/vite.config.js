@@ -17,6 +17,11 @@ export default defineConfig({
   optimizeDeps: {
     include: ['frappe-ui > feather-icons', 'showdown', 'engine.io-client'],
   },
+  server: {
+    fs: {
+      strict: false,
+    }
+  },
   build: {
     outDir: `../${path.basename(path.resolve('..'))}/public/sales-portal`,
     emptyOutDir: true,

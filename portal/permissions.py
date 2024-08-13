@@ -242,6 +242,11 @@ def get_user_home_page(user):
 		return "/sales-portal"
 
 
+def check_is_system_user(user=None):
+	if not is_system_user(user):
+		frappe.throw(_("Not permitted"), exc=frappe.PermissionError, title=_("Permission Error"))
+
+
 def is_system_user(user=None):
 	if not user:
 		user = frappe.session.user

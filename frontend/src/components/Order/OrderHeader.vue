@@ -1,5 +1,6 @@
 <template>
 	<div class="flex justify-between items-center">
+		<!-- Left side headings -->
 		<div class="flex items-center">
 			<FileText class="inline h-[18px]" stroke-width="1.8px"/>
 
@@ -18,10 +19,13 @@
 			/>
 		</div>
 
-		<div class="flex items-center gap-1.5">
+		<!-- Right side buttons -->
+		<div class="flex items-center gap-1">
+			<!-- Loader -->
 			<Spinner class="w-4" v-if="loading" />
 
-			<div class="hidden sm:block">
+			<!-- Tablet / Desktop Icons -->
+			<div class="hidden sm:flex gap-1">
 				<Button
 					variant="ghost"
 					theme="gray"
@@ -34,8 +38,22 @@
 						<Printer class="w-[18px]" stroke-width="1.9px" />
 					</template>
 				</Button>
+
+				<Button
+					variant="ghost"
+					theme="gray"
+					size="sm"
+					label="Email"
+					title="Email"
+					@click="show_email_dialog()"
+				>
+					<template #icon>
+						<Mail class="w-[18px]" stroke-width="1.9px" />
+					</template>
+				</Button>
 			</div>
 
+			<!-- Ellipsis menu -->
 			<Popover>
 				<template #target="{ togglePopover }">
 					<Button
@@ -61,6 +79,19 @@
 						>
 							<template #prefix>
 								<Printer class="w-[15px] h-[15px]" stroke-width="1.9px" />
+							</template>
+						</Button>
+
+						<Button
+							variant="ghost"
+							theme="gray"
+							size="sm"
+							label="Email"
+							class="!justify-start"
+							@click="close(); show_email_dialog();"
+						>
+							<template #prefix>
+								<Mail class="h-[15px] w-[15px]" stroke-width="1.9px" />
 							</template>
 						</Button>
 
@@ -95,19 +126,38 @@
 				</template>
 			</Popover>
 		</div>
+
+		<EmailDialog
+			v-model="email_dialog"
+			:doc="doc"
+			:email_template="settings.sales_order_email_template"
+			:default_recipient="doc.contact_email"
+		/>
 	</div>
 </template>
 
 <script>
-import {Ellipsis, FileText, ExternalLink, Printer, RefreshCw} from "lucide-vue-next";
+import {Ellipsis, FileText, ExternalLink, Printer, RefreshCw, Mail} from "lucide-vue-next";
 import OrderStatusBadge from "@/components/Order/OrderStatusBadge.vue";
 import {Button, Popover} from "frappe-ui";
 import {settings} from "@/data/settings";
+import EmailDialog from "@/components/Utils/EmailDialog.vue";
 
 export default {
 	name: "OrderHeader",
 
-	components: {RefreshCw, ExternalLink, Ellipsis, Button, OrderStatusBadge, FileText, Popover, Printer},
+	components: {
+		RefreshCw,
+		ExternalLink,
+		Ellipsis,
+		Button,
+		OrderStatusBadge,
+		FileText,
+		Popover,
+		Printer,
+		Mail,
+		EmailDialog,
+	},
 
 	props: {
 		name: {
@@ -123,7 +173,14 @@ export default {
 
 	data() {
 		return {
+			email_dialog: false,
 			settings: settings,
+		}
+	},
+
+	methods: {
+		show_email_dialog() {
+			this.email_dialog = true;
 		}
 	},
 

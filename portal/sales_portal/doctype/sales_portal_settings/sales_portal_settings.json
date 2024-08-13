@@ -13,7 +13,9 @@
   "stock_availability_based_on",
   "show_stock_availability",
   "column_break_n8pgn",
-  "hide_items_without_image"
+  "hide_items_without_image",
+  "emails_section",
+  "sales_order_email_template"
  ],
  "fields": [
   {
@@ -57,12 +59,23 @@
   {
    "fieldname": "column_break_4clnz",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "emails_section",
+   "fieldtype": "Section Break",
+   "label": "Emails"
+  },
+  {
+   "fieldname": "sales_order_email_template",
+   "fieldtype": "Link",
+   "label": "Sales Order Email Template",
+   "options": "Email Template"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-05-21 16:44:11.592668",
+ "modified": "2024-08-09 05:20:13.901486",
  "modified_by": "Administrator",
  "module": "Sales Portal",
  "name": "Sales Portal Settings",

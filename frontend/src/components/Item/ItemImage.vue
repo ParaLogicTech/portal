@@ -57,7 +57,10 @@ export default {
 	},
 
 	props: {
-		item: Object,
+		item: {
+			type: Object,
+			required: true,
+		},
 		rounded: String,
 		font: String,
 		full_view_enable: Boolean

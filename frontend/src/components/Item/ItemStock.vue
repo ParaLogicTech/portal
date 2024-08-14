@@ -18,7 +18,10 @@ export default {
 	name: "ItemStock",
 
 	props: {
-		item: Object,
+		item: {
+			type: Object,
+			required: true,
+		},
 	},
 
 	computed: {

@@ -9,7 +9,7 @@
 		<BrandCard
 			v-for="d in brand_list"
 			:key="d.name"
-			:brand_list="d"
+			:brand="d"
 			:matches="get_matches(d)"
 			@brand-selected="this.handle_brand_selected"
 		/>

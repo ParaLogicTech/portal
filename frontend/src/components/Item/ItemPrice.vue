@@ -10,7 +10,10 @@ export default {
 	name: "ItemPrice",
 
 	props: {
-		item: Object,
+		item: {
+			type: Object,
+			required: true,
+		},
 	},
 
 	computed: {

@@ -33,7 +33,10 @@ export default {
 	},
 
 	props: {
-		item_group: Object,
+		item_group: {
+			type: Object,
+			required: true,
+		},
 		matches: Array,
 	},
 

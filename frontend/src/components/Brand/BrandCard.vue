@@ -4,15 +4,15 @@
 		@click="this.handle_click"
 	>
 		<ItemImage
-			:item="brand_list"
+			:item="brand"
 			class="h-[220px] @sm:h-[200px] @md:h-[220px] flex-none"
 			rounded="rounded rounded-b-none"
 		/>
 
-		<div class="flex flex-col justify-between h-full card-separator">
+		<div class="flex flex-col justify-between h-full card-separator-y">
 			<h1 class="text-sm font-medium px-3 py-2.5">
 				<HighlightedMatchText
-					:text="brand_list.name"
+					:text="brand.name"
 					:matches="brand_list_matches"
 				/>
 			</h1>
@@ -33,13 +33,16 @@ export default {
 	},
 
 	props: {
-		brand_list: Object,
+		brand: {
+			type: Object,
+			required: true,
+		},
 		matches: Array,
 	},
 
 	methods: {
 		handle_click() {
-			this.$emit('brand-selected', this.brand_list?.name);
+			this.$emit('brand-selected', this.brand?.name);
 		}
 	},
 

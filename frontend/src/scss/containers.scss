@@ -4,35 +4,35 @@
 }
 
 .controls-bg {
-    @apply bg-white;
+	@apply bg-white;
 }
 
 .filter-area-container {
-    @apply px-3 py-2 flex flex-col justify-center;
+	@apply px-3 py-2 flex flex-col justify-center;
 }
 
 // Cards
 .card {
-    @apply rounded border border-gray-400 relative;
+	@apply rounded border border-gray-400 relative;
 
-    &.item-card {
-        @apply shadow;
-    }
+	&.item-card {
+		@apply shadow;
+	}
 
-    &.clickable {
-        @apply cursor-pointer hover:border-violet-800 hover:shadow-md transition-all duration-150 ease-in-out;
-    }
+	&.clickable {
+		@apply cursor-pointer hover:border-violet-800 hover:shadow-md transition-all duration-150 ease-in-out;
+	}
 
-    &.selected {
+	&.selected {
 		@apply border-purple-700;
 	}
 
-    .card-top-right {
-        @apply flex gap-1 items-center;
-        position: absolute;
-        top: 8px;
-        right: 8px;
-    }
+	.card-top-right {
+		@apply flex gap-1 items-center;
+		position: absolute;
+		top: 8px;
+		right: 8px;
+	}
 
     .card-separator {
         @apply border-t border-gray-200;
@@ -43,11 +43,11 @@
 .list-view-fix {
 	width: fit-content !important;
 
-    .grid {
-	    min-width: 0;
-    }
+	.grid {
+		min-width: 0;
+	}
 
-    .grid > div {
-        min-width: 0;
-    }
+	.grid > div {
+		min-width: 0;
+	}
 }

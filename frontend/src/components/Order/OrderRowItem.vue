@@ -24,9 +24,9 @@
 			:uoms="uoms"
 			class="h-[35px]"
 			ref="qty_field"
-			@arrow-up="this.handle_arrow_up('qty')"
-			@arrow-down="this.handle_arrow_down('qty')"
-			@change="this.handle_qty_change"
+			@arrow-up="handle_arrow_up('qty')"
+			@arrow-down="handle_arrow_down('qty')"
+			@change="handle_qty_change"
 		/>
 	</div>
 	<div

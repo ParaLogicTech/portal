@@ -4,7 +4,7 @@
 			v-model="display_value.qty"
 			class="remove-arrow"
 			ref="qty_input"
-			@change="this.handle_qty_change"
+			@change.stop="this.handle_qty_change"
 			@keydown="this.handle_qty_keydown"
 			@input="this.handle_qty_input"
 			@focus="this.handle_qty_focus"
@@ -19,7 +19,7 @@
 			v-model="display_value.uom"
 			class="remove-arrow"
 			ref="uom_input"
-			@change="this.handle_qty_change"
+			@change.stop="this.handle_qty_change"
 			@focus="this.set_is_focused"
 			@blur="this.set_is_focused"
 		>
@@ -61,7 +61,7 @@ export default {
 		}
 	},
 
-	emits: ['update:qty', 'update:uom', 'arrow-up', 'arrow-down', 'focus', 'blur'],
+	emits: ['change', 'update:qty', 'update:uom', 'arrow-up', 'arrow-down', 'focus', 'blur'],
 
 	methods: {
 		focus() {

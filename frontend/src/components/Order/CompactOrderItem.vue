@@ -72,11 +72,11 @@
 							:uoms="uoms"
 							class="h-[30px]"
 							ref="qty_field"
-							@arrow-up="this.handle_arrow_up"
-							@arrow-down="this.handle_arrow_down"
-							@focus="this.handle_qty_focused"
-							@blur="this.handle_qty_blurred"
-							@change="this.handle_qty_change"
+							@arrow-up="handle_arrow_up"
+							@arrow-down="handle_arrow_down"
+							@focus="handle_qty_focused"
+							@blur="handle_qty_blurred"
+							@change="handle_qty_change"
 							@click.stop
 						/>
 					</div>
@@ -97,6 +97,7 @@
 		<!-- Hidden Trash Icon -->
 		<button
 			class="h-full bg-red-500 hover:bg-red-600 flex flex-none items-center justify-center transition-bg duration-200 ease"
+			tabindex="-1"
 			@click="this.handle_remove_button"
 			:style="{
 				'margin-right': `${-drawer_width}px`,
@@ -249,10 +250,6 @@ export default {
 				classes.push('last:border-b-0');
 			}
 			return classes;
-		},
-
-		border_class_fallback() {
-			return this.border_color_class || "border-gray-400";
 		},
 	},
 }

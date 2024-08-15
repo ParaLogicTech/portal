@@ -9,6 +9,7 @@ const routes = [
 		component: () => import('@/pages/MainPage/MainPage.vue'),
 		children: [
 			{
+				name: 'MainPageDefault',
 				path: '',
 				redirect: (to) => {
 					return { name: 'ItemListView' }

@@ -42,7 +42,7 @@
 						v-model="doc.remarks"
 						variant="subtle"
 						class="col-row"
-						rows="5"
+						:rows="5"
 						@change="handle_cart_value_change('remarks', doc.remarks)"
 						:disabled="read_only"
 					/>

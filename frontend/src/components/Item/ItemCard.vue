@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="card item-card clickable"
+		class="card item-card clickable @container"
 		:class="{'selected': selected}"
 		@click="this.handle_click"
 		@dblclick="this.handle_double_click"
@@ -29,7 +29,7 @@
 			<ItemImage
 				:item="item"
 				:enable_full_view="true"
-				class="w-[120px] @lg:w-[150px] min-h-[110px] max-h-[140px] flex-none"
+				class="w-[120px] @lg:w-[150px] @2xl:w-[170px] min-h-[110px] max-h-[140px] flex-none"
 				rounded="rounded rounded-r-none"
 				font="text-3xl"
 				object_fit="object-contain"
@@ -38,7 +38,7 @@
 			<!-- Right Side Container -->
 			<div class="flex flex-col w-full h-full card-separator-x">
 				<!-- Item Name Container -->
-				<h1 class="text-[11px] @md:text-sm @2xl:text-md !font-medium p-1.5 @md:p-2 bg-gray-50 rounded-tr">
+				<h1 class="text-[11.5px] @lg:text-sm !font-medium px-2 py-1.5 @lg:py-2 bg-gray-50 rounded-tr">
 					<HighlightedMatchText
 						:text="item.item_name"
 						:matches="item_name_matches"
@@ -49,7 +49,7 @@
 				<div class="flex flex-col justify-between h-full">
 					<div class="flex justify-between card-separator-y h-full">
 						<!-- Qty -->
-						<div class="flex flex-col justify-center gap-0.5 p-2">
+						<div class="flex flex-col justify-center gap-0.5 px-2 @lg:px-2.5 py-2">
 							<div class="text-2xs font-semibold text-gray-600">Order Qty</div>
 							<QtyField
 								v-model:qty="qty"
@@ -76,9 +76,9 @@
 					</div>
 
 					<!-- Stock and Price Footer -->
-					<div class="flex justify-between items-end p-2 card-separator-y">
-						<ItemStock :item="item" class="text-xs" />
-						<ItemPrice :item="item" class="text-md !font-semibold text-violet-900" />
+					<div class="flex justify-between items-end py-2 px-2 @lg:px-2.5 card-separator-y">
+						<ItemStock :item="item" class="text-2xs @lg:text-xs" />
+						<ItemPrice :item="item" class="text-sm @lg:text-md !font-semibold text-violet-900" />
 					</div>
 				</div>
 			</div>
@@ -93,14 +93,14 @@
 			<ItemImage
 				:item="item"
 				:enable_full_view="true"
-				class="h-[220px] @sm:h-[200px] @md:h-[220px] flex-none"
+				class="h-[200px] @3xs:h-[220px] flex-none"
 				rounded="rounded rounded-b-none"
 				object_fit="object-contain"
 			/>
 
 			<div class="flex flex-col justify-between h-full card-separator-y">
 				<!-- Item Name -->
-				<h1 class="text-sm @sm:text-[11px] @md:text-sm font-medium px-3 py-2.5">
+				<h1 class="text-[11.5px] @3xs:text-sm font-medium py-2 @3xs:py-2.5 px-2.5 @3xs:px-3">
 					<HighlightedMatchText
 						:text="item.item_name"
 						:matches="item_name_matches"
@@ -108,9 +108,9 @@
 				</h1>
 
 				<!-- Bottom stock and price -->
-				<div class="flex flex-wrap gap-1 justify-between items-center px-3 py-2.5 card-separator-y">
-					<ItemStock :item="item" class="text-xs @sm:text-2xs @md:text-xs" />
-					<ItemPrice :item="item" class="text-md @sm:text-sm @md:text-md !font-semibold text-violet-900" />
+				<div class="flex flex-wrap gap-1 justify-between items-center py-2 @3xs:py-2.5 px-2.5 @3xs:px-3 card-separator-y">
+					<ItemStock :item="item" class="text-2xs @3xs:text-xs" />
+					<ItemPrice :item="item" class="text-sm @3xs:text-md !font-semibold text-violet-900" />
 				</div>
 			</div>
 		</div>

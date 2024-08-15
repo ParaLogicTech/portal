@@ -1,16 +1,16 @@
 <template>
 	<div
-		class="card item-card clickable flex flex-col"
+		class="card item-card clickable flex flex-col @container"
 		@click="this.handle_click"
 	>
 		<ItemImage
 			:item="item_group"
-			class="h-[220px] @sm:h-[200px] @md:h-[220px] flex-none"
+			class="h-[200px] @3xs:h-[220px] flex-none"
 			rounded="rounded rounded-b-none"
 		/>
 
 		<div class="flex flex-col justify-between h-full card-separator-y">
-			<h1 class="text-sm font-medium px-3 py-2.5">
+			<h1 class="text-xs @3xs:text-sm font-medium py-2 @3xs:py-2.5 px-2.5 @3xs:px-3">
 				<HighlightedMatchText
 					:text="item_group.name"
 					:matches="item_group_matches"

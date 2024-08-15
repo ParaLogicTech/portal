@@ -24,7 +24,7 @@
 	}
 
 	.card-top-right {
-		@apply flex gap-1 items-center;
+		@apply flex gap-1 items-center z-[1];
 		position: absolute;
 		top: 8px;
 		right: 8px;

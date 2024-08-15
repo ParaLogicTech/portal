@@ -70,7 +70,7 @@
 							v-model:qty="row.qty"
 							v-model:uom="row.uom"
 							:uoms="uoms"
-							class="h-[30px]"
+							class="h-[30px] compact-qty-field"
 							ref="qty_field"
 							@arrow-up="handle_arrow_up"
 							@arrow-down="handle_arrow_down"

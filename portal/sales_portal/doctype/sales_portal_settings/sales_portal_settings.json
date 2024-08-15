@@ -13,6 +13,8 @@
   "stock_availability_based_on",
   "show_stock_availability",
   "column_break_n8pgn",
+  "default_item_list_view_type",
+  "customer_item_list_view_type",
   "hide_items_without_image",
   "emails_section",
   "sales_order_email_template"
@@ -70,12 +72,25 @@
    "fieldtype": "Link",
    "label": "Sales Order Email Template",
    "options": "Email Template"
+  },
+  {
+   "default": "Grid View",
+   "fieldname": "default_item_list_view_type",
+   "fieldtype": "Select",
+   "label": "Default Item List View Type",
+   "options": "Grid View\nList View"
+  },
+  {
+   "fieldname": "customer_item_list_view_type",
+   "fieldtype": "Select",
+   "label": "Default Item List View Type for Customers",
+   "options": "\nGrid View\nList View"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-08-09 05:20:13.901486",
+ "modified": "2024-08-15 08:51:36.286358",
  "modified_by": "Administrator",
  "module": "Sales Portal",
  "name": "Sales Portal Settings",

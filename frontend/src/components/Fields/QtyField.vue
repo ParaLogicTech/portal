@@ -171,16 +171,23 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 .qty-field-container {
 	@apply text-md flex;
-}
-.qty-field-container input {
-	width: 50px;
-	@apply h-full px-0.5 py-0 text-sm font-medium text-center border-0 border-r border-gray-400 flex-shrink-0;
-}
-.qty-field-container select {
-	width: 100%;
-	@apply h-full px-1.5 py-0 text-xs font-medium text-gray-800 border-0;
+
+	input {
+		width: 50px;
+		@apply h-full text-sm font-medium text-center border-0 border-r border-gray-400 flex-shrink-0 px-0.5 py-0;
+	}
+	select {
+		width: 100%;
+		@apply h-full text-[11.5px] font-medium text-gray-800 border-0 pl-[5px] pr-[16px] py-0;
+		background-position: right 0.2rem center;
+	}
+
+	&.compact-qty-field select {
+		@apply pr-[13px];
+		background-position: right 0.1rem center;
+	}
 }
 </style>

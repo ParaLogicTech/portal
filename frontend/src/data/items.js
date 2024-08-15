@@ -34,6 +34,16 @@ export const item_list = createListResource({
 
 			d.uom = d.sales_uom || d.stock_uom;
 
+			d.uoms.sort((a, b) => {
+				if (a.uom == d.uom) {
+					return -1;
+				} else if (b.uom == d.uom) {
+					return 1;
+				} else {
+					return 0;
+				}
+			});
+
 			d.route = {
 				name: 'Item',
 				params: {

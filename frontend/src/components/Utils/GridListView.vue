@@ -11,7 +11,10 @@
 			<div>{{ empty_message }}</div>
 		</div>
 
-		<div v-else class="grid @sm:grid-cols-2 @2xl:grid-cols-3 @4xl:grid-cols-4 @7xl:grid-cols-5 gap-3 p-3">
+		<div v-else
+			:class="view_type_classes"
+			class="gap-3 p-3"
+		>
 			<slot/>
 		</div>
 	</div>
@@ -21,7 +24,7 @@
 import { CircleSlash } from "lucide-vue-next";
 
 export default {
-	name: "GridView",
+	name: "GridListView",
 
 	components: {
 		CircleSlash,
@@ -39,6 +42,20 @@ export default {
 			type: String,
 			default: "No Data Found",
 		},
+		view_type: {
+			type: String,
+			default: "Grid View",
+		},
 	},
+
+	computed: {
+		view_type_classes() {
+			if (this.view_type == "List View") {
+				return "grid grid-cols-1";
+			} else {
+				return "grid @sm:grid-cols-2 @2xl:grid-cols-3 @4xl:grid-cols-4 @7xl:grid-cols-5";
+			}
+		}
+	}
 };
 </script>

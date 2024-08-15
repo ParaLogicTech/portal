@@ -1,6 +1,6 @@
 .top-bar-height {
-    min-height: 48px;
-    flex-shrink: 0;
+	min-height: 45px;
+	flex-shrink: 0;
 }
 
 .controls-bg {
@@ -14,10 +14,6 @@
 // Cards
 .card {
 	@apply rounded border border-gray-400 relative;
-
-	&.item-card {
-		@apply shadow;
-	}
 
 	&.clickable {
 		@apply cursor-pointer hover:border-violet-800 hover:shadow-md transition-all duration-150 ease-in-out;
@@ -34,9 +30,20 @@
 		right: 8px;
 	}
 
-    .card-separator {
-        @apply border-t border-gray-200;
-    }
+	.card-separator-y {
+		@apply border-t border-gray-200;
+	}
+	.card-separator-x {
+		@apply border-l border-gray-200;
+	}
+
+	&.item-card {
+		@apply shadow;
+
+		&.selected {
+			@apply border-yellow-800;
+		}
+	}
 }
 
 // List view width fix

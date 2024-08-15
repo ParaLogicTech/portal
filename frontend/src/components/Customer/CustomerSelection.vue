@@ -5,6 +5,7 @@
 		placeholder="Select Customer"
 		variant="outline"
 		@update:modelValue="this.update_cart_customer"
+		ref="autocomplete"
 	>
 		<template #prefix>
 			<CircleUser class="h-[17px] w-[17px] mr-1.5" stroke-width="1.5px" />
@@ -66,6 +67,10 @@ export default {
 			}
 
 			return opt;
+		},
+
+		toggle_customer_selection(val) {
+			this.$refs.autocomplete?.togglePopover(val);
 		},
 	},
 

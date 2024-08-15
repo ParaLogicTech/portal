@@ -1,5 +1,5 @@
 <template>
-<div class="@container filter-area-container top-bar-height controls-bg">
+<div class="@container filter-area-container controls-bg">
 	<div class="flex flex-row flex-wrap @2xl:flex-nowrap gap-1">
 		<div class="w-full">
 			<TextInput
@@ -13,7 +13,7 @@
 		</div>
 
 		<div v-if="is_mobile" class="w-full">
-			<CustomerSelection />
+			<CustomerSelection ref="customer_selection" />
 		</div>
 
 		<div class="w-full">
@@ -79,6 +79,10 @@ export default {
 			for (let k of Object.keys(this.filters)) {
 				this.filters[k] = null;
 			}
+		},
+
+		toggle_customer_selection(val) {
+			this.$refs.customer_selection?.toggle_customer_selection(val);
 		},
 	},
 

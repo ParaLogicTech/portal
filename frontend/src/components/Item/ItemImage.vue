@@ -1,9 +1,22 @@
 <template>
-	<div class="bg-white" :class="rounded">
+	<div class="bg-white relative" :class="rounded">
+		<!-- Full View Button Icon -->
+		<button
+			v-if="(this.item.image || item.thumbnail) && enable_full_view"
+			class="absolute top-[6px] left-[6px] hover:scale-110 transition-transform ease-out duration-200"
+			@click.stop="this.modal = true"
+		>
+			<Expand
+				class="text-white expand-icon-shadow w-[18px] h-[18px]"
+				stroke-width="2px"
+			/>
+		</button>
+
+		<!-- Image -->
 		<img
 			v-if="item.thumbnail || item.image"
-			class="w-auto h-full mx-auto object-cover"
-			:class="rounded"
+			class="w-auto h-full mx-auto"
+			:class="[rounded, object_fit]"
 			:src="item.thumbnail || item.image"
 			:alt="item.item_name || item.name"
 			loading="lazy"
@@ -16,23 +29,17 @@
 			{{ item.name }}
 		</div>
 
-		<!-- Image Full View -->
-		<Expand
-			v-if="(this.item.image || item.thumbnail) && full_view_enable"
-			class="absolute top-[7px] left-[7px] w-[18px] h-[18px] hover:scale-105 transition-transform ease-linear duration-200 text-gray-700"
-			@click.stop="this.modal=true"
-		/>
-
-		<Teleport to="#modals">
+		<!-- Full View Modal -->
+		<Teleport to="#modals" v-if="enable_full_view">
 			<vue-easy-lightbox
 				:visible="this.modal"
 				:imgs="[this.item.image || item.thumbnail]"
 				:zoom-disabled="true"
 				:move-disabled="true"
 				:dblclick-disabled="true"
-				@hide="this.modal=false"
+				@hide="this.modal = false"
 			>
-				<template v-slot:toolbar=""></template>
+				<template #toolbar></template>
 			</vue-easy-lightbox>
 		</Teleport>
 	</div>
@@ -63,7 +70,11 @@ export default {
 		},
 		rounded: String,
 		font: String,
-		full_view_enable: Boolean
+		object_fit: {
+			type: String,
+			default: "object-cover"
+		},
+		enable_full_view: Boolean
 	},
 }
 </script>
@@ -71,5 +82,8 @@ export default {
 <style>
 	.vel-img-wrapper img {
 		cursor: default;
+	}
+	.expand-icon-shadow {
+		filter: drop-shadow(0 0 1px #000000);
 	}
 </style>

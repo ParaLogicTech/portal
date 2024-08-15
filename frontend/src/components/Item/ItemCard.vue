@@ -1,30 +1,105 @@
 <template>
 	<div
 		class="card item-card clickable"
+		:class="{'selected': selected}"
 		@click="this.handle_click"
 		@dblclick="this.handle_double_click"
 	>
-		<div class="card-top-right">
-			<div
-				v-if="is_in_cart"
-				class="text-blue-900 bg-blue-200 p-1 text-xs border border-blue-400 rounded"
-			>
-				<Check class="h-3.5 w-3.5 mr-1 inline" stroke-width="1.8px"/>
-				<span>In Cart: {{ cart_qty }} {{ cart_uom }}</span>
-			</div>
-
-			<Spinner class="w-5" v-if="is_in_cart_queue" />
+		<!-- Top Right Common -->
+		<div
+			class="card-top-right"
+			:class="{'!top-[5px]': view_type == 'List View', '!right-[5px]': view_type == 'List View'}"
+		>
+			<ItemCartStatus
+				v-if="view_type != 'List View'"
+				:item="item"
+			/>
+			<Spinner
+				v-if="is_in_cart_queue"
+				class="w-5"
+			/>
 		</div>
 
-		<div class="flex flex-col h-full">
+		<!-- List View Version -->
+		<div
+			v-if="view_type == 'List View'"
+			class="flex h-full"
+		>
+			<!-- Left Side Image -->
 			<ItemImage
 				:item="item"
-				class="h-[220px] @sm:h-[200px] @md:h-[220px] flex-none"
-				rounded="rounded rounded-b-none"
-				:full_view_enable="true"
+				:enable_full_view="true"
+				class="w-[120px] @lg:w-[150px] min-h-[110px] max-h-[140px] flex-none"
+				rounded="rounded rounded-r-none"
+				font="text-3xl"
+				object_fit="object-contain"
 			/>
 
-			<div class="flex flex-col justify-between h-full card-separator">
+			<!-- Right Side Container -->
+			<div class="flex flex-col w-full h-full card-separator-x">
+				<!-- Item Name Container -->
+				<h1 class="text-[11px] @md:text-sm @2xl:text-md !font-medium p-1.5 @md:p-2 bg-gray-50 rounded-tr">
+					<HighlightedMatchText
+						:text="item.item_name"
+						:matches="item_name_matches"
+					/>
+				</h1>
+
+				<!-- The rest -->
+				<div class="flex flex-col justify-between h-full">
+					<div class="flex justify-between card-separator-y h-full">
+						<!-- Qty -->
+						<div class="flex flex-col justify-center gap-0.5 p-2">
+							<div class="text-2xs font-semibold text-gray-600">Order Qty</div>
+							<QtyField
+								v-model:qty="qty"
+								v-model:uom="uom"
+								:uoms="uoms"
+								class="h-[28px]"
+								ref="qty_field"
+								@change="handle_qty_change"
+								@arrow-up="handle_arrow_up"
+								@arrow-down="handle_arrow_down"
+								@focus="handle_qty_focused"
+								@blur="handle_qty_blurred"
+								@click.stop
+							/>
+						</div>
+
+						<!-- In Cart Indicator -->
+						<div class="p-2">
+							<ItemCartStatus
+								:item="item"
+								:hide_qty="true"
+							/>
+						</div>
+					</div>
+
+					<!-- Stock and Price Footer -->
+					<div class="flex justify-between items-end p-2 card-separator-y">
+						<ItemStock :item="item" class="text-xs" />
+						<ItemPrice :item="item" class="text-md !font-semibold text-violet-900" />
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Grid View Version -->
+		<div
+			v-else
+			class="flex flex-col h-full"
+		>
+			<!-- Top Image -->
+			<ItemImage
+				:item="item"
+				:enable_full_view="true"
+				class="h-[220px] @sm:h-[200px] @md:h-[220px] flex-none"
+				rounded="rounded rounded-b-none"
+				object_fit="object-contain"
+			/>
+
+			<div class="flex flex-col justify-between h-full card-separator-y">
+				<!-- Item Name -->
 				<h1 class="text-sm @sm:text-[11px] @md:text-sm font-medium px-3 py-2.5">
 					<HighlightedMatchText
 						:text="item.item_name"
@@ -32,7 +107,8 @@
 					/>
 				</h1>
 
-				<div class="flex flex-wrap gap-1 justify-between items-center px-3 py-2.5 card-separator">
+				<!-- Bottom stock and price -->
+				<div class="flex flex-wrap gap-1 justify-between items-center px-3 py-2.5 card-separator-y">
 					<ItemStock :item="item" class="text-xs @sm:text-2xs @md:text-xs" />
 					<ItemPrice :item="item" class="text-md @sm:text-sm @md:text-md !font-semibold text-violet-900" />
 				</div>
@@ -47,31 +123,88 @@ import HighlightedMatchText from "@/components/Utils/HighlightedMatchText.vue";
 import ItemStock from "@/components/Item/ItemStock.vue";
 import ItemPrice from "@/components/Item/ItemPrice.vue";
 import {cart} from "@/data/cart";
-import {Check} from "lucide-vue-next";
+import QtyField from "@/components/Fields/QtyField.vue";
+import ItemCartStatus from "@/components/Item/ItemCartStatus.vue";
 
 export default {
 	name: "ItemCard",
 
 	components: {
+		ItemCartStatus,
 		ItemImage,
 		HighlightedMatchText,
 		ItemStock,
 		ItemPrice,
-		Check,
+		QtyField,
+	},
+
+	data() {
+		return {
+			qty: 0,
+			uom: "Box",
+			selected: false,
+		}
 	},
 
 	props: {
-		item: Object,
+		item: {
+			type: Object,
+			required: true,
+		},
+		cart_doc: {
+			type: Object,
+			required: true,
+		},
+		view_type: {
+			type: String,
+			default: "Grid View",
+		},
 		matches: Array,
 	},
 
 	methods: {
+		refresh_view() {
+			this.qty = this.cart_qty;
+			this.uom = this.cart_uom;
+			this.$nextTick(() => this.$refs.qty_field?.refresh());
+		},
+
 		handle_click() {
-			this.$emit('item-selected', this.item, false);
+			if (this.view_type == "List View") {
+				this.focus_qty();
+			} else {
+				this.$emit('item-selected', this.item, false);
+			}
+		},
+
+		focus_qty(center) {
+			let block = center ? "center" : "nearest";
+			this.$el.scrollIntoView({behavior: "instant", block: block});
+			this.$refs.qty_field?.focus();
 		},
 
 		handle_double_click() {
 			this.$emit('item-selected', this.item, true);
+		},
+
+		handle_qty_change() {
+			this.$emit("qty-changed", this.item, this.qty, this.uom);
+		},
+
+		handle_arrow_up() {
+			this.$emit("select-previous-row", this.item);
+		},
+
+		handle_arrow_down() {
+			this.$emit("select-next-row", this.item);
+		},
+
+		handle_qty_focused() {
+			this.selected = true;
+		},
+
+		handle_qty_blurred() {
+			this.selected = false;
 		},
 	},
 
@@ -81,16 +214,19 @@ export default {
 		},
 
 		cart_qty() {
-			let qty = cart.get_row_by_item(this.item.name)?.qty || 0;
-			return format_number(qty);
+			return flt(this.cart_row?.qty);
 		},
 
 		cart_uom() {
-			return cart.get_row_by_item(this.item.name)?.uom;
+			return this.cart_row?.uom || this.uoms[0] || "";
 		},
 
-		is_in_cart() {
-			return cart.has_item(this.item.name);
+		cart_row() {
+			return (this.cart_doc?.items || []).find(d => d.item_code == this.item.name);
+		},
+
+		uoms() {
+			return (this.item?.uoms || []).map(d => d.uom);
 		},
 
 		is_in_cart_queue() {

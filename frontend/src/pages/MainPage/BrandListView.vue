@@ -1,5 +1,11 @@
 <template>
 	<div class="flex flex-col h-full">
+		<!-- Title -->
+		<div class="flex items-center top-bar-height controls-bg px-3 py-1 border-b border-gray-400">
+			<Award class="inline h-[17px] text-gray-900" stroke-width="1.9px"/>
+			<h1 class="text-xl font-semibold ml-0.5">Brands</h1>
+		</div>
+
 		<SearchFilter
 			:filters="filters"
 			class="flex-none border-b border-gray-400 shadow-sm"
@@ -21,13 +27,15 @@ import SearchFilter from "@/components/Utils/SearchFilter.vue";
 import BrandGrid from "@/components/Brand/BrandGrid.vue";
 import {active_brands, brand_list} from "@/data/items";
 import FuzzySearch from "@/mixins/FuzzySearch";
+import {Award} from "lucide-vue-next";
 
 export default {
 	name: "BrandListView",
 
 	components: {
+		Award,
 		SearchFilter,
-		BrandGrid
+		BrandGrid,
 	},
 
 	mixins: [FuzzySearch],

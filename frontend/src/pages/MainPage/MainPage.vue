@@ -11,6 +11,7 @@
 				v-slot="{ Component }"
 				class="h-full w-full min-w-0 flex-initial"
 				@item-selected="this.handle_item_selected"
+				@qty-changed="this.handle_qty_change"
 				@item-group-selected="this.handle_item_group_selected"
 				@brand-selected="this.handle_brand_selected"
 			>
@@ -61,6 +62,7 @@ export default {
 		async handle_item_selected(item, open_cart) {
 			if (!cart.customer && !cart.cart_id) {
 				createAlert({"title": "Please Select Customer First", "variant": "warning"});
+				setTimeout(() => this.toggle_customer_selection(true), 100);
 				return;
 			}
 
@@ -69,13 +71,23 @@ export default {
 			}
 
 			if (this.$refs.cart_sidebar) {
-				this.$refs.cart_sidebar.select_item(item.item_code);
+				await this.$refs.cart_sidebar.select_item(item.item_code);
 			} else if (open_cart) {
 				await this.$router.push({name: 'CartView'});
 				if (this.$refs.router_view?.select_item) {
 					this.$refs.router_view.select_item(item.item_code);
 				}
 			}
+		},
+
+		async handle_qty_change(item, qty, uom) {
+			if (!cart.customer && !cart.cart_id) {
+				createAlert({"title": "Please Select Customer First", "variant": "warning"});
+				setTimeout(() => this.toggle_customer_selection(true), 100);
+				return;
+			}
+
+			await cart.update_item_qty(item.item_code, qty, uom);
 		},
 
 		async handle_item_group_selected(item_group) {
@@ -89,6 +101,14 @@ export default {
 			await this.$router.push({name: 'ItemListView'});
 			if (this.$refs.router_view?.set_brand_filter) {
 				this.$refs.router_view.set_brand_filter(brand);
+			}
+		},
+
+		toggle_customer_selection(val) {
+			if (this.$refs.cart_sidebar) {
+				this.$refs.cart_sidebar?.toggle_customer_selection?.(val);
+			} else {
+				this.$refs.router_view?.toggle_customer_selection?.(val);
 			}
 		},
 	},

@@ -1,5 +1,11 @@
 <template>
 	<div class="flex flex-col h-full">
+		<!-- Title -->
+		<div class="flex items-center top-bar-height controls-bg px-3 py-1 border-b border-gray-400">
+			<Boxes class="inline h-[19px] text-gray-900" stroke-width="1.5px"/>
+			<h1 class="text-xl font-semibold ml-1">Item Groups</h1>
+		</div>
+
 		<SearchFilter
 			:filters="filters"
 			class="flex-none border-b border-gray-400 shadow-sm"
@@ -21,13 +27,15 @@ import SearchFilter from "@/components/Utils/SearchFilter.vue";
 import ItemGroupGrid from "@/components/ItemGroup/ItemGroupGrid.vue";
 import {active_item_groups, item_group_list} from "@/data/items";
 import FuzzySearch from "@/mixins/FuzzySearch";
+import {Boxes} from "lucide-vue-next";
 
 export default {
 	name: "ItemGroupListView",
 
 	components: {
+		Boxes,
 		SearchFilter,
-		ItemGroupGrid
+		ItemGroupGrid,
 	},
 
 	mixins: [FuzzySearch],

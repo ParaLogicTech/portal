@@ -15,6 +15,8 @@ def get_settings():
 		"stock_availability_based_on": settings_doc.stock_availability_based_on,
 		"show_stock_availability": settings_doc.show_stock_availability,
 		"sales_order_email_template": settings_doc.sales_order_email_template,
+		"default_item_list_view_type": settings_doc.default_item_list_view_type,
+		"customer_item_list_view_type": settings_doc.customer_item_list_view_type,
 
 		# Permissions
 		"is_system_user": is_system_user(),

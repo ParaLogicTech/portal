@@ -9,7 +9,7 @@
 			rounded="rounded rounded-b-none"
 		/>
 
-		<div class="flex flex-col justify-between h-full card-separator">
+		<div class="flex flex-col justify-between h-full card-separator-y">
 			<h1 class="text-sm font-medium px-3 py-2.5">
 				<HighlightedMatchText
 					:text="item_group.name"

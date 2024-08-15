@@ -7,7 +7,7 @@
 		/>
 
 		<div class="p-2 border-b border-gray-400 shadow-sm">
-			<CustomerSelection/>
+			<CustomerSelection ref="customer_selection"/>
 		</div>
 
 		<CompactOrderItemsList
@@ -72,6 +72,10 @@ export default {
 			return this.$nextTick(() => {
 				this.$refs.items?.refresh_view();
 			});
+		},
+
+		toggle_customer_selection(val) {
+			this.$refs.customer_selection?.toggle_customer_selection(val);
 		},
 	},
 }

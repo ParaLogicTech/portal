@@ -1,5 +1,5 @@
 <template>
-	<GridView
+	<GridListView
 		:has_data="has_data"
 		:loading="loading"
 		:is_empty="!brand_list?.length"
@@ -13,19 +13,19 @@
 			:matches="get_matches(d)"
 			@brand-selected="this.handle_brand_selected"
 		/>
-	</GridView>
+	</GridListView>
 </template>
 
 <script>
 import BrandCard from "@/components/Brand/BrandCard.vue";
-import GridView from "@/components/Utils/GridView.vue"
+import GridListView from "@/components/Utils/GridListView.vue"
 
 export default {
 	name: "BrandGrid",
 
 	components: {
 		BrandCard,
-		GridView
+		GridListView
 	},
 
 	props: {

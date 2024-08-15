@@ -1,5 +1,5 @@
 <template>
-	<GridView
+	<GridListView
 		:has_data="has_data"
 		:loading="loading"
 		:is_empty="!item_groups?.length"
@@ -13,19 +13,19 @@
 			:matches="get_matches(d)"
 			@item-group-selected="this.handle_item_group_selected"
 		/>
-	</GridView>
+	</GridListView>
 </template>
 
 <script>
 import ItemGroupCard from "@/components/ItemGroup/ItemGroupCard.vue";
-import GridView from "@/components/Utils/GridView.vue"
+import GridListView from "@/components/Utils/GridListView.vue"
 
 export default {
 	name: "ItemGroupGrid",
 
 	components: {
 		ItemGroupCard,
-		GridView
+		GridListView
 	},
 
 	props: {

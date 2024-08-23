@@ -103,17 +103,6 @@ export default {
 		list_data() {
 			return active_items.value || [];
 		},
-
-		filters_applied() {
-			let applied = false;
-			for (let v of Object.values(this.filters)) {
-				if (v) {
-					applied = true;
-					break
-				}
-			}
-			return applied;
-		},
 	},
 
 	methods: {

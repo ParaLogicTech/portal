@@ -24,7 +24,7 @@ export const item_list = createListResource({
 		'end_of_life',
 		'is_sales_item',
 	],
-	orderBy: 'name',
+	orderBy: 'featured_in_sales_portal desc, name asc',
 	pageLength: 99999,
 	transform(items) {
 		return items.map((d) => {
@@ -177,6 +177,30 @@ export const active_brands = computed(() => {
 
 	return (brand_list.data || []).filter(d => brands_with_items.has(d.name));
 });
+
+export const sort_group_order = (list, fieldname) => {
+	if (!list) {
+		return;
+	}
+	if (!['item_group', 'brand'].includes(fieldname)) {
+		throw "Invalid Fieldname";
+	}
+
+	let order = (settings.value[fieldname + "_order"] || []);
+	if (order.length) {
+		list.sort((a, b) => {
+			let a_idx = order.find(d => d[fieldname] == a)?.idx || 99999;
+			let b_idx = order.find(d => d[fieldname] == b)?.idx || 99999;
+			if (a_idx < b_idx) {
+				return -1;
+			} else if (a_idx > b_idx) {
+				return 1;
+			} else {
+				return 0;
+			}
+		});
+	}
+}
 
 // Price Data
 export const standard_prices = createResource({

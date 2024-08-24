@@ -7,6 +7,7 @@ from portal.permissions import is_system_user
 @frappe.whitelist()
 def get_settings():
 	settings_doc = frappe.get_cached_doc("Sales Portal Settings", None)
+	price_list_settings = frappe.get_cached_doc("Price List Settings", None)
 
 	out = frappe._dict({
 		"company": settings_doc.company or get_default_company(),
@@ -17,6 +18,10 @@ def get_settings():
 		"sales_order_email_template": settings_doc.sales_order_email_template,
 		"default_item_list_view_type": settings_doc.default_item_list_view_type,
 		"customer_item_list_view_type": settings_doc.customer_item_list_view_type,
+
+		# Item Group / Brand Ordering
+		"item_group_order": price_list_settings.item_group_order,
+		"brand_order": price_list_settings.brand_order,
 
 		# Permissions
 		"is_system_user": is_system_user(),

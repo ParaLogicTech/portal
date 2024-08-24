@@ -88,6 +88,7 @@ fixtures = [
 				'File-is_portal_optimized',
 
 				'Item-show_in_customer_portal',
+				'Item-featured_in_sales_portal',
 				'Item-thumbnail',
 
 				'Item Group-thumbnail',

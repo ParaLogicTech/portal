@@ -60,7 +60,7 @@ import ItemCard from "@/components/Item/ItemCard.vue";
 import GridListView from "@/components/Utils/GridListView.vue"
 import CompactOrderItem from "@/components/Order/CompactOrderItem.vue";
 import SelectableItems from "@/mixins/SelectableItems";
-import {brand_list, item_group_list} from "@/data/items";
+import {brand_list, item_group_list, sort_group_order} from "@/data/items";
 import {Eye} from "lucide-vue-next";
 
 export default {
@@ -151,13 +151,19 @@ export default {
 
 	computed: {
 		group_list() {
+			let out = [];
+
 			if (this.group_field == "item_group") {
-				return (item_group_list.data || []).map(d => d.name);
+				out = (item_group_list.data || []).map(d => d.name);
+				sort_group_order(out, "item_group");
 			} else if (this.group_field == "brand") {
-				return (brand_list.data || []).map(d => d.name);
+				out = (brand_list.data || []).map(d => d.name);
+				sort_group_order(out, "brand");
 			} else {
-				return (items || []).map(d => d[this.group_field]);
+				out = (items || []).map(d => d[this.group_field]);
 			}
+
+			return out;
 		},
 
 		selectable_items_elements() {

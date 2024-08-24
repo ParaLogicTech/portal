@@ -115,6 +115,10 @@ export const get_item_group = (item_group) => {
 	return (item_group_list.dataMap || {})[item_group];
 }
 
+export const sorted_item_groups = computed(() => {
+	return get_sorted_groups(item_group_list.data || [], "item_group");
+});
+
 export const active_item_groups = computed(() => {
 	let item_groups_with_items = new Set();
 
@@ -131,7 +135,7 @@ export const active_item_groups = computed(() => {
 		}
 	}
 
-	return (item_group_list.data || []).filter(d => {
+	return (sorted_item_groups.value || []).filter(d => {
 		return (
 			d.parent_item_group
 			&& item_groups_with_items.has(d.name)
@@ -169,28 +173,29 @@ export const get_brand = (brand) => {
 	return (brand_list.dataMap || {})[brand];
 }
 
+export const sorted_brands = computed(() => {
+	return get_sorted_groups(brand_list.data || [], "brand");
+});
+
 export const active_brands = computed(() => {
 	let brands_with_items = new Set();
 	for (let item of active_items.value) {
 		brands_with_items.add(item.brand);
 	}
 
-	return (brand_list.data || []).filter(d => brands_with_items.has(d.name));
+	return (sorted_brands.value || []).filter(d => brands_with_items.has(d.name));
 });
 
-export const sort_group_order = (list, fieldname) => {
-	if (!list) {
-		return;
-	}
+export const get_sorted_groups = (list, fieldname) => {
 	if (!['item_group', 'brand'].includes(fieldname)) {
 		throw "Invalid Fieldname";
 	}
 
 	let order = (settings.value[fieldname + "_order"] || []);
-	if (order.length) {
-		list.sort((a, b) => {
-			let a_idx = order.find(d => d[fieldname] == a)?.idx || 99999;
-			let b_idx = order.find(d => d[fieldname] == b)?.idx || 99999;
+	if (order.length && list) {
+		return list.toSorted((a, b) => {
+			let a_idx = order.find(d => d[fieldname] == a.name)?.idx || 99999;
+			let b_idx = order.find(d => d[fieldname] == b.name)?.idx || 99999;
 			if (a_idx < b_idx) {
 				return -1;
 			} else if (a_idx > b_idx) {
@@ -199,6 +204,8 @@ export const sort_group_order = (list, fieldname) => {
 				return 0;
 			}
 		});
+	} else {
+		return list || [];
 	}
 }
 

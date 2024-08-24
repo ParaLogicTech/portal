@@ -11,29 +11,73 @@
 			<div>{{ empty_message }}</div>
 		</div>
 
-		<div v-else
-			:class="view_type_classes"
-			class="gap-3 p-3"
-		>
-			<slot/>
+		<div v-else>
+			<!-- Grouped View -->
+			<GridListGroup
+				v-if="show_groups && groups_with_items?.length"
+				v-for="group in groups_with_items"
+				:key="group"
+				:group="group"
+				:group_field="group_field"
+				:view_type="view_type"
+				:page_length="group_page_length"
+				:items="get_group_items(group)"
+			>
+				<template #default="scope">
+					<slot v-bind="scope" />
+				</template>
+
+				<template #group="scope">
+					<slot name="group" v-bind="scope">
+						{{ scope.group || "Ungrouped" }}
+					</slot>
+				</template>
+
+				<template #show_more="scope">
+					<slot name="show_more" v-bind="scope" />
+				</template>
+			</GridListGroup>
+
+			<!-- Ungrouped View -->
+			<GridListGroup
+				v-else
+				:group="null"
+				:items="items"
+				:view_type="view_type"
+				:page_length="group_page_length"
+				v-slot="{item}"
+			>
+				<slot :item="item" />
+			</GridListGroup>
 		</div>
 	</div>
 </template>
 
 <script>
 import { CircleSlash } from "lucide-vue-next";
+import GridListGroup from "@/components/Utils/GridListGroup.vue";
 
 export default {
 	name: "GridListView",
 
 	components: {
+		GridListGroup,
 		CircleSlash,
 	},
 
 	props: {
-		has_data: Boolean,
-		is_empty: Boolean,
-		loading: Boolean,
+		items: {
+			type: Array,
+			required: true,
+		},
+		has_data: {
+			type: Boolean,
+			default: () => Boolean(items && items.length),
+		},
+		loading: {
+			type: Boolean,
+			default: false,
+		},
 		loading_message: {
 			type: String,
 			default: "Loading Data...",
@@ -46,16 +90,44 @@ export default {
 			type: String,
 			default: "Grid View",
 		},
+		show_groups: {
+			type: Boolean,
+			default: false,
+		},
+		groups: Array,
+		group_field: String,
+		group_page_length: Number,
+	},
+
+	methods: {
+		get_group_items(group) {
+			const group_items_obj = this.group_items_map || {};
+			return group_items_obj[group] || [];
+		}
 	},
 
 	computed: {
-		view_type_classes() {
-			if (this.view_type == "List View") {
-				return "grid grid-cols-1";
-			} else {
-				return "grid @sm:grid-cols-2 @2xl:grid-cols-3 @4xl:grid-cols-4 @7xl:grid-cols-5";
+		is_empty() {
+			return !this.items?.length;
+		},
+
+		group_items_map() {
+			let group_map = {};
+			for (let d of this.items || []) {
+				let group = d[this.group_field] || "";
+				if (!group_map[group]) {
+					group_map[group] = [];
+				}
+
+				group_map[group].push(d);
 			}
-		}
+
+			return group_map;
+		},
+
+		groups_with_items() {
+			return (this.groups || []).filter(g => Boolean(this.group_items_map[g]?.length));
+		},
 	}
 };
 </script>

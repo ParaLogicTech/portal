@@ -1,13 +1,13 @@
 <template>
 	<GridListView
+		:items="item_groups"
 		:has_data="has_data"
 		:loading="loading"
-		:is_empty="!item_groups?.length"
 		loding="Loading Item Groups..."
 		empty_message="No Item Groups Found"
+		v-slot="{item: d}"
 	>
 		<ItemGroupCard
-			v-for="d in item_groups"
 			:key="d.name"
 			:item_group="d"
 			:matches="get_matches(d)"
@@ -29,7 +29,10 @@ export default {
 	},
 
 	props: {
-		item_groups: Array,
+		item_groups: {
+			type: Array,
+			required: true,
+		},
 		matches: Object,
 		loading: Boolean,
 		has_data: Boolean,

@@ -21,10 +21,14 @@
 			:cart_doc="model"
 			:loading="item_list.list.loading"
 			:has_data="item_list.data?.length > 0"
+			:show_groups="show_groups"
+			:group_field="group_field"
+			:group_page_length="group_page_length"
 			:matches="fuzzy_matches"
 			:view_type="view_type"
 			class="h-full"
 			@item-selected="this.handle_item_selected"
+			@item-group-selected="this.handle_item_group_selected"
 			@qty-changed="this.handle_qty_change"
 			ref="items"
 		/>
@@ -78,6 +82,11 @@ export default {
 			item_list: item_list,
 			fuzzy_search_keys: ['item_name', 'name'],
 			view_type: view_type,
+			query_params: {
+				"item-group": this.set_item_group_filter,
+				"brand": this.set_brand_filter,
+				"txt": "txt",
+			}
 		}
 	},
 
@@ -93,11 +102,28 @@ export default {
 				items = items.filter(d => in_item_group(d.item_group, this.filters.item_group.value));
 			}
 
-			if (!this.filters_applied) {
-				items = items.slice(0, 100);
-			}
-
 			return items;
+		},
+
+		group_page_length() {
+			if (this.filters_applied) {
+				return 0;
+			} else {
+				return 10;
+			}
+		},
+
+		show_groups() {
+			let hide_groups = this.clean_txt || (this.filters.item_group && this.filters.brand);
+			return !hide_groups;
+		},
+
+		group_field() {
+			if (this.filters.item_group) {
+				return "brand";
+			} else {
+				return "item_group";
+			}
 		},
 
 		list_data() {
@@ -121,6 +147,41 @@ export default {
 			this.$emit('qty-changed', item, qty, uom);
 		},
 
+		handle_view_type_change() {
+			localStorage.setItem("item_list_view_type", this.view_type);
+		},
+
+		toggle_customer_selection(val) {
+			this.$refs.item_filters?.toggle_customer_selection(val);
+		},
+
+		parse_query_params() {
+			for (let [param, setter] of Object.entries(this.query_params)) {
+				let value = this.$route.query?.[param] || null;
+				if (typeof setter == "function") {
+					setter(value);
+				} else {
+					this.filters[setter] = value;
+				}
+			}
+		},
+
+		set_query_params() {
+			this.$router.push({
+				name: 'ItemListView',
+				query: {
+					'item-group': this.filters.item_group?.value || undefined,
+					'brand': this.filters.brand?.value || undefined,
+				},
+			});
+		},
+
+		handle_item_group_selected(item_group) {
+			if (item_group) {
+				this.set_item_group_filter(item_group);
+			}
+		},
+
 		set_item_group_filter(value) {
 			if (value) {
 				this.filters.item_group = { label: value, value: value };
@@ -136,14 +197,27 @@ export default {
 				this.filters.brand = null;
 			}
 		},
-
-		handle_view_type_change() {
-			localStorage.setItem("item_list_view_type", this.view_type);
-		},
-
-		toggle_customer_selection(val) {
-			this.$refs.item_filters?.toggle_customer_selection(val);
-		},
 	},
+
+	activated() {
+		this.parse_query_params();
+	},
+
+	watch: {
+		filters: {
+			deep: true,
+			handler() {
+				this.set_query_params();
+			},
+		},
+		'$route.query': {
+			deep: true,
+			handler() {
+				if (this.$route.name == 'ItemListView') {
+					this.parse_query_params();
+				}
+			},
+		},
+	}
 }
 </script>

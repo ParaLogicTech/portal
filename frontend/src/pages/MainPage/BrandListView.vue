@@ -12,7 +12,7 @@
 			placeholder="Search Brands..."
 		/>
 		<BrandGrid
-			:brand_list="filtered_brands"
+			:brands="filtered_brands"
 			:loading="brand_list.list.loading"
 			:has_data="brand_list.data?.length > 0"
 			:matches="fuzzy_matches"

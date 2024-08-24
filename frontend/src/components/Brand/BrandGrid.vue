@@ -1,13 +1,13 @@
 <template>
 	<GridListView
+		:items="brands"
 		:has_data="has_data"
 		:loading="loading"
-		:is_empty="!brand_list?.length"
 		loding="Loading Brands..."
 		empty_message="No Brands Found"
+		v-slot="{item: d}"
 	>
 		<BrandCard
-			v-for="d in brand_list"
 			:key="d.name"
 			:brand="d"
 			:matches="get_matches(d)"
@@ -29,7 +29,10 @@ export default {
 	},
 
 	props: {
-		brand_list: Array,
+		brands: {
+			type: Array,
+			required: true,
+		},
 		matches: Object,
 		loading: Boolean,
 		has_data: Boolean,

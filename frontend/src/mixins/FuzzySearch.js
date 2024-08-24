@@ -46,6 +46,9 @@ const FuzzySearch = {
 		filters_applied() {
 			let applied = false;
 			for (let v of Object.values(this.filters)) {
+				if (typeof v == "string") {
+					v = v.trim();
+				}
 				if (v) {
 					applied = true;
 					break

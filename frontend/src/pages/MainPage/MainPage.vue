@@ -91,17 +91,21 @@ export default {
 		},
 
 		async handle_item_group_selected(item_group) {
-			await this.$router.push({name: 'ItemListView'});
-			if (this.$refs.router_view?.set_item_group_filter) {
-				this.$refs.router_view.set_item_group_filter(item_group);
-			}
+			await this.$router.push({
+				name: 'ItemListView',
+				query: {
+					'item-group': item_group || undefined
+				}
+			});
 		},
 
 		async handle_brand_selected(brand) {
-			await this.$router.push({name: 'ItemListView'});
-			if (this.$refs.router_view?.set_brand_filter) {
-				this.$refs.router_view.set_brand_filter(brand);
-			}
+			await this.$router.push({
+				name: 'ItemListView',
+				query: {
+					'brand': brand || undefined
+				}
+			});
 		},
 
 		toggle_customer_selection(val) {

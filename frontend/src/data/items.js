@@ -32,18 +32,6 @@ export const item_list = createListResource({
 
 			d.is_end_of_life = d.end_of_life && moment().isSameOrAfter(moment(d.end_of_life), "date");
 
-			d.uom = d.sales_uom || d.stock_uom;
-
-			d.uoms.sort((a, b) => {
-				if (a.uom == d.uom) {
-					return -1;
-				} else if (b.uom == d.uom) {
-					return 1;
-				} else {
-					return 0;
-				}
-			});
-
 			d.route = {
 				name: 'Item',
 				params: {
@@ -212,6 +200,7 @@ export const get_sorted_groups = (list, fieldname) => {
 // Price Data
 export const standard_prices = createResource({
 	url: 'portal.sales_portal.api.items.get_item_prices',
+	method: 'GET',
 	cache: 'Standard Selling Prices',
 });
 
@@ -225,6 +214,7 @@ export const get_item_prices_resource = (customer) => {
 	if (!customer_item_price_resources[customer]) {
 		let resource = customer_item_price_resources[customer] = createResource({
 			url: 'portal.sales_portal.api.items.get_item_prices',
+			method: 'GET',
 			params: {
 				customer: customer
 			},
@@ -241,6 +231,7 @@ export const get_item_prices_resource = (customer) => {
 // Stock Data
 export const item_stock = createResource({
 	url: 'portal.sales_portal.api.items.get_item_stock_data',
+	method: 'GET',
 });
 
 // Reload Items

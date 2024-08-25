@@ -14,6 +14,7 @@ export function sessionUser() {
 export let session = reactive({
 	login: createResource({
 		url: 'login',
+		method: 'POST',
 		makeParams({ email, password }) {
 			return {
 				usr: email,
@@ -28,6 +29,7 @@ export let session = reactive({
 	}),
 	logout: createResource({
 		url: 'logout',
+		method: 'POST',
 		onSuccess() {
 			session.user = sessionUser()
 			router.replace({ name: 'Login' })

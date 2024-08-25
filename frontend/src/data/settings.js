@@ -4,6 +4,7 @@ import {computed} from "vue";
 
 export const settings_resource = createResource({
 	url: 'portal.sales_portal.api.settings.get_settings',
+	method: 'GET',
 	cache: 'Sales Portal Settings',
 });
 

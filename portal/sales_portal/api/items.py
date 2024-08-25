@@ -1,7 +1,9 @@
 import frappe
-from frappe.utils import getdate, cstr
+from frappe.utils import getdate, cstr, cint
 from frappe.client import get_list
 from portal.permissions import check_customer_permission
+
+mandatory_item_fields = ['name', 'stock_uom', 'sales_uom']
 
 
 @frappe.whitelist()
@@ -10,6 +12,13 @@ def get_item_list(doctype="Item", fields=None, filters=None, order_by=None, star
 	parent = None
 
 	filters = frappe.parse_json(filters)
+
+	# mandatory fields
+	if not fields:
+		fields = []
+	for f in mandatory_item_fields:
+		if f not in fields:
+			fields.append(f)
 
 	out = get_list(
 		doctype=doctype,
@@ -23,9 +32,9 @@ def get_item_list(doctype="Item", fields=None, filters=None, order_by=None, star
 	)
 
 	items_map = {}
-	for d in out:
-		items_map[d.name] = d
-		d.uoms = []
+	for item in out:
+		items_map[item.name] = item
+		item.uoms = []
 
 	item_codes = list(items_map.keys())
 	item_conditions = ""
@@ -35,15 +44,18 @@ def get_item_list(doctype="Item", fields=None, filters=None, order_by=None, star
 	uom_data = []
 	if item_codes:
 		uom_data = frappe.db.sql(f"""
-			select parent, uom, conversion_factor
+			select parent, idx, uom, conversion_factor
 			from `tabUOM Conversion Detail`
 			{item_conditions}
-			order by idx
 		""", {"item_codes": item_codes}, as_dict=1)
 
-	for d in uom_data:
-		if d.parent in items_map:
-			items_map[d.parent].uoms.append(d)
+	for uom in uom_data:
+		if uom.parent in items_map:
+			items_map[uom.parent].uoms.append(uom)
+
+	for item in items_map.values():
+		item.uom = item.sales_uom or item.stock_uom
+		item.uoms = sorted(item.uoms, key=lambda d: (cint(d.uom != item.uom), d.idx))
 
 	return out
 

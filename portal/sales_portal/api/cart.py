@@ -176,7 +176,7 @@ def update_cart_value(
 	customer=None,
 	cart_id=None,
 ):
-	allowed_fields = ["delivery_date", "customer_address", "contact_person", "remarks"]
+	allowed_fields = ["delivery_date", "customer_address", "contact_person", "remarks", "po_no", "po_date"]
 	meta = frappe.get_meta("Cart")
 	if fieldname not in allowed_fields or not meta.has_field(fieldname):
 		frappe.throw(_("Field {0} not allowed").format(fieldname))

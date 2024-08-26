@@ -71,6 +71,33 @@
 			</div>
 		</div>
 
+		<div class="section">
+			<div class="section-grid @2xl:grid-cols-2">
+				<div class="col">
+					<FormControl
+						type="text"
+						label="Purchase Order #"
+						v-model="doc.po_no"
+						variant="subtle"
+						class="col-row"
+						@change="handle_cart_value_change('po_no', doc.po_no)"
+						:disabled="read_only"
+					/>
+				</div>
+				<div class="col">
+					<FormControl
+						type="date"
+						label="Purchase Order Date"
+						v-model="doc.po_date"
+						variant="subtle"
+						class="col-row"
+						@change="handle_cart_value_change('po_date', doc.po_date)"
+						:disabled="read_only"
+					/>
+				</div>
+			</div>
+		</div>
+
 		<AddressAndContact
 			:doc="doc"
 			:addresses="addresses"

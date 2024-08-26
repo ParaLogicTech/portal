@@ -15,7 +15,7 @@
 		<!-- Image -->
 		<img
 			v-if="item.thumbnail || item.image"
-			class="w-auto h-full mx-auto"
+			class="w-full h-full mx-auto"
 			:class="[rounded, object_fit]"
 			:src="item.thumbnail || item.image"
 			:alt="item.item_name || item.name"
@@ -39,7 +39,7 @@
 				:dblclick-disabled="true"
 				@hide="this.modal = false"
 			>
-				<template #toolbar></template>
+				<template #toolbar />
 			</vue-easy-lightbox>
 		</Teleport>
 	</div>

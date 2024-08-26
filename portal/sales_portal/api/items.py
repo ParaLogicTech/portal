@@ -146,10 +146,12 @@ def get_item_prices(customer=None):
 	for item_code, d in item_prices_map.items():
 		out.item_prices_map[item_code] = {
 			"item_code": d.item_code,
-			"price_list_rate": d.print_rate,
+			"price_list_rate": d.print_price_list_rate,
+			"pricing_rule_rate": d.pricing_rule_rate,
+			"discount_percentage": d.discount_percentage,
+			"discount_amount": d.discount_amount,
 			"uom": d.uom,
 			"stock_uom": d.stock_uom,
-			"formatted_price_list_rate": frappe.utils.fmt_money(d.print_rate, currency=out.price_list_currency),
 		}
 
 	return out

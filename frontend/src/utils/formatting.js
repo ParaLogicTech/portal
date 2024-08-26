@@ -105,23 +105,23 @@ export function format_number(v, format, decimals, always_show_decimals) {
 	return (is_negative ? "-" : "") + part[0] + part[1];
 }
 
-export function format_currency(v, currency, decimals) {
+export function format_currency(v, currency, decimals, always_show_decimals=true) {
 	const format = get_number_format(currency);
 	const symbol = get_currency_symbol(currency);
 	const show_symbol_on_right = get_symbol_on_right(currency);
 
-	if (decimals === undefined) {
+	if (decimals == null) {
 		decimals = settings.value.currency_precision || 2;
 	}
 
 	if (symbol) {
 		if (show_symbol_on_right) {
-			return format_number(v, format, decimals, true) + symbol;
+			return format_number(v, format, decimals, always_show_decimals) + symbol;
 		}
-		return symbol + format_number(v, format, decimals, true);
+		return symbol + format_number(v, format, decimals, always_show_decimals);
 	}
 
-	return format_number(v, format, decimals, true);
+	return format_number(v, format, decimals, always_show_decimals);
 }
 
 function get_currency_symbol(currency) {

@@ -76,9 +76,9 @@
 					</div>
 
 					<!-- Stock and Price Footer -->
-					<div class="flex justify-between items-end py-2 px-2 @lg:px-2.5 card-separator-y">
-						<ItemStock :item="item" class="text-2xs @lg:text-xs" />
-						<ItemPrice :item="item" class="text-sm @lg:text-md !font-semibold text-violet-900" />
+					<div class="flex justify-between items-center py-2 px-2 @lg:px-2.5 card-separator-y">
+						<ItemStock :item="item" class="text-2xs @lg:text-xs self-start flex-none" />
+						<ItemPrice :item="item" class="text-sm @lg:text-md" />
 					</div>
 				</div>
 			</div>
@@ -108,9 +108,9 @@
 				</h1>
 
 				<!-- Bottom stock and price -->
-				<div class="flex flex-wrap gap-1 justify-between items-center py-2 @3xs:py-2.5 px-2.5 @3xs:px-3 card-separator-y">
-					<ItemStock :item="item" class="text-2xs @3xs:text-xs" />
-					<ItemPrice :item="item" class="text-sm @3xs:text-md !font-semibold text-violet-900" />
+				<div class="flex flex-nowrap gap-1 justify-between items-center py-2 @3xs:py-2.5 px-2.5 @3xs:px-3 card-separator-y">
+					<ItemStock :item="item" class="text-2xs @3xs:text-xs self-start flex-none" />
+					<ItemPrice :item="item" class="text-sm @3xs:text-md flex-col !items-end" />
 				</div>
 			</div>
 		</div>

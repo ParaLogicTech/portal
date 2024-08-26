@@ -140,7 +140,11 @@ export default {
 
 		formatted_value() {
 			if (["price_list_rate", "rate", "amount"].includes(this.column.key)) {
-				return format_currency(this.value, this.doc.currency);
+				let value = this.value;
+				if (this.column.key == "price_list_rate" && this.row.rate_with_margin) {
+					value = this.row.rate_with_margin;
+				}
+				return format_currency(value, this.doc.currency);
 			} else if (this.column.key == "discount_percentage") {
 				return format_number(this.value, null, 1) + "%";
 			} else if (this.column.key == "qty") {

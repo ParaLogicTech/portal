@@ -28,6 +28,9 @@ class Cart(SellingController):
 		self.validate_order_confirmed()
 		self.set_status()
 
+	def after_insert(self):
+		self.publish_cart_created()
+
 	def before_submit(self):
 		self.validate_order_confirmed_before_submit()
 
@@ -60,6 +63,19 @@ class Cart(SellingController):
 			frappe.throw(_("Cannot modify cancelled Cart"))
 		if self.order_confirmed:
 			frappe.throw(_("Cannot modify confirmed order cart"))
+
+	def publish_cart_created(self):
+		frappe.publish_realtime(
+			"cart_created",
+			{
+				"name": self.name,
+				"is_customer_cart": self.is_customer_cart,
+				"customer": self.customer,
+			},
+			doctype="Customer",
+			docname=self.customer,
+			after_commit=True,
+		)
 
 	def has_sales_order_or_invoice(self):
 		if self.docstatus != 1:

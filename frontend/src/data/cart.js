@@ -3,6 +3,7 @@ import { createResource } from "frappe-ui";
 import { ref } from 'vue';
 import {createAlert} from "@/utils/alerts";
 import {subscribe_doc, unsubscribe_doc} from "@/socket";
+import {settings} from "@/data/settings";
 
 export const _selected_customer = ref(null);
 
@@ -567,6 +568,7 @@ const update_cart_data = (data) => {
 	}
 
 	subscribe_cart_doc(cart.doc, previous_doc);
+	subscribe_customer_doc(cart.doc, previous_doc);
 }
 
 export const setup_cart_realtime = () => {
@@ -587,7 +589,29 @@ export const setup_cart_realtime = () => {
 		}
 
 		cart.reload_cart();
-	})
+	});
+
+	$socket.on("cart_created", (data) => {
+		// Ignore if cart id is already set or customer does not match selected customer
+		if (cart.cart_id || data.customer !== cart.customer) {
+			return;
+		}
+
+		// Do not reload if queue is running
+		if (cart_queue.running) {
+			return;
+		}
+
+		// Ignore if not available to user
+		if (
+			(data.is_customer_cart && settings.value.is_system_user)
+			|| !data.is_customer_cart && !settings.value.is_system_user
+		) {
+			return;
+		}
+
+		cart.reload_cart();
+	});
 }
 
 const subscribe_cart_doc = (new_doc, previous_doc) => {
@@ -599,6 +623,18 @@ const subscribe_cart_doc = (new_doc, previous_doc) => {
 	// Subscribe to new cart
 	if (new_doc?.name) {
 		subscribe_doc($socket, "Cart", new_doc.name);
+	}
+}
+
+const subscribe_customer_doc = (new_doc, previous_doc) => {
+	// Unsubscribe if customer changed
+	if (previous_doc?.customer && previous_doc.customer != new_doc?.customer) {
+		unsubscribe_doc($socket, "Customer", previous_doc.customer);
+	}
+
+	// Subscribe to new cart
+	if (new_doc?.customer) {
+		subscribe_doc($socket, "Customer", new_doc.customer);
 	}
 }
 

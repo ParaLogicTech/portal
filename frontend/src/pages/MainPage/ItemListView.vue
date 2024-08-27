@@ -41,7 +41,7 @@ import ItemFilters from "@/components/Item/ItemFilters.vue";
 import { item_list, active_items, in_item_group } from "@/data/items";
 import FuzzySearch from "@/mixins/FuzzySearch";
 import {PackageSearch} from "lucide-vue-next";
-import GridListSelector from "@/components/Utils/GridListSelector.vue";
+import GridListSelector from "@/components/GridList/GridListSelector.vue";
 import CartController from "@/mixins/CartController";
 import {settings} from "@/data/settings";
 

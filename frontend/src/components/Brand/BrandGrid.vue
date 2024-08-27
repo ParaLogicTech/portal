@@ -18,7 +18,7 @@
 
 <script>
 import BrandCard from "@/components/Brand/BrandCard.vue";
-import GridListView from "@/components/Utils/GridListView.vue"
+import GridListView from "@/components/GridList/GridListView.vue"
 
 export default {
 	name: "BrandGrid",

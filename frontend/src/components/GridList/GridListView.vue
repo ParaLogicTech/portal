@@ -55,7 +55,7 @@
 
 <script>
 import { CircleSlash } from "lucide-vue-next";
-import GridListGroup from "@/components/Utils/GridListGroup.vue";
+import GridListGroup from "@/components/GridList/GridListGroup.vue";
 
 export default {
 	name: "GridListView",

@@ -57,7 +57,7 @@
 
 <script>
 import ItemCard from "@/components/Item/ItemCard.vue";
-import GridListView from "@/components/Utils/GridListView.vue"
+import GridListView from "@/components/GridList/GridListView.vue"
 import CompactOrderItem from "@/components/Order/CompactOrderItem.vue";
 import SelectableItems from "@/mixins/SelectableItems";
 import {sorted_item_groups, sorted_brands} from "@/data/items";

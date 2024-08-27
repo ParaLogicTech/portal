@@ -7,7 +7,7 @@
 	</div>
 	<div
 		v-else-if="column.key == 'item_name'"
-		class="flex items-center gap-2 h-[45px] overflow-hidden text-gray-900"
+		class="flex items-center gap-2 h-[45px] overflow-hidden text-gray-900 text-2xs @4xl:text-sm"
 	>
 		<ItemImage
 			:item="item"
@@ -56,6 +56,12 @@
 			@update:modelValue="(v) => this.handle_value_change('discount_percentage', v)"
 		/>
 	</div>
+	<div v-else-if="column.key == 'actions'" class="flex items-center justify-end text-xs">
+		<ReorderItemButton
+			:item="this.item"
+			class="p-1 h-[26px] w-[26px]"
+		/>
+	</div>
 	<ListRowItem
 		v-else
 		:column="column"
@@ -73,11 +79,19 @@ import ItemImage from "@/components/Item/ItemImage.vue";
 import CurrencyField from "@/components/Fields/CurrencyField.vue";
 import PercentField from "@/components/Fields/PercentField.vue";
 import {settings} from "@/data/settings";
+import ReorderItemButton from "@/components/Order/ReorderItemButton.vue";
 
 export default {
 	name: "OrderRowItem",
 
-	components: {PercentField, CurrencyField, ItemImage, ListRowItem, QtyField},
+	components: {
+		ReorderItemButton,
+		PercentField,
+		CurrencyField,
+		ItemImage,
+		ListRowItem,
+		QtyField,
+	},
 
 	props: {
 		doc: Object,
@@ -85,7 +99,6 @@ export default {
 		row: Object,
 		value: [String, Number, Object],
 		align: String,
-		events: Object,
 		read_only: Boolean,
 	},
 
@@ -120,12 +133,6 @@ export default {
 
 		handle_value_change(field, value) {
 			this.$emit("value-changed", this.row, field, value);
-		},
-
-		handle_selected(data) {
-			if (data.row == this.row) {
-				this.focus_field(data.field);
-			}
 		},
 	},
 
@@ -168,15 +175,6 @@ export default {
 
 			return true;
 		},
-	},
-
-	created() {
-		this.events.on('selected', this.handle_selected);
-		this.events.on('refreshed', this.refresh_view);
-	},
-	beforeDestroy() {
-		this.events.off('selected', this.handle_selected);
-		this.events.off('refreshed', this.refresh_view);
 	},
 }
 </script>

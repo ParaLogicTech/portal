@@ -115,6 +115,21 @@ export const cart = reactive({
 		});
 	},
 
+	reorder_items(sales_order) {
+		if (!this.customer && !this.cart_id) {
+			return;
+		}
+		if (!sales_order) {
+			return;
+		}
+
+		return cart_queue.add("reorder_items", {
+			sales_order: sales_order,
+			cart_id: this.cart_id,
+			customer: this.customer,
+		});
+	},
+
 	place_order() {
 		if (!this.customer && !this.cart_id) {
 			return;
@@ -264,6 +279,16 @@ export const cart_queue = reactive({
 			if (existing_action) {
 				return existing_action.promise;
 			}
+		} else if (action == "reorder_items") {
+			let existing_action = this.queued_actions.find(q => (
+				q.action == "reorder_items"
+				&& q.params.sales_order == params.sales_order
+				&& q.params.customer == params.customer
+				&& q.params.cart_id == params.cart_id
+			));
+			if (existing_action) {
+				return existing_action.promise;
+			}
 		} else if (action == "place_order") {
 			if (this.queued_place_order) {
 				return this.queued_place_order.promise;
@@ -317,6 +342,8 @@ export const cart_queue = reactive({
 				resource = place_order_resource;
 			} else if (action_obj.action == "clear_cart") {
 				resource = clear_cart_resource;
+			} else if (action_obj.action == "reorder_items") {
+				resource = reorder_items_resource;
 			}
 
 			if (!resource) {
@@ -481,6 +508,46 @@ const place_order_resource = createResource({
 	},
 	onSuccess(data) {
 		createAlert({"title": "Order Placed", "message": `Order ${data.sales_order} placed successfully`, "variant": "success"});
+	}
+});
+
+const reorder_items_resource = createResource({
+	url: 'portal.sales_portal.api.cart.reorder_items',
+	method: 'POST',
+	makeParams({ sales_order, customer, cart_id }) {
+		let params = {
+			sales_order: sales_order
+		};
+
+		if (customer) {
+			params.customer = customer;
+		}
+		if (cart_id) {
+			params.cart_id = cart_id;
+		}
+
+		return params;
+	},
+	validate(params) {
+		validate_cart_id_or_customer(params);
+		if (!params.sales_order) {
+			return 'Sales Order # is required';
+		}
+	},
+	onSuccess(data) {
+		if (cint(data.no_of_items_added) > 0) {
+			createAlert({
+				"title": "Reordered Items",
+				"message": `<b>${data.no_of_items_added}</b> Items added to cart from Order ${data.sales_order}`,
+				"variant": "success"
+			});
+		} else {
+			createAlert({
+				"title": "Items Already Added",
+				"message": `All Items from Order ${data.sales_order} are already added to cart`,
+				"variant": "info"
+			});
+		}
 	}
 });
 

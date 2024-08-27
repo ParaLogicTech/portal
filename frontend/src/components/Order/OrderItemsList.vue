@@ -14,19 +14,18 @@
 				:row="row"
 				:value="item"
 				:align="align"
-				:events="events"
 				:read_only="read_only"
 				@select-next-row="select_next_row"
 				@select-previous-row="select_previous_row"
 				@qty-changed="handle_qty_change"
 				@value-changed="handle_value_change"
+				:ref="collect_item_cell_refs"
 			/>
 		</template>
 	</ListView>
 </template>
 
 <script>
-import mitt from 'mitt';
 import {ListView} from "frappe-ui";
 import QtyField from "@/components/Fields/QtyField.vue";
 import OrderRowItem from "@/components/Order/OrderRowItem.vue";
@@ -47,7 +46,7 @@ export default {
 
 	data() {
 		return {
-			events: mitt()
+			item_cell_refs: [],
 		}
 	},
 
@@ -66,7 +65,7 @@ export default {
 
 		select_row(row, field="qty", center=false) {
 			if (row) {
-				this.events.emit("selected", {row, field, center});
+				(this.item_cell_refs || []).find(d => d.row == row && d.column.key == field)?.focus_field(field, center);
 			}
 		},
 
@@ -79,7 +78,15 @@ export default {
 		},
 
 		refresh_view() {
-			this.events.emit("refreshed");
+			for (let d of this.item_cell_refs || []) {
+				d.refresh_view();
+			}
+		},
+
+		collect_item_cell_refs(el) {
+			if (el) {
+				this.item_cell_refs.push(el);
+			}
 		},
 	},
 
@@ -130,10 +137,18 @@ export default {
 					align: "right",
 					width: "110px",
 				},
+				{
+					key: "actions",
+					align: "center",
+					width: "50px",
+				},
 			];
 
 			if (!settings.value.is_system_user) {
-				columns = columns.filter(c => !['price_list_rate', 'discount_percentage'].includes(c.key))
+				columns = columns.filter(c => !['price_list_rate', 'discount_percentage'].includes(c.key));
+			}
+			if (this.doc.doctype != "Sales Order") {
+				columns = columns.filter(c => !['actions'].includes(c.key));
 			}
 
 			return columns;
@@ -161,5 +176,9 @@ export default {
 			return options;
 		},
 	},
+
+	beforeUpdate() {
+		this.item_cell_refs = [];
+	}
 }
 </script>

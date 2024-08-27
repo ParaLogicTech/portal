@@ -211,6 +211,27 @@ def _clear_cart(cart_doc):
 
 
 @frappe.whitelist()
+def reorder_items(sales_order, customer=None, cart_id=None):
+	cart_doc = get_cart_doc(customer, cart_id)
+	cart_doc.validate_can_modify()
+
+	sales_order_doc = frappe.get_doc("Sales Order", sales_order)
+	sales_order_doc.check_permission("read")
+
+	no_of_items_added = 0
+	for d in sales_order_doc.get("items"):
+		if d.item_code and not cart_doc.get_item_row(d.item_code):
+			_update_item_qty(cart_doc, d.item_code, d.qty, d.uom)
+			no_of_items_added += 1
+
+	out = update_cart(cart_doc)
+	out['no_of_items_added'] = no_of_items_added
+	out['sales_order'] = sales_order_doc.name
+
+	return out
+
+
+@frappe.whitelist()
 def place_order(customer=None, cart_id=None):
 	cart_doc = get_cart_doc(customer, cart_id)
 	cart_doc.validate_can_modify()

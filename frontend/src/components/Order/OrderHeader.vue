@@ -30,6 +30,19 @@
 					variant="ghost"
 					theme="gray"
 					size="sm"
+					label="Reorder"
+					title="Reorder"
+					@click="show_reorder_dialog()"
+				>
+					<template #icon>
+						<ListRestart class="w-[20px]" stroke-width="1.8px" />
+					</template>
+				</Button>
+
+				<Button
+					variant="ghost"
+					theme="gray"
+					size="sm"
 					label="Print"
 					title="Print"
 					:link="print_link"
@@ -68,6 +81,19 @@
 				</template>
 				<template #body="{ close }">
 					<div class="bg-white border border-gray-300 rounded shadow-sm p-1 flex flex-col">
+						<Button
+							variant="ghost"
+							theme="gray"
+							size="sm"
+							label="Reorder"
+							class="!justify-start"
+							@click="close(); show_reorder_dialog();"
+						>
+							<template #prefix>
+								<ListRestart class="h-[15px] w-[15px]" stroke-width="2px" />
+							</template>
+						</Button>
+
 						<Button
 							variant="ghost"
 							theme="gray"
@@ -133,15 +159,33 @@
 			:email_template="settings.sales_order_email_template"
 			:default_recipient="doc.contact_email"
 		/>
+
+		<Dialog
+			v-model="reorder_dialog"
+			:options="{
+				title: 'Confirm Reorder',
+				message: 'Are you sure you want to reorder all items from this order?',
+				size: 'lg',
+				actions: [
+					{
+						label: 'Confirm Reorder',
+						variant: 'solid',
+						theme: 'blue',
+						onClick: () => this.reorder_items(),
+					},
+				],
+			}"
+		/>
 	</div>
 </template>
 
 <script>
-import {Ellipsis, FileText, ExternalLink, Printer, RefreshCw, Mail} from "lucide-vue-next";
+import {Ellipsis, FileText, ExternalLink, Printer, RefreshCw, Mail, ListRestart} from "lucide-vue-next";
 import OrderStatusBadge from "@/components/Order/OrderStatusBadge.vue";
 import {Button, Popover} from "frappe-ui";
 import {settings} from "@/data/settings";
 import EmailDialog from "@/components/Utils/EmailDialog.vue";
+import {cart} from "@/data/cart";
 
 export default {
 	name: "OrderHeader",
@@ -157,6 +201,7 @@ export default {
 		Printer,
 		Mail,
 		EmailDialog,
+		ListRestart,
 	},
 
 	props: {
@@ -174,14 +219,24 @@ export default {
 	data() {
 		return {
 			email_dialog: false,
+			reorder_dialog: false,
 			settings: settings,
 		}
 	},
 
 	methods: {
+		async reorder_items() {
+			await cart.reorder_items(this.name);
+			await this.$router.push({name: "CartView"});
+			this.reorder_dialog = false;
+		},
+
 		show_email_dialog() {
 			this.email_dialog = true;
-		}
+		},
+		show_reorder_dialog() {
+			this.reorder_dialog = true;
+		},
 	},
 
 	computed: {

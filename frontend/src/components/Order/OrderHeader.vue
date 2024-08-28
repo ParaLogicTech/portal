@@ -185,7 +185,7 @@ import OrderStatusBadge from "@/components/Order/OrderStatusBadge.vue";
 import {Button, Popover} from "frappe-ui";
 import {settings} from "@/data/settings";
 import EmailDialog from "@/components/Utils/EmailDialog.vue";
-import {cart} from "@/data/cart";
+import {alert_select_customer, cart} from "@/data/cart";
 
 export default {
 	name: "OrderHeader",
@@ -235,6 +235,10 @@ export default {
 			this.email_dialog = true;
 		},
 		show_reorder_dialog() {
+			if (!cart.customer_or_cart_selected()) {
+				alert_select_customer();
+				return;
+			}
 			this.reorder_dialog = true;
 		},
 	},

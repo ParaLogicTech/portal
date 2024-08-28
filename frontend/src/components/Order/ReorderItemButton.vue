@@ -17,7 +17,7 @@
 <script>
 import {Button, Spinner} from "frappe-ui";
 import {Check, ShoppingBag} from "lucide-vue-next";
-import {cart} from "@/data/cart";
+import {alert_select_customer, cart} from "@/data/cart";
 import {createAlert} from "@/utils/alerts";
 
 export default {
@@ -55,13 +55,18 @@ export default {
 				return;
 			}
 
+			if (!cart.customer_or_cart_selected()) {
+				alert_select_customer();
+				return;
+			}
+
 			await cart.update_item_qty(this.item.name, 1);
 
 			createAlert({
 				title: "Reordered Item",
 				message: `Added <b>1 ${this.item.uom}</b> of <b>${this.item.item_name}</b> to Cart`,
 				variant: "success",
-			})
+			});
 		},
 	},
 }

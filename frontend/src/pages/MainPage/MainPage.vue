@@ -39,8 +39,7 @@
 import CustomerSelection from "@/components/Customer/CustomerSelection.vue";
 import CartSidebar from "@/components/Cart/CartSidebar.vue";
 import NavigationMenu from "@/components/NavigationMenu.vue";
-import {cart} from "@/data/cart";
-import {createAlert} from "@/utils/alerts";
+import {alert_select_customer, cart} from "@/data/cart";
 import {is_mobile, is_mobile_or_tablet} from "@/utils/responsive";
 
 export default {
@@ -60,8 +59,8 @@ export default {
 
 	methods: {
 		async handle_item_selected(item, open_cart) {
-			if (!cart.customer && !cart.cart_id) {
-				createAlert({"title": "Please Select Customer First", "variant": "warning"});
+			if (!cart.customer_or_cart_selected()) {
+				alert_select_customer();
 				setTimeout(() => this.toggle_customer_selection(true), 100);
 				return;
 			}
@@ -81,8 +80,8 @@ export default {
 		},
 
 		async handle_qty_change(item, qty, uom) {
-			if (!cart.customer && !cart.cart_id) {
-				createAlert({"title": "Please Select Customer First", "variant": "warning"});
+			if (!cart.customer_or_cart_selected()) {
+				alert_select_customer();
 				setTimeout(() => this.toggle_customer_selection(true), 100);
 				return;
 			}

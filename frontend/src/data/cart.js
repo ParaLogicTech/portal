@@ -37,11 +37,13 @@ export const cart = reactive({
 	},
 
 	set_customer(value) {
-		if (this.customer != value) {
-			return cart_queue.add("set_customer", {
-				customer: value,
-			});
+		if (this.customer == value) {
+			return;
 		}
+
+		return cart_queue.add("set_customer", {
+			customer: value,
+		});
 	},
 
 	reload_cart() {
@@ -56,11 +58,9 @@ export const cart = reactive({
 	},
 
 	update_item_qty(item_code, qty, uom=null) {
-		if (!this.customer && !this.cart_id) {
-			return;
-		}
+		validate_customer_or_cart_selected();
 		if (!item_code || qty == null) {
-			return;
+			throw "item_code or qty not provided";
 		}
 
 		return cart_queue.add("update_item_qty", {
@@ -73,11 +73,9 @@ export const cart = reactive({
 	},
 
 	update_item_value(item_code, fieldname, value) {
-		if (!this.customer && !this.cart_id) {
-			return;
-		}
+		validate_customer_or_cart_selected();
 		if (!item_code || !fieldname) {
-			return;
+			throw "item_code or fieldname not provided";
 		}
 
 		return cart_queue.add("update_item_value", {
@@ -90,11 +88,9 @@ export const cart = reactive({
 	},
 
 	update_cart_value(fieldname, value) {
-		if (!this.customer && !this.cart_id) {
-			return;
-		}
+		validate_customer_or_cart_selected();
 		if (!fieldname) {
-			return;
+			throw "fieldname not provided";
 		}
 
 		return cart_queue.add("update_cart_value", {
@@ -106,10 +102,7 @@ export const cart = reactive({
 	},
 
 	clear_cart() {
-		if (!this.customer && !this.cart_id) {
-			return;
-		}
-
+		validate_customer_or_cart_selected();
 		return cart_queue.add("clear_cart", {
 			cart_id: this.cart_id,
 			customer: this.customer,
@@ -117,11 +110,9 @@ export const cart = reactive({
 	},
 
 	reorder_items(sales_order) {
-		if (!this.customer && !this.cart_id) {
-			return;
-		}
+		validate_customer_or_cart_selected();
 		if (!sales_order) {
-			return;
+			throw "sales_order not provided";
 		}
 
 		return cart_queue.add("reorder_items", {
@@ -132,10 +123,7 @@ export const cart = reactive({
 	},
 
 	place_order() {
-		if (!this.customer && !this.cart_id) {
-			return;
-		}
-
+		validate_customer_or_cart_selected();
 		return cart_queue.add("place_order", {
 			cart_id: this.cart_id,
 			customer: this.customer,
@@ -155,6 +143,10 @@ export const cart = reactive({
 			.map(a => a?.params?.item_code)
 			.filter(d => d);
 	}),
+
+	customer_or_cart_selected() {
+		return cart.cart_id || cart.customer;
+	}
 });
 
 export const cart_queue = reactive({
@@ -484,7 +476,7 @@ const clear_cart_resource = createResource({
 	validate(params) {
 		validate_cart_id_or_customer(params);
 	},
-	onSuccess(data) {
+	onSuccess() {
 		createAlert({"title": "Order Cart Cleared", "message": `Items cleared`, "variant": "info"});
 	}
 });
@@ -640,6 +632,16 @@ const subscribe_customer_doc = (new_doc, previous_doc) => {
 
 const validate_cart_id_or_customer = (params) => {
 	if (!params.cart_id && !params.customer) {
-		return 'Cart ID or Customer is required';
+		return 'Cart ID or Customer not provided';
 	}
+}
+
+export const validate_customer_or_cart_selected = () => {
+	if (!cart.customer_or_cart_selected()) {
+		throw "Cart ID or Customer not selected";
+	}
+}
+
+export const alert_select_customer = () => {
+	createAlert({"title": "Please Select Customer First", "variant": "warning"});
 }

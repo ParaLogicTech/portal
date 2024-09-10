@@ -8,7 +8,6 @@
  "engine": "InnoDB",
  "field_order": [
   "company",
-  "show_customer_description",
   "column_break_4clnz",
   "stock_availability_based_on",
   "show_stock_availability",
@@ -36,13 +35,6 @@
    "fieldname": "hide_items_without_image",
    "fieldtype": "Check",
    "label": "Hide Items without Image"
-  },
-  {
-   "default": "No Description",
-   "fieldname": "show_customer_description",
-   "fieldtype": "Select",
-   "label": "Show Customer Description",
-   "options": "No Description\nAddress Line 1"
   },
   {
    "default": "Stock Qty",
@@ -90,7 +82,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-08-15 08:51:36.286358",
+ "modified": "2024-08-30 04:43:39.076626",
  "modified_by": "Administrator",
  "module": "Sales Portal",
  "name": "Sales Portal Settings",

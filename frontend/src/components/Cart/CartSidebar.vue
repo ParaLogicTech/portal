@@ -73,10 +73,6 @@ export default {
 				this.$refs.items?.refresh_view();
 			});
 		},
-
-		toggle_customer_selection(val) {
-			this.$refs.customer_selection?.toggle_customer_selection(val);
-		},
 	},
 }
 </script>

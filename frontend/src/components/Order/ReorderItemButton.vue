@@ -56,7 +56,7 @@ export default {
 			}
 
 			if (!cart.customer_or_cart_selected()) {
-				alert_select_customer();
+				alert_select_customer(true);
 				return;
 			}
 

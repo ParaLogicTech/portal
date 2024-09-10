@@ -151,10 +151,6 @@ export default {
 			localStorage.setItem("item_list_view_type", this.view_type);
 		},
 
-		toggle_customer_selection(val) {
-			this.$refs.item_filters?.toggle_customer_selection(val);
-		},
-
 		parse_query_params() {
 			for (let [param, setter] of Object.entries(this.query_params)) {
 				let value = this.$route.query?.[param] || null;

@@ -1,89 +1,76 @@
 <template>
-	<Autocomplete
-		:options="this.customer_options"
-		v-model="customer_model"
-		placeholder="Select Customer"
-		variant="outline"
-		@update:modelValue="this.update_cart_customer"
-		ref="autocomplete"
+	<Button
+		class="w-full justify-between"
+		:disabled="!can_change"
+		@click="handle_click"
 	>
-		<template #prefix>
-			<CircleUser class="h-[17px] w-[17px] mr-1.5" stroke-width="1.5px" />
+		<template #default>
+			<div class="flex items-center flex-nowrap text-sm" :class="text_classes">
+				<CircleUser class="h-[17px] w-[17px] mr-1.5 inline" stroke-width="1.5px" />
+				<div>{{ customer_text }}</div>
+			</div>
 		</template>
-	</Autocomplete>
+
+		<template #suffix v-if="can_change">
+			<ChevronsUpDown class="h-[16px] w-[16px] text-gray-700 text-right" stroke-width="1.7px" />
+		</template>
+	</Button>
 </template>
 
 <script>
-import {Autocomplete} from "frappe-ui";
+import {Button} from "frappe-ui";
 import {customer_list, active_customers} from "@/data/customers";
-import {cart, _selected_customer} from "@/data/cart";
+import {cart, toggle_customer_selection} from "@/data/cart";
 import {watch} from "vue"
-import {CircleUser} from "lucide-vue-next"
+import {CircleUser, ChevronsUpDown} from "lucide-vue-next"
 import {settings} from "@/data/settings";
 
 export default {
 	name: "CustomerSelection",
 
 	components: {
-		Autocomplete, CircleUser,
+		CircleUser,
+		Button,
+		ChevronsUpDown,
 	},
 
 	data() {
-		let customer_model = this.get_option_from_name(_selected_customer.value);
 		return {
-			customer_model: customer_model,
+			value: cart.selected_customer,
 		}
 	},
 
 	methods: {
-		update_cart_customer(value) {
-			// do not let customer user deselect if only one customer
-			// Todo make it read only instead
-			if (!value && !settings.value.is_system_user && active_customers.value.length == 1) {
-				this.customer_model = this.get_option_from_name(_selected_customer.value);
-				return;
-			}
-
-			cart.set_customer(value?.value);
-		},
-
-		get_option_from_name(customer) {
-			let customer_obj = customer_list.dataMap[customer];
-			if (customer_obj) {
-				return this.get_option(customer_obj);
-			} else {
-				return null;
-			}
-		},
-
-		get_option(d) {
-			let opt = {
-				label: d.customer_name,
-				value: d.name,
-			}
-
-			if (settings.value.show_customer_description == "Address Line 1") {
-				opt.description = d.address_line1;
-			}
-
-			return opt;
-		},
-
-		toggle_customer_selection(val) {
-			this.$refs.autocomplete?.togglePopover(val);
-		},
-	},
-
-	computed: {
-		customer_options() {
-			let customers = active_customers.value || [];
-			return customers.map(d => this.get_option(d));
+		handle_click() {
+			toggle_customer_selection(true);
 		}
 	},
 
+	computed: {
+		customer_text() {
+			if (!this.value) {
+				return "Select Customer";
+			} else {
+				return this.customer?.customer_name || this.value;
+			}
+		},
+
+		text_classes() {
+			return this.value ? "text-black" : "text-gray-600";
+		},
+
+		customer() {
+			return this.value ? customer_list.dataMap[this.value] : null;
+		},
+
+		can_change() {
+			return !this.value || settings.value.is_system_user || active_customers.value.length > 1;
+		},
+	},
+
 	created() {
-		watch(_selected_customer, (new_customer, old_customer) => {
-			this.customer_model = this.get_option_from_name(new_customer);
+		watch(() => cart.selected_customer, (new_customer, old_customer) => {
+			this.value = new_customer;
 		});
 	}
 }

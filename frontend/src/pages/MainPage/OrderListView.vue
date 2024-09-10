@@ -26,7 +26,7 @@
 import OrderList from "@/components/Order/OrderList.vue";
 import {subscribe_doctype} from "@/socket";
 import {createAlert} from "@/utils/alerts";
-import {cart, _selected_customer} from "@/data/cart";
+import {cart} from "@/data/cart";
 import OrderFilters from "@/components/Order/OrderFilters.vue";
 import debounce from "frappe-ui/src/utils/debounce";
 
@@ -112,7 +112,7 @@ export default {
 		},
 
 		customer() {
-			return _selected_customer.value || cart.customer;
+			return cart.customer;
 		},
 
 		list_resource() {

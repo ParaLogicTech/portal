@@ -6,9 +6,10 @@
 					type="text"
 					size="sm"
 					variant="outline"
-					:placeholder="this.placeholder"
+					:placeholder="placeholder || 'Search'"
 					:debounce="150"
-					v-model="this.filters.txt"
+					v-model="filters.txt"
+					ref="search_input"
 				/>
 			</div>
 			<Button
@@ -17,7 +18,7 @@
 				size="sm"
 				label="Reset"
 				icon-left="filter"
-				@click="this.debounced_reset_filters"
+				@click="debounced_reset_filters"
 				class="min-w-18"
 			/>
 		</div>
@@ -38,7 +39,10 @@ export default {
 	},
 
 	props: {
-		filters: Object,
+		filters: {
+			type: Object,
+			required: true,
+		},
 		placeholder: String
 	},
 
@@ -53,6 +57,10 @@ export default {
 				this.filters[k] = null;
 			}
 		},
+
+		focus_search() {
+			this.$refs.search_input?.$refs.inputRef?.focus();
+		}
 	},
 }
 </script>

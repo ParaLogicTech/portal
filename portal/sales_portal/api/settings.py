@@ -12,7 +12,7 @@ def get_settings():
 	out = frappe._dict({
 		"company": settings_doc.company or get_default_company(),
 		"hide_items_without_image": settings_doc.hide_items_without_image,
-		"show_customer_description": settings_doc.show_customer_description,
+		"customer_naming_by": frappe.get_cached_value("Selling Settings", None, "cust_master_name"),
 		"stock_availability_based_on": settings_doc.stock_availability_based_on,
 		"show_stock_availability": settings_doc.show_stock_availability,
 		"sales_order_email_template": settings_doc.sales_order_email_template,

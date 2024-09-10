@@ -22,7 +22,7 @@
 
 		<!-- List View Version -->
 		<div
-			v-if="view_type == 'List View'"
+			v-show="view_type == 'List View'"
 			class="flex h-full"
 		>
 			<!-- Left Side Image -->
@@ -86,7 +86,7 @@
 
 		<!-- Grid View Version -->
 		<div
-			v-else
+			v-show="view_type != 'List View'"
 			class="flex flex-col h-full"
 		>
 			<!-- Top Image -->

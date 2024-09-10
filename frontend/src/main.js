@@ -162,7 +162,7 @@ if (!session.isLoggedIn) {
 		}
 
 		if (default_customer && !cart.customer) {
-			cart.set_customer(default_customer);
+			cart.set_customer(default_customer, true);
 		}
 	});
 }

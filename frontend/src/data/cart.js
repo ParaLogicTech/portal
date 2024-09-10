@@ -1,11 +1,11 @@
-import {computed, reactive} from "vue";
+import {computed, reactive, ref} from "vue";
 import { createResource } from "frappe-ui";
-import { ref } from 'vue';
 import {createAlert} from "@/utils/alerts";
 import {subscribe_doc, unsubscribe_doc} from "@/socket";
 import {settings} from "@/data/settings";
 
-export const _selected_customer = ref(null);
+const _selected_customer = ref(null);
+export const _customer_selection_dialog = ref(false);
 
 export const cart = reactive({
 	doc: null,
@@ -24,6 +24,10 @@ export const cart = reactive({
 		return this.doc?.customer || _selected_customer.value;
 	},
 
+	get selected_customer() {
+		return _selected_customer.value || this.customer;
+	},
+
 	get cart_id() {
 		return this.doc?.name;
 	},
@@ -36,13 +40,21 @@ export const cart = reactive({
 		return this.doc?.currency;
 	},
 
-	set_customer(value) {
+	set_customer(value, update_selected_customer=false) {
+		value = value || null;
+
 		if (this.customer == value) {
 			return;
 		}
 
+		if (update_selected_customer) {
+			_selected_customer.value = value;
+		}
+
 		return cart_queue.add("set_customer", {
 			customer: value,
+		}).finally(() => {
+			_selected_customer.value = this.doc?.customer || null;
 		});
 	},
 
@@ -169,7 +181,7 @@ export const cart_queue = reactive({
 
 	add(action, params) {
 		// Update existing action instead of adding a new one if possible
-		let existing_promise = this.update_existing_action(action, params);
+		let existing_promise = action_settings[action]?.update_existing_action?.(params);
 		if (existing_promise) {
 			return existing_promise;
 		}
@@ -187,22 +199,17 @@ export const cart_queue = reactive({
 
 		action_obj.promise = promise;
 
+		// Validate before queuing
+		let validation_message = action_settings[action]?.validate_queue?.(params);
+		if (validation_message) {
+			action_obj.reject(validation_message);
+			return promise;
+		}
+
 		// Add to queue
 		if (["set_customer", "get_cart"].includes(action)) {
-			if (this.queued_place_order && action == "set_customer") {
-				action_obj.reject("Cannot change customer while placing order");
-				return promise;
-			}
 			this.queued_get_cart = action_obj;
 		} else if (action == "place_order") {
-			if (
-				this.queued_get_cart
-				&& this.queued_get_cart.params.customer
-				&& this.queued_get_cart.params.customer != cart.doc?.customer
-			) {
-				action_obj.reject("Cannot place order while changing customer");
-				return promise;
-			}
 			this.queued_place_order = action_obj;
 		} else {
 			this.queued_actions.push(action_obj);
@@ -214,79 +221,6 @@ export const cart_queue = reactive({
 		}
 
 		return promise;
-	},
-
-	update_existing_action(action, params) {
-		if (action == "update_item_qty") {
-			let existing_action = this.queued_actions.find(q => (
-				q.action == "update_item_qty"
-				&& q.params.item_code == params.item_code
-				&& q.params.customer == params.customer
-				&& q.params.cart_id == params.cart_id
-			));
-
-			if (existing_action) {
-				existing_action.params.qty = params.qty;
-				existing_action.params.uom = params.uom;
-				return existing_action.promise;
-			}
-		} else if (["set_customer", "get_cart"].includes(action)) {
-			if (this.queued_get_cart) {
-				if (action == "set_customer") {
-					delete this.queued_get_cart.params.cart_id;
-					this.queued_get_cart.params.customer = params.customer;
-				}
-				return this.queued_get_cart.promise;
-			}
-		} else if (action == "update_cart_value") {
-			let existing_action = this.queued_actions.find(q => (
-				q.action == "update_cart_value"
-				&& q.params.fieldname == params.fieldname
-				&& q.params.customer == params.customer
-				&& q.params.cart_id == params.cart_id
-			));
-
-			if (existing_action) {
-				existing_action.params.value = params.value;
-				return existing_action.promise;
-			}
-		} else if (action == "update_item_value") {
-			let existing_action = this.queued_actions.find(q => (
-				q.action == "update_item_value"
-				&& q.params.item_code == params.item_code
-				&& q.params.fieldname == params.fieldname
-				&& q.params.customer == params.customer
-				&& q.params.cart_id == params.cart_id
-			));
-
-			if (existing_action) {
-				existing_action.params.value = params.value;
-				return existing_action.promise;
-			}
-		} else if (action == "clear_cart") {
-			let existing_action = this.queued_actions.find(q => (
-				q.action == "clear_cart"
-				&& q.params.customer == params.customer
-				&& q.params.cart_id == params.cart_id
-			));
-			if (existing_action) {
-				return existing_action.promise;
-			}
-		} else if (action == "reorder_items") {
-			let existing_action = this.queued_actions.find(q => (
-				q.action == "reorder_items"
-				&& q.params.sales_order == params.sales_order
-				&& q.params.customer == params.customer
-				&& q.params.cart_id == params.cart_id
-			));
-			if (existing_action) {
-				return existing_action.promise;
-			}
-		} else if (action == "place_order") {
-			if (this.queued_place_order) {
-				return this.queued_place_order.promise;
-			}
-		}
 	},
 
 	async run() {
@@ -305,6 +239,7 @@ export const cart_queue = reactive({
 				await this.run_action(action_obj);
 			} else {
 				update_cart_data(null);
+				action_obj.resolve();
 			}
 		}
 
@@ -319,26 +254,9 @@ export const cart_queue = reactive({
 
 	async run_action(action_obj) {
 		try {
-			// console.log('Running', action_obj)
 			this.running_action = action_obj;
 
-			let resource;
-			if (action_obj.action == "update_item_qty") {
-				resource = update_item_qty_resource;
-			} else if (["set_customer", "get_cart"].includes(action_obj.action)) {
-				resource = get_cart_resource;
-			} else if (action_obj.action == "update_cart_value") {
-				resource = update_cart_value_resource;
-			} else if (action_obj.action == "update_item_value") {
-				resource = update_item_value_resource;
-			} else if (action_obj.action == "place_order") {
-				resource = place_order_resource;
-			} else if (action_obj.action == "clear_cart") {
-				resource = clear_cart_resource;
-			} else if (action_obj.action == "reorder_items") {
-				resource = reorder_items_resource;
-			}
-
+			let resource = action_settings[action_obj.action]?.resource;
 			if (!resource) {
 				throw new Error("Invalid action");
 			}
@@ -354,6 +272,115 @@ export const cart_queue = reactive({
 		}
 	}
 });
+
+const update_cart_data = (data) => {
+	let previous_doc = cart.doc;
+
+	cart.doc = data?.doc;
+	cart.addresses = data?.addresses || [];
+	cart.contacts = data?.contacts || [];
+
+	if (!cart.doc) {
+		_selected_customer.value = null;
+		localStorage.removeItem('last_selected_customer');
+	} else if (cart.doc.customer) {
+		_selected_customer.value = cart.doc.customer;
+		localStorage.setItem('last_selected_customer', cart.doc.customer);
+	}
+
+	subscribe_cart_doc(cart.doc, previous_doc);
+	subscribe_customer_doc(cart.doc, previous_doc);
+}
+
+export const setup_cart_realtime = () => {
+	$socket.on("doc_update", (data) => {
+		// Do not reload if queue is running
+		if (cart_queue.running) {
+			return;
+		}
+
+		// Ignore if cart id is not the same
+		if (!cart.cart_id || data.doctype != 'Cart' || data.name != cart.cart_id) {
+			return;
+		}
+
+		// Do not reload if we have the same version
+		if (data.modified == cart.doc?.modified) {
+			return;
+		}
+
+		cart.reload_cart();
+	});
+
+	$socket.on("cart_created", (data) => {
+		// Ignore if cart id is already set or customer does not match selected customer
+		if (cart.cart_id || data.customer !== cart.customer) {
+			return;
+		}
+
+		// Do not reload if queue is running
+		if (cart_queue.running) {
+			return;
+		}
+
+		// Ignore if not available to user
+		if (
+			(data.is_customer_cart && settings.value.is_system_user)
+			|| !data.is_customer_cart && !settings.value.is_system_user
+		) {
+			return;
+		}
+
+		cart.reload_cart();
+	});
+}
+
+const subscribe_cart_doc = (new_doc, previous_doc) => {
+	// Unsubscribe if cart changed
+	if (previous_doc?.name && previous_doc.name != new_doc?.name) {
+		unsubscribe_doc($socket, "Cart", previous_doc.name);
+	}
+
+	// Subscribe to new cart
+	if (new_doc?.name) {
+		subscribe_doc($socket, "Cart", new_doc.name);
+	}
+}
+
+const subscribe_customer_doc = (new_doc, previous_doc) => {
+	// Unsubscribe if customer changed
+	if (previous_doc?.customer && previous_doc.customer != new_doc?.customer) {
+		unsubscribe_doc($socket, "Customer", previous_doc.customer);
+	}
+
+	// Subscribe to new cart
+	if (new_doc?.customer) {
+		subscribe_doc($socket, "Customer", new_doc.customer);
+	}
+}
+
+const validate_cart_id_or_customer = (params) => {
+	if (!params.cart_id && !params.customer) {
+		return 'Cart ID or Customer not provided';
+	}
+}
+
+export const validate_customer_or_cart_selected = () => {
+	if (!cart.customer_or_cart_selected()) {
+		throw "Cart ID or Customer not selected";
+	}
+}
+
+export const alert_select_customer = (show_customer_selection) => {
+	createAlert({"title": "Please Select Customer First", "variant": "warning"});
+	if (show_customer_selection) {
+		setTimeout(() => toggle_customer_selection(true), 150);
+	}
+}
+
+export const toggle_customer_selection = (val) => {
+	_customer_selection_dialog.value = val ?? !_customer_selection_dialog.value;
+}
 
 const get_cart_resource = createResource({
 	url: 'portal.sales_portal.api.cart.get_cart',
@@ -544,104 +571,122 @@ const reorder_items_resource = createResource({
 	}
 });
 
-const update_cart_data = (data) => {
-	let previous_doc = cart.doc;
-
-	cart.doc = data?.doc;
-	cart.addresses = data?.addresses || [];
-	cart.contacts = data?.contacts || [];
-
-	if (!cart.doc) {
-		_selected_customer.value = null;
-		localStorage.removeItem('last_selected_customer');
-	} else if (cart.doc.customer) {
-		_selected_customer.value = cart.doc.customer;
-		localStorage.setItem('last_selected_customer', cart.doc.customer);
-	}
-
-	subscribe_cart_doc(cart.doc, previous_doc);
-	subscribe_customer_doc(cart.doc, previous_doc);
-}
-
-export const setup_cart_realtime = () => {
-	$socket.on("doc_update", (data) => {
-		// Do not reload if queue is running
-		if (cart_queue.running) {
-			return;
+const action_settings = {
+	"set_customer": {
+		resource: get_cart_resource,
+		update_existing_action(params) {
+			if (cart_queue.queued_get_cart) {
+				delete cart_queue.queued_get_cart.params.cart_id;
+				cart_queue.queued_get_cart.params.customer = params.customer;
+				return cart_queue.queued_get_cart.promise;
+			}
+		},
+		validate_queue() {
+			if (cart_queue.queued_place_order) {
+				return "Cannot change customer while placing order";
+			}
 		}
-
-		// Ignore if cart id is not the same
-		if (!cart.cart_id || data.doctype != 'Cart' || data.name != cart.cart_id) {
-			return;
+	},
+	"get_cart": {
+		resource: get_cart_resource,
+		update_existing_action() {
+			if (cart_queue.queued_get_cart) {
+				return cart_queue.queued_get_cart.promise;
+			}
 		}
+	},
+	"update_item_qty": {
+		resource: update_item_qty_resource,
+		update_existing_action(params) {
+			let existing_action = cart_queue.queued_actions.find(q => (
+				q.action == "update_item_qty"
+				&& q.params.item_code == params.item_code
+				&& q.params.customer == params.customer
+				&& q.params.cart_id == params.cart_id
+			));
 
-		// Do not reload if we have the same version
-		if (data.modified == cart.doc?.modified) {
-			return;
+			if (existing_action) {
+				existing_action.params.qty = params.qty;
+				existing_action.params.uom = params.uom;
+				return existing_action.promise;
+			}
 		}
+	},
+	"update_cart_value": {
+		resource: update_cart_value_resource,
+		update_existing_action(params) {
+			let existing_action = cart_queue.queued_actions.find(q => (
+				q.action == "update_cart_value"
+				&& q.params.fieldname == params.fieldname
+				&& q.params.customer == params.customer
+				&& q.params.cart_id == params.cart_id
+			));
 
-		cart.reload_cart();
-	});
-
-	$socket.on("cart_created", (data) => {
-		// Ignore if cart id is already set or customer does not match selected customer
-		if (cart.cart_id || data.customer !== cart.customer) {
-			return;
+			if (existing_action) {
+				existing_action.params.value = params.value;
+				return existing_action.promise;
+			}
 		}
+	},
+	"update_item_value": {
+		resource: update_item_value_resource,
+		update_existing_action(params) {
+			let existing_action = cart_queue.queued_actions.find(q => (
+				q.action == "update_item_value"
+				&& q.params.item_code == params.item_code
+				&& q.params.fieldname == params.fieldname
+				&& q.params.customer == params.customer
+				&& q.params.cart_id == params.cart_id
+			));
 
-		// Do not reload if queue is running
-		if (cart_queue.running) {
-			return;
+			if (existing_action) {
+				existing_action.params.value = params.value;
+				return existing_action.promise;
+			}
 		}
-
-		// Ignore if not available to user
-		if (
-			(data.is_customer_cart && settings.value.is_system_user)
-			|| !data.is_customer_cart && !settings.value.is_system_user
-		) {
-			return;
+	},
+	"place_order": {
+		resource: place_order_resource,
+		update_existing_action() {
+			if (this.queued_place_order) {
+				return this.queued_place_order.promise;
+			}
+		},
+		validate_queue() {
+			if (
+				cart_queue.queued_get_cart
+				&& cart_queue.queued_get_cart.params.customer
+				&& cart_queue.queued_get_cart.params.customer != cart.doc?.customer
+			) {
+				return "Cannot place order while changing customer";
+			}
 		}
-
-		cart.reload_cart();
-	});
-}
-
-const subscribe_cart_doc = (new_doc, previous_doc) => {
-	// Unsubscribe if cart changed
-	if (previous_doc?.name && previous_doc.name != new_doc?.name) {
-		unsubscribe_doc($socket, "Cart", previous_doc.name);
-	}
-
-	// Subscribe to new cart
-	if (new_doc?.name) {
-		subscribe_doc($socket, "Cart", new_doc.name);
-	}
-}
-
-const subscribe_customer_doc = (new_doc, previous_doc) => {
-	// Unsubscribe if customer changed
-	if (previous_doc?.customer && previous_doc.customer != new_doc?.customer) {
-		unsubscribe_doc($socket, "Customer", previous_doc.customer);
-	}
-
-	// Subscribe to new cart
-	if (new_doc?.customer) {
-		subscribe_doc($socket, "Customer", new_doc.customer);
-	}
-}
-
-const validate_cart_id_or_customer = (params) => {
-	if (!params.cart_id && !params.customer) {
-		return 'Cart ID or Customer not provided';
-	}
-}
-
-export const validate_customer_or_cart_selected = () => {
-	if (!cart.customer_or_cart_selected()) {
-		throw "Cart ID or Customer not selected";
-	}
-}
-
-export const alert_select_customer = () => {
-	createAlert({"title": "Please Select Customer First", "variant": "warning"});
+	},
+	"clear_cart": {
+		resource: clear_cart_resource,
+		update_existing_action(params) {
+			let existing_action = cart_queue.queued_actions.find(q => (
+				q.action == "clear_cart"
+				&& q.params.customer == params.customer
+				&& q.params.cart_id == params.cart_id
+			));
+			if (existing_action) {
+				return existing_action.promise;
+			}
+		}
+	},
+	"reorder_items": {
+		resource: reorder_items_resource,
+		update_existing_action(params) {
+			let existing_action = cart_queue.queued_actions.find(q => (
+				q.action == "reorder_items"
+				&& q.params.sales_order == params.sales_order
+				&& q.params.customer == params.customer
+				&& q.params.cart_id == params.cart_id
+			));
+			if (existing_action) {
+				return existing_action.promise;
+			}
+		}
+	},
 }

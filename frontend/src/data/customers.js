@@ -22,6 +22,14 @@ export const customer_list = createListResource({
 	],
 	orderBy: 'name',
 	pageLength: 99999,
+	transform(data) {
+		for (let d of data) {
+			let address = [d.address_line1, d.address_line2, d.city, d.state]
+				.map(s => cstr(s).trim())
+				.filter(Boolean);
+			d.address_display_short = address.join(', ');
+		}
+	},
 });
 
 export const active_customers = computed(() => {

@@ -33,14 +33,22 @@
 			class="w-full flex-none border-t border-gray-400 shadow-sm-up"
 		/>
 
-		<CustomerSelectionDialog v-model="customer_selection_dialog" />
+		<CustomerSelectionDialog v-model="customer_selection_dialog" :keep_cart="false" />
+		<CustomerSelectionDialog v-model="change_cart_customer_dialog" :keep_cart="true" />
 	</div>
 </template>
 
 <script>
 import CartSidebar from "@/components/Cart/CartSidebar.vue";
 import NavigationMenu from "@/components/NavigationMenu.vue";
-import {cart, alert_select_customer, _customer_selection_dialog, toggle_customer_selection} from "@/data/cart";
+import {
+	cart,
+	alert_select_customer,
+	_customer_selection_dialog,
+	_change_cart_customer_dialog,
+	toggle_customer_selection,
+	toggle_change_cart_customer
+} from "@/data/cart";
 import {is_mobile, is_mobile_or_tablet} from "@/utils/responsive";
 import CustomerSelectionDialog from "@/components/Customer/CustomerSelectionDialog.vue";
 
@@ -128,7 +136,16 @@ export default {
 			set(val) {
 				toggle_customer_selection(val);
 			},
-		}
+		},
+
+		change_cart_customer_dialog: {
+			get() {
+				return _change_cart_customer_dialog.value;
+			},
+			set(val) {
+				toggle_change_cart_customer(val);
+			},
+		},
 	},
 
 	pageMeta() {

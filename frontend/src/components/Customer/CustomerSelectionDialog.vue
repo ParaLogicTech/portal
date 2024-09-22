@@ -2,14 +2,14 @@
 	<Dialog
 		v-model="model"
 		:options="{
-			title: 'Select Customer',
+			title: this.title,
 			size: '5xl'
 		}"
 		@keydown="handle_keydown"
 	>
 		<template #body-title>
 			<div class="text-xl font-medium">
-				Select Customer
+				{{ title }}
 			</div>
 		</template>
 
@@ -60,7 +60,8 @@ export default {
 		modelValue: {
 			type: Boolean,
 			required: true,
-		}
+		},
+		keep_cart: Boolean,
 	},
 
 	data() {
@@ -74,7 +75,12 @@ export default {
 
 	methods: {
 		async customer_selected(customer) {
-			await cart.set_customer(customer, true);
+			if (this.keep_cart) {
+				await cart.change_cart_customer(customer, true);
+			} else {
+				await cart.set_customer(customer, true);
+			}
+
 			this.model = false;
 		},
 
@@ -109,6 +115,10 @@ export default {
 			},
 		},
 
+		title() {
+			return this.keep_cart ? 'Change Customer in Cart' : 'Select Customer'
+		},
+
 		loading() {
 			return customer_list.list.loading;
 		},
@@ -138,7 +148,7 @@ export default {
 				return a_idx - b_idx;
 			});
 
-			if (sorted.length && cart.selected_customer) {
+			if (sorted.length && cart.selected_customer && !this.keep_cart) {
 				return [{}, ...sorted];
 			} else {
 				return sorted;

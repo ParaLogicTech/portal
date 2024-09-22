@@ -80,6 +80,32 @@ def make_cart_doc(customer):
 
 
 @frappe.whitelist()
+def change_cart_customer(customer, cart_id):
+	if not cart_id:
+		frappe.throw(_("Cart ID is required"))
+	if not customer:
+		frappe.throw(_("Customer is required"))
+
+	cart_doc = get_cart_by_id(cart_id)
+	if not cart_doc:
+		frappe.throw(_("Cart {0} does not exist").format(cart_id), exc=frappe.DoesNotExistError)
+
+	cart_doc.customer = customer
+	cart_doc.customer_address = None
+	cart_doc.contact_person = None
+	cart_doc.selling_price_list = None
+
+	for row in cart_doc.items:
+		row.price_list_rate = None
+		row.rate = None
+		row.discount_percentage = None
+		row.margin_rate_or_amount = None
+		row.pricing_rules = None
+
+	return update_cart(cart_doc)
+
+
+@frappe.whitelist()
 def update_item_qty(
 	item_code,
 	qty,

@@ -1348,10 +1348,10 @@ lodash.merge@^4.6.2:
   resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-10.2.0.tgz#0bd445ca57363465900f4d1f9bd8db343a4d95c3"
   integrity sha512-2bIM8x+VAf6JT4bKAljS1qUWgMsqZRPGJS6FSahIMPVvctcNhyVp7AJu7quxOW9jwkryBReKZY5tY5JYv2n/7Q==
 
-lucide-vue-next@^0.365.0:
-  version "0.365.0"
-  resolved "https://registry.yarnpkg.com/lucide-vue-next/-/lucide-vue-next-0.365.0.tgz#28781d897d4c8ff41a34fd64b8fc15112af74651"
-  integrity sha512-gevWR9gNBObHTP8tmdoAGtO7IozkS+FQjTeZ5QpCcrgk3eqwfQlzn9fPyRPQ5Fd31ouq3hvyOqWpuXtTRLsQTQ==
+lucide-vue-next@^0.439.0:
+  version "0.439.0"
+  resolved "https://registry.yarnpkg.com/lucide-vue-next/-/lucide-vue-next-0.439.0.tgz#323890e34ce4dfe38a31f62cb1285cb63b893f2d"
+  integrity sha512-XZ4KbYoEbVvAYxSuFjzZ/9oGTpCSK0CXWV6bUXe3PVN7tkSxRaoiYz+p8d/2vk43pxxOb6BSwAMfsxwbOzFk0Q==
 
 magic-string@^0.30.7:
   version "0.30.8"

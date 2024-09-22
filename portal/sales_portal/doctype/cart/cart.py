@@ -27,6 +27,7 @@ class Cart(SellingController):
 		self.set_sales_person_from_user()
 		self.validate_order_confirmed()
 		self.set_status()
+		self.set_title()
 
 	def after_insert(self):
 		self.publish_cart_created()
@@ -40,6 +41,9 @@ class Cart(SellingController):
 	def on_cancel(self):
 		self.update_status_on_cancel()
 		self.db_set("order_confirmed", 0)
+
+	def set_title(self):
+		self.title = self.customer_name or self.customer
 
 	def set_is_customer_cart(self):
 		self.is_customer_cart = cint(not is_system_user(self.owner))

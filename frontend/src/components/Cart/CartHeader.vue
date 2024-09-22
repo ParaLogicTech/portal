@@ -46,6 +46,18 @@
 							</template>
 						</Button>
 						<Button
+							variant="ghost"
+							theme="gray"
+							size="sm"
+							label="Change Customer"
+							class="!justify-start"
+							@click="close(); change_cart_customer();"
+						>
+							<template #prefix>
+								<UserRoundPen class="h-[15px] w-[15px]" stroke-width="1.9px" />
+							</template>
+						</Button>
+						<Button
 							v-if="items_count > 0"
 							variant="ghost"
 							theme="red"
@@ -83,14 +95,14 @@
 </template>
 
 <script>
-import {cart} from "@/data/cart";
-import {ShoppingBag, Ellipsis, Trash2, RefreshCw} from "lucide-vue-next";
+import {cart, toggle_change_cart_customer} from "@/data/cart";
+import {ShoppingBag, Ellipsis, Trash2, RefreshCw, UserRoundPen} from "lucide-vue-next";
 import {Popover, Button} from "frappe-ui";
 
 export default {
 	name: "CartHeader",
 
-	components: {RefreshCw, Trash2, Popover, Button, ShoppingBag, Ellipsis},
+	components: {RefreshCw, Trash2, Popover, Button, ShoppingBag, Ellipsis, UserRoundPen},
 
 	data() {
 		return {
@@ -107,6 +119,10 @@ export default {
 
 		reload_cart() {
 			this.$emit("reload-cart");
+		},
+
+		change_cart_customer() {
+			toggle_change_cart_customer(true);
 		},
 	},
 

@@ -30,7 +30,7 @@ def validate_image(doc):
 			doc.image = new_file_url
 
 	# Create and set thumbnail if missing
-	if doc.image and not doc.thumbnail:
+	if doc.image:
 		doc.thumbnail = get_thumbnail(doc.image)
 
 	# Remove thumbnail if no image

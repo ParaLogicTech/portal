@@ -14,13 +14,11 @@ export default defineConfig({
       'tailwind.config.js': path.resolve(__dirname, 'tailwind.config.js'),
     },
   },
-  optimizeDeps: {
-    include: ['frappe-ui > feather-icons', 'showdown', 'engine.io-client'],
-  },
   server: {
     fs: {
       strict: false,
-    }
+    },
+    allowedHosts: true
   },
   build: {
     outDir: `../${path.basename(path.resolve('..'))}/public/sales-portal`,
@@ -30,5 +28,15 @@ export default defineConfig({
     },
     target: 'es2021',
     sourcemap: true,
+  },
+  optimizeDeps: {
+    include: [
+      'feather-icons',
+      'showdown',
+      'tailwind.config.js',
+      'engine.io-client',
+      'prosemirror-state',
+      'highlight.js/lib/core',
+    ],
   },
 })

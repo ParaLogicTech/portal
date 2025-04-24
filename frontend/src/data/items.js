@@ -99,6 +99,18 @@ export const in_item_group = (item_group_item, item_group_filter) => {
 	}
 }
 
+export const in_item_sub_group = (item, item_group, item_sub_group_filter) => {
+
+	if (!item.item_group || !item_sub_group_filter) {
+		return false;
+	}
+	
+	let ig_item = get_item_group(item_sub_group_filter);
+	// return the rows whose item group matches the sub group and the subgroups parent is the group selected
+	return item.item_group ==  item_sub_group_filter &&
+			ig_item.parent_item_group == item_group;
+}
+
 export const get_item_group = (item_group) => {
 	return (item_group_list.dataMap || {})[item_group];
 }

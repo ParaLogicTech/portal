@@ -38,7 +38,7 @@
 <script>
 import ItemGridList from "@/components/Item/ItemGridList.vue";
 import ItemFilters from "@/components/Item/ItemFilters.vue";
-import { item_list, active_items, in_item_group } from "@/data/items";
+import { item_list, active_items, in_item_group, in_item_sub_group} from "@/data/items";
 import FuzzySearch from "@/mixins/FuzzySearch";
 import {PackageSearch} from "lucide-vue-next";
 import GridListSelector from "@/components/GridList/GridListSelector.vue";
@@ -77,7 +77,8 @@ export default {
 			filters: {
 				txt: null,
 				item_group: null,
-				brand: null,
+				item_sub_group: null,
+				brand: null
 			},
 			item_list: item_list,
 			fuzzy_search_keys: ['item_name', 'name'],
@@ -86,8 +87,13 @@ export default {
 				"item-group": this.set_item_group_filter,
 				"brand": this.set_brand_filter,
 				"txt": "txt",
+				"item-sub-group": this.set_item_sub_group
 			}
 		}
+	},
+
+	created() {
+		this.parse_query_params();
 	},
 
 	computed: {
@@ -100,6 +106,10 @@ export default {
 
 			if (this.filters.item_group?.value) {
 				items = items.filter(d => in_item_group(d.item_group, this.filters.item_group.value));
+			}
+			
+			if (this.filters.item_sub_group?.value) {
+				items = items.filter(d => in_item_sub_group(d, this.filters.item_group.value, this.filters.item_sub_group.value));
 			}
 
 			return items;
@@ -168,6 +178,7 @@ export default {
 				query: {
 					'item-group': this.filters.item_group?.value || undefined,
 					'brand': this.filters.brand?.value || undefined,
+					'item-sub-group': this.filters.item_sub_group?.value || undefined
 				},
 			});
 		},
@@ -183,6 +194,14 @@ export default {
 				this.filters.item_group = { label: value, value: value };
 			} else {
 				this.filters.item_group = null;
+			}
+		},
+
+		set_item_sub_group(value) {
+			if (value) {
+				this.filters.item_sub_group = { label: value, value: value };
+			} else {
+				this.filters.item_sub_group = null;
 			}
 		},
 

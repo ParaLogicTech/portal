@@ -20,7 +20,17 @@
 			<Autocomplete
 				:options="this.item_group_options"
 				v-model="this.filters.item_group"
+				@update:model-value="updateItemSubGroups"
 				placeholder="Filter by Item Group"
+				variant="outline"
+			/>
+		</div>
+
+		<div class="w-full" v-if="sub_group_list > 0">
+			<Autocomplete
+				:options="filtered_sub_groups"
+				v-model="filters.item_sub_group"
+				placeholder="Filter by Item Sub Group"
 				variant="outline"
 			/>
 		</div>
@@ -71,15 +81,47 @@ export default {
 	data() {
 		return {
 			debounced_reset_filters: debounce(this.reset_filters, 150),
+			sub_group_list: 0,
+			filtered_sub_groups: []
 		}
 	},
-
+	mounted() {
+		// Initializing sub-groups if item_group is already set
+		if (this.filters.item_group) {
+			this.updateItemSubGroups(this.filters.item_group);
+		}
+	},
 	methods: {
 		reset_filters() {
 			for (let k of Object.keys(this.filters)) {
 				this.filters[k] = null;
 			}
+			this.sub_group_list = 0;
+			this.filtered_sub_groups = [];
 		},
+		updateItemSubGroups(item_group) {
+			if (!item_group) {
+				this.sub_group_list = 0;
+				this.filtered_sub_groups = [];
+				return;
+			}
+			const group_item = item_group.value || item_group;
+			const children = (active_item_groups.value || []).filter(
+				group => group.parent_item_group === group_item
+			);
+			
+			this.sub_group_list = children.length;
+			this.filtered_sub_groups = children.map(group => ({
+				label: group.name,
+				value: group.name,
+			}));
+
+			if (this.filters.item_sub_group.value && !this.filtered_sub_groups.some(
+				option => option.value === this.filters.item_sub_group.value
+			)) {
+				this.filters.item_sub_group = null;
+			}
+		}
 	},
 
 	computed: {

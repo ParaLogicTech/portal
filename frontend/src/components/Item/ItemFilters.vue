@@ -20,17 +20,16 @@
 			<Autocomplete
 				:options="this.item_group_options"
 				v-model="this.filters.item_group"
-				@update:model-value="updateItemSubGroups"
 				placeholder="Filter by Item Group"
 				variant="outline"
 			/>
 		</div>
 
-		<div class="w-full" v-if="sub_group_list > 0">
+		<div class="w-full" v-if="item_sub_group_options.length">
 			<Autocomplete
-				:options="filtered_sub_groups"
+				:options="item_sub_group_options"
 				v-model="filters.item_sub_group"
-				placeholder="Filter by Item Sub Group"
+				placeholder="Filter by Sub Group"
 				variant="outline"
 			/>
 		</div>
@@ -61,7 +60,7 @@
 import CustomerSelection from "@/components/Customer/CustomerSelection.vue";
 import {is_mobile} from "@/utils/responsive";
 import {Autocomplete, Button, TextInput} from "frappe-ui";
-import {active_brands, active_item_groups} from "@/data/items";
+import {active_brands, active_item_groups, get_item_group_descendants, in_item_group} from "@/data/items";
 import debounce from "frappe-ui/src/utils/debounce"
 
 export default {
@@ -81,47 +80,15 @@ export default {
 	data() {
 		return {
 			debounced_reset_filters: debounce(this.reset_filters, 150),
-			sub_group_list: 0,
-			filtered_sub_groups: []
 		}
 	},
-	mounted() {
-		// Initializing sub-groups if item_group is already set
-		if (this.filters.item_group) {
-			this.updateItemSubGroups(this.filters.item_group);
-		}
-	},
+
 	methods: {
 		reset_filters() {
 			for (let k of Object.keys(this.filters)) {
 				this.filters[k] = null;
 			}
-			this.sub_group_list = 0;
-			this.filtered_sub_groups = [];
 		},
-		updateItemSubGroups(item_group) {
-			if (!item_group) {
-				this.sub_group_list = 0;
-				this.filtered_sub_groups = [];
-				return;
-			}
-			const group_item = item_group.value || item_group;
-			const children = (active_item_groups.value || []).filter(
-				group => group.parent_item_group === group_item
-			);
-			
-			this.sub_group_list = children.length;
-			this.filtered_sub_groups = children.map(group => ({
-				label: group.name,
-				value: group.name,
-			}));
-
-			if (this.filters.item_sub_group.value && !this.filtered_sub_groups.some(
-				option => option.value === this.filters.item_sub_group.value
-			)) {
-				this.filters.item_sub_group = null;
-			}
-		}
 	},
 
 	computed: {
@@ -132,6 +99,17 @@ export default {
 					value: d.name,
 				}
 			});
+		},
+
+		item_sub_group_options() {
+			if (this.filters.item_group) {
+				let descendants = get_item_group_descendants(this.filters.item_group.value);
+				return this.item_group_options.filter(d => {
+					return descendants.includes(d.value);
+				});
+			}
+
+			return [];
 		},
 
 		brand_options() {
@@ -146,6 +124,18 @@ export default {
 		is_mobile() {
 			return is_mobile.value;
 		},
-	}
+	},
+
+	watch: {
+		'filters.item_group': {
+			handler() {
+				if (this.filters?.item_sub_group?.value) {
+					if (!in_item_group(this.filters.item_sub_group.value, this.filters.item_group.value)) {
+						this.filters.item_sub_group = null;
+					}
+				}
+			}
+		}
+	},
 }
 </script>

@@ -143,6 +143,25 @@ const get_item_group_ancestors = (item_group) => {
 	return ancestors;
 }
 
+export const get_item_group_descendants = (item_group, include_inactive=false) => {
+	let ig = get_item_group(item_group);
+
+	let descendants = [];
+	if (ig) {
+		let ig_list = include_inactive ? item_group_list.data : sorted_item_groups.value;
+		ig_list = ig_list || [];
+
+		descendants = ig_list.filter(d => {
+			return (
+				d.lft > ig.lft
+				&& d.rgt < ig.rgt
+			)
+		}).map(d => d.name);
+	}
+
+	return descendants;
+}
+
 // Brand Data
 export const brand_list = createListResource({
 	doctype: 'Brand',

@@ -25,6 +25,15 @@
 			/>
 		</div>
 
+		<div class="w-full" v-if="item_sub_group_options.length">
+			<Autocomplete
+				:options="item_sub_group_options"
+				v-model="filters.item_sub_group"
+				placeholder="Filter by Sub Group"
+				variant="outline"
+			/>
+		</div>
+
 		<div class="w-full">
 			<Autocomplete
 				:options="this.brand_options"
@@ -51,7 +60,7 @@
 import CustomerSelection from "@/components/Customer/CustomerSelection.vue";
 import {is_mobile} from "@/utils/responsive";
 import {Autocomplete, Button, TextInput} from "frappe-ui";
-import {active_brands, active_item_groups} from "@/data/items";
+import {active_brands, active_item_groups, get_item_group_descendants, in_item_group} from "@/data/items";
 import debounce from "frappe-ui/src/utils/debounce"
 
 export default {
@@ -92,6 +101,20 @@ export default {
 			});
 		},
 
+		item_sub_group_options() {
+			if (this.filters.item_group?.value) {
+				let active_descendants = get_item_group_descendants(this.filters.item_group.value);
+				return active_descendants.map(d => {
+					return {
+						label: d,
+						value: d,
+					}
+				});
+			}
+
+			return [];
+		},
+
 		brand_options() {
 			return (active_brands.value || []).map(d => {
 				return {
@@ -104,6 +127,18 @@ export default {
 		is_mobile() {
 			return is_mobile.value;
 		},
-	}
+	},
+
+	watch: {
+		'filters.item_group': {
+			handler() {
+				if (this.filters?.item_sub_group?.value) {
+					if (!in_item_group(this.filters.item_sub_group.value, this.filters.item_group.value)) {
+						this.filters.item_sub_group = null;
+					}
+				}
+			}
+		}
+	},
 }
 </script>

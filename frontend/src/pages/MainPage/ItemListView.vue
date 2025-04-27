@@ -38,7 +38,7 @@
 <script>
 import ItemGridList from "@/components/Item/ItemGridList.vue";
 import ItemFilters from "@/components/Item/ItemFilters.vue";
-import { item_list, active_items, in_item_group } from "@/data/items";
+import {item_list, active_items, in_item_group, get_item_group_descendants} from "@/data/items";
 import FuzzySearch from "@/mixins/FuzzySearch";
 import {PackageSearch} from "lucide-vue-next";
 import GridListSelector from "@/components/GridList/GridListSelector.vue";
@@ -77,6 +77,7 @@ export default {
 			filters: {
 				txt: null,
 				item_group: null,
+				item_sub_group: null,
 				brand: null,
 			},
 			item_list: item_list,
@@ -86,6 +87,7 @@ export default {
 				"item-group": this.set_item_group_filter,
 				"brand": this.set_brand_filter,
 				"txt": "txt",
+				"sub-group": this.set_item_sub_group,
 			}
 		}
 	},
@@ -102,6 +104,10 @@ export default {
 				items = items.filter(d => in_item_group(d.item_group, this.filters.item_group.value));
 			}
 
+			if (this.filters.item_sub_group?.value) {
+				items = items.filter(d => in_item_group(d.item_group, this.filters.item_sub_group.value));
+			}
+
 			return items;
 		},
 
@@ -114,16 +120,29 @@ export default {
 		},
 
 		show_groups() {
-			let hide_groups = this.clean_txt || (this.filters.item_group && this.filters.brand);
+			let hide_groups = (
+				this.clean_txt
+				|| (this.filters.item_group && (this.filters.item_sub_group || !this.has_sub_item_groups) && this.filters.brand)
+			);
 			return !hide_groups;
 		},
 
 		group_field() {
-			if (this.filters.item_group) {
+			if (this.filters.item_group && (this.filters.item_sub_group || !this.has_sub_item_groups)) {
 				return "brand";
 			} else {
 				return "item_group";
 			}
+		},
+
+		has_sub_item_groups() {
+			if (this.filters.item_group?.value) {
+				let active_descendants = get_item_group_descendants(this.filters.item_group.value);
+				if (active_descendants.length) {
+					return true;
+				}
+			}
+			return false;
 		},
 
 		list_data() {
@@ -168,6 +187,7 @@ export default {
 				query: {
 					'item-group': this.filters.item_group?.value || undefined,
 					'brand': this.filters.brand?.value || undefined,
+					'sub-group': this.filters.item_sub_group?.value || undefined
 				},
 			});
 		},
@@ -183,6 +203,14 @@ export default {
 				this.filters.item_group = { label: value, value: value };
 			} else {
 				this.filters.item_group = null;
+			}
+		},
+
+		set_item_sub_group(value) {
+			if (value) {
+				this.filters.item_sub_group = { label: value, value: value };
+			} else {
+				this.filters.item_sub_group = null;
 			}
 		},
 

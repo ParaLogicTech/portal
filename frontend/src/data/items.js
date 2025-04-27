@@ -143,12 +143,15 @@ const get_item_group_ancestors = (item_group) => {
 	return ancestors;
 }
 
-export const get_item_group_descendants = (item_group) => {
+export const get_item_group_descendants = (item_group, include_inactive=false) => {
 	let ig = get_item_group(item_group);
 
 	let descendants = [];
 	if (ig) {
-		descendants = (item_group_list.data || []).filter(d => {
+		let ig_list = include_inactive ? item_group_list.data : sorted_item_groups.value;
+		ig_list = ig_list || [];
+
+		descendants = ig_list.filter(d => {
 			return (
 				d.lft > ig.lft
 				&& d.rgt < ig.rgt

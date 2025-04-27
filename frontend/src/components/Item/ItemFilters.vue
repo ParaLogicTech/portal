@@ -102,10 +102,13 @@ export default {
 		},
 
 		item_sub_group_options() {
-			if (this.filters.item_group) {
-				let descendants = get_item_group_descendants(this.filters.item_group.value);
-				return this.item_group_options.filter(d => {
-					return descendants.includes(d.value);
+			if (this.filters.item_group?.value) {
+				let active_descendants = get_item_group_descendants(this.filters.item_group.value);
+				return active_descendants.map(d => {
+					return {
+						label: d,
+						value: d,
+					}
 				});
 			}
 

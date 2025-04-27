@@ -38,7 +38,7 @@
 <script>
 import ItemGridList from "@/components/Item/ItemGridList.vue";
 import ItemFilters from "@/components/Item/ItemFilters.vue";
-import { item_list, active_items, in_item_group } from "@/data/items";
+import {item_list, active_items, in_item_group, get_item_group_descendants} from "@/data/items";
 import FuzzySearch from "@/mixins/FuzzySearch";
 import {PackageSearch} from "lucide-vue-next";
 import GridListSelector from "@/components/GridList/GridListSelector.vue";
@@ -120,16 +120,29 @@ export default {
 		},
 
 		show_groups() {
-			let hide_groups = this.clean_txt || (this.filters.item_group && this.filters.brand);
+			let hide_groups = (
+				this.clean_txt
+				|| (this.filters.item_group && (this.filters.item_sub_group || !this.has_sub_item_groups) && this.filters.brand)
+			);
 			return !hide_groups;
 		},
 
 		group_field() {
-			if (this.filters.item_group) {
+			if (this.filters.item_group && (this.filters.item_sub_group || !this.has_sub_item_groups)) {
 				return "brand";
 			} else {
 				return "item_group";
 			}
+		},
+
+		has_sub_item_groups() {
+			if (this.filters.item_group?.value) {
+				let active_descendants = get_item_group_descendants(this.filters.item_group.value);
+				if (active_descendants.length) {
+					return true;
+				}
+			}
+			return false;
 		},
 
 		list_data() {

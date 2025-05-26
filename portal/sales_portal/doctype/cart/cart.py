@@ -132,9 +132,7 @@ def make_sales_order(source_name, target_doc=None, ignore_permissions=False):
 			})
 
 		target.flags.ignore_permissions = ignore_permissions
-		target.run_method("set_missing_values")
-		target.run_method("calculate_taxes_and_totals")
-		target.run_method("set_payment_schedule")
+		target.run_method("postprocess_after_mapping")
 
 	return get_mapped_doc("Cart", source_name, {
 		"Cart": {

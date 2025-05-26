@@ -1,5 +1,5 @@
 import { io } from 'socket.io-client'
-import { socketio_port } from '../../../../sites/common_site_config.json'
+import { socketio_port, default_site } from '../../../../sites/common_site_config.json'
 import { getCachedListResource } from 'frappe-ui/src/resources/listResource'
 import { getCachedResource } from 'frappe-ui/src/resources/resources'
 
@@ -10,7 +10,8 @@ export function initSocket() {
 	let host = window.location.hostname
 	let port = window.location.port ? `:${socketio_port}` : ''
 	let protocol = port ? 'http' : 'https'
-	let url = `${protocol}://${host}${port}/`
+	let site_name = import.meta.env.DEV ? (host === default_site ? host : default_site) : window.site_name
+	let url = `${protocol}://${host}${port}/${site_name}`
 
 	let socket = io(url, {
 		withCredentials: true,

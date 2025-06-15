@@ -26,6 +26,9 @@ class Cart(SellingController):
 		self.set_is_customer_cart()
 		self.set_sales_person_from_user()
 		self.validate_order_confirmed()
+
+		self.sort_items()
+
 		self.set_status()
 		self.set_title()
 

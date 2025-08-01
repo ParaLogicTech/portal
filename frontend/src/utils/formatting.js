@@ -273,7 +273,7 @@ export function format_date(val) {
 	return str_to_user(val, false, true);
 }
 export function format_time(val) {
-	return str_to_user(val, false, true);
+	return str_to_user(val, true, false);
 }
 export function format_datetime(val) {
 	return str_to_user(val);

@@ -5,6 +5,7 @@ import {on_doctype_list_update} from "@/socket";
 import {settings} from "@/data/settings";
 import {reactive} from "vue";
 import debounce from "frappe-ui/src/utils/debounce";
+import {get_customer} from "@/data/customers";
 
 // Item Data
 export const item_list = createListResource({
@@ -54,10 +55,6 @@ export const active_items = computed(() => {
 			&& d.is_sales_item
 			&& !d.is_end_of_life
 	});
-
-	if (settings.value.hide_items_without_image) {
-		active_items = active_items.filter((d) => d.image);
-	}
 
 	return active_items;
 });
@@ -245,6 +242,25 @@ export const get_item_prices_resource = (customer) => {
 	}
 
 	return customer_item_price_resources[customer]
+};
+
+export const are_item_prices_hidden = (customer) => {
+	if (settings.value.show_item_prices == "Hide Item Prices") {
+		return true;
+	} else if (settings.value.show_item_prices == "Show Prices only for Customers") {
+		if (!customer) {
+			return true;
+		}
+	}
+
+	if (customer && !settings.value.is_system_user) {
+		let customer_data = get_customer(customer);
+		if (cint(customer_data?.hide_item_prices_from_customer_portal)) {
+			return true;
+		}
+	}
+
+	return false;
 };
 
 // Stock Data

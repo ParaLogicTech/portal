@@ -1,5 +1,6 @@
 import frappe
 from frappe import _
+from frappe.utils import cint
 
 
 def has_permission_customer(doc, user=None, permission_type=None):
@@ -232,6 +233,46 @@ def get_sales_persons_by_customers(customers):
 
 	sales_persons = list(set(customer_sales_persons + order_sales_persons))
 	return sales_persons
+
+
+def remove_prices_from_transaction(doc):
+	def remove_prices_from_doc(doc):
+		for df in doc.meta.fields:
+			if df.fieldtype == "Currency":
+				doc.set(df.fieldname, None)
+
+	remove_prices_from_doc(doc)
+	for d in doc.get_all_children():
+		remove_prices_from_doc(d)
+
+
+def remove_prices_from_dict(data, doctype):
+	meta = frappe.get_meta(doctype)
+
+	for k in data.keys():
+		if not k:
+			continue
+
+		df = meta.get_field(k)
+		if df and df.fieldtype == "Currency":
+			data[k] = None
+
+
+def are_item_prices_hidden(customer=None, hide_customer_item_prices=None):
+	show_item_prices = frappe.db.get_single_value("Sales Portal Settings", "show_item_prices")
+	if show_item_prices == "Hide Item Prices":
+		return True
+	elif show_item_prices == "Show Prices only for Customers":
+		if not customer:
+			return True
+
+	if customer and not is_system_user():
+		if hide_customer_item_prices is None:
+			hide_customer_item_prices = cint(frappe.get_cached_value("Customer", customer, "hide_item_prices_from_customer_portal"))
+		if hide_customer_item_prices:
+			return True
+
+	return False
 
 
 def get_user_home_page(user):

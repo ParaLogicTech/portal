@@ -63,7 +63,7 @@ export default {
 					return {rate: format_currency(this.price.price_list_rate, this.currency)};
 				}
 			} else {
-				return {rate: "N/A"};
+				return {rate: ""};
 			}
 		},
 

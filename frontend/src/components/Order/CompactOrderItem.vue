@@ -81,12 +81,12 @@
 						/>
 					</div>
 
-					<div class="basis-[25%]">
+					<div class="basis-[25%]" v-if="!are_item_prices_hidden(doc.customer)">
 						<div class="text-2xs font-semibold text-gray-600">Rate</div>
 						<div class="text-md text-[13.5px]">{{ format_currency(row.rate, doc.currency) }}</div>
 					</div>
 
-					<div class="basis-[35%] text-right">
+					<div class="basis-[35%] text-right" v-if="!are_item_prices_hidden(doc.customer)">
 						<div class="text-2xs font-semibold text-gray-600">Amount</div>
 						<div class="text-md font-semibold text-[13.5px]">{{ format_currency(row.amount, doc.currency) }}</div>
 					</div>
@@ -113,7 +113,7 @@
 import {Trash2, EllipsisVertical} from 'lucide-vue-next';
 import ItemImage from "@/components/Item/ItemImage.vue";
 import QtyField from "@/components/Fields/QtyField.vue";
-import {item_list} from "@/data/items";
+import {item_list, are_item_prices_hidden} from "@/data/items";
 import {Popover, Button} from "frappe-ui";
 
 export default {
@@ -150,6 +150,8 @@ export default {
 	},
 
 	methods: {
+		are_item_prices_hidden,
+
 		select_row(center=false) {
 			let block = center ? "center" : "nearest";
 			this.$el.scrollIntoView({behavior: "instant", block: block});

@@ -146,21 +146,21 @@
 <!--					</div>-->
 				</div>
 
-				<div class="col">
+				<div class="col" v-if="!are_item_prices_hidden(doc.customer)">
 					<div class="col-row space-y-1.5">
 						<label>Total Amount</label>
 						<div>{{ format_currency(doc.total, doc.currency) }}</div>
 					</div>
 				</div>
 
-				<div class="col">
+				<div class="col" v-if="!are_item_prices_hidden(doc.customer)">
 					<div class="col-row space-y-1.5">
 						<label>Taxes and Charges</label>
 						<div>{{ format_currency(doc.total_taxes_and_charges, doc.currency) }}</div>
 					</div>
 				</div>
 
-				<div class="col">
+				<div class="col" v-if="!are_item_prices_hidden(doc.customer)">
 					<div class="col-row space-y-1">
 						<label>Grand Total</label>
 						<div class="font-medium text-lg">{{ format_currency(doc.grand_total, doc.currency) }}</div>
@@ -178,6 +178,7 @@ import OrderItemsList from "@/components/Order/OrderItemsList.vue";
 import AddressAndContact from "@/components/Order/AddressAndContact.vue";
 import {is_mobile} from "@/utils/responsive";
 import CompactOrderItemsList from "@/components/Order/CompactOrderItemsList.vue";
+import {are_item_prices_hidden} from "@/data/items";
 
 export default {
 	name: "OrderForm",
@@ -193,6 +194,8 @@ export default {
 	},
 
 	methods: {
+		are_item_prices_hidden,
+
 		select_item(item_code) {
 			this.$refs.items?.select_item(item_code);
 			this.$refs.compact_items?.select_item(item_code);

@@ -13,6 +13,7 @@
 				:rows="rows_to_show"
 				:has_more="has_more"
 				:show_customers="!customer"
+				:customer="customer"
 				:loading="list_resource.list.loading"
 				ref="orders"
 				@load-more="handle_load_more"

@@ -1,7 +1,7 @@
 import frappe
 from frappe.utils import getdate, cstr, cint
 from frappe.client import get_list
-from portal.permissions import check_customer_permission
+from portal.permissions import check_customer_permission, are_item_prices_hidden
 
 mandatory_item_fields = ['name', 'stock_uom', 'sales_uom']
 
@@ -111,6 +111,9 @@ def get_item_prices(customer=None):
 		"price_list": None,
 		"price_list_currency": None,
 	})
+
+	if are_item_prices_hidden(customer):
+		return out
 
 	# Determine Price List
 	out.price_list = frappe.db.get_single_value("Selling Settings", "selling_price_list")

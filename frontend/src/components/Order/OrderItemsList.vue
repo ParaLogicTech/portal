@@ -31,6 +31,7 @@ import QtyField from "@/components/Fields/QtyField.vue";
 import OrderRowItem from "@/components/Order/OrderRowItem.vue";
 import SelectableItems from "@/mixins/SelectableItems";
 import {settings} from "@/data/settings";
+import {are_item_prices_hidden} from "@/data/items";
 
 export default {
 	name: "OrderItemsList",
@@ -149,6 +150,10 @@ export default {
 			}
 			if (this.doc.doctype != "Sales Order") {
 				columns = columns.filter(c => !['actions'].includes(c.key));
+			}
+
+			if (are_item_prices_hidden(this.doc.customer)) {
+				columns = columns.filter(c => !['rate', 'amount', 'price_list_rate', 'discount_percentage'].includes(c.key));
 			}
 
 			return columns;

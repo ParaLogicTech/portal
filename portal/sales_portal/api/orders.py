@@ -1,8 +1,13 @@
 import frappe
 from frappe import _
-from frappe.utils import validate_email_address, cstr, strip_html
+from frappe.utils import cint, validate_email_address, cstr, strip_html
 from portal.sales_portal.api.customers import postprocess_address, postprocess_contact
-from portal.permissions import is_system_user
+from portal.permissions import (
+	is_system_user,
+	are_item_prices_hidden,
+	remove_prices_from_transaction,
+	remove_prices_from_dict,
+)
 from frappe.client import get_list
 
 
@@ -12,6 +17,11 @@ def get_sales_order_list(doctype="Sales Order", fields=None, filters=None, order
 	parent = None
 
 	filters = frappe.parse_json(filters)
+
+	if not fields:
+		fields = ["name"]
+	if "customer" not in fields:
+		fields.append("customer")
 
 	out = get_list(
 		doctype=doctype,
@@ -24,6 +34,25 @@ def get_sales_order_list(doctype="Sales Order", fields=None, filters=None, order
 		parent=parent,
 	)
 
+	# Hide Prices if necessary
+	customers = set([d.customer for d in out if d.get("customer")])
+	hide_customer_item_prices_map = {}
+	if customers:
+		hide_customer_item_prices_map = dict(frappe.db.sql("""
+			select name, hide_item_prices_from_customer_portal
+			from `tabCustomer`
+			where name in %s
+		""", [customers]))
+
+	for d in out:
+		hide_customer_item_prices = 0
+		if d.customer:
+			hide_customer_item_prices = cint(hide_customer_item_prices_map.get(d.customer))
+
+		if are_item_prices_hidden(d.customer, hide_customer_item_prices=hide_customer_item_prices):
+			remove_prices_from_dict(d, "Sales Order")
+
+	# Set Sales Person
 	sales_order_map = {}
 	for d in out:
 		sales_order_map[d.name] = d
@@ -65,6 +94,9 @@ def get_output(doc):
 		"address": None,
 		"contact": None,
 	})
+
+	if are_item_prices_hidden(doc.customer):
+		remove_prices_from_transaction(doc)
 
 	if doc.customer_address:
 		out.address = frappe.get_doc("Address", doc.customer_address).as_dict()

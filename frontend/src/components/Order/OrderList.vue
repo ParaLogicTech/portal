@@ -43,6 +43,7 @@
 <script>
 import {ListView, ListRowItem, Button} from "frappe-ui"
 import OrderStatusBadge from "@/components/Order/OrderStatusBadge.vue";
+import {are_item_prices_hidden} from "@/data/items";
 
 export default {
 	name: "OrderList",
@@ -52,6 +53,7 @@ export default {
 	props: {
 		rows: Array,
 		show_customers: Boolean,
+		customer: String,
 		has_more: Boolean,
 		loading: Boolean,
 	},
@@ -118,6 +120,10 @@ export default {
 
 			if (!this.show_customers) {
 				columns = columns.filter(c => c.key != "customer_name")
+			}
+
+			if (are_item_prices_hidden(this.customer)) {
+				columns = columns.filter(c => c.key != "grand_total");
 			}
 
 			return columns;

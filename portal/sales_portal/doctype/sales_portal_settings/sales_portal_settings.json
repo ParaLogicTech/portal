@@ -8,13 +8,16 @@
  "engine": "InnoDB",
  "field_order": [
   "company",
-  "column_break_4clnz",
-  "stock_availability_based_on",
-  "show_stock_availability",
-  "column_break_n8pgn",
+  "view_section",
   "default_item_list_view_type",
+  "column_break_n8pgn",
   "customer_item_list_view_type",
-  "hide_items_without_image",
+  "stock_section",
+  "stock_availability_based_on",
+  "column_break_4clnz",
+  "show_stock_availability",
+  "prices_section",
+  "show_item_prices",
   "emails_section",
   "sales_order_email_template"
  ],
@@ -28,13 +31,6 @@
   {
    "fieldname": "column_break_n8pgn",
    "fieldtype": "Column Break"
-  },
-  {
-   "default": "0",
-   "description": "Temporary setting",
-   "fieldname": "hide_items_without_image",
-   "fieldtype": "Check",
-   "label": "Hide Items without Image"
   },
   {
    "default": "Stock Qty",
@@ -77,12 +73,35 @@
    "fieldtype": "Select",
    "label": "Default Item List View Type for Customers",
    "options": "\nGrid View\nList View"
+  },
+  {
+   "fieldname": "stock_section",
+   "fieldtype": "Section Break",
+   "label": "Stock"
+  },
+  {
+   "fieldname": "view_section",
+   "fieldtype": "Section Break",
+   "label": "View"
+  },
+  {
+   "fieldname": "prices_section",
+   "fieldtype": "Section Break",
+   "label": "Prices"
+  },
+  {
+   "default": "Show Prices to Everyone",
+   "fieldname": "show_item_prices",
+   "fieldtype": "Select",
+   "label": "Show Item Prices",
+   "options": "Show Prices to Everyone\nShow Prices only for Customers\nHide Item Prices"
   }
  ],
+ "grid_page_length": 500,
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-08-30 04:43:39.076626",
+ "modified": "2025-08-20 05:52:01.580174",
  "modified_by": "Administrator",
  "module": "Sales Portal",
  "name": "Sales Portal Settings",
@@ -109,6 +128,7 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],

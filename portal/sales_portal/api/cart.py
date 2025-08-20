@@ -3,7 +3,7 @@ from frappe import _
 from frappe.utils import getdate, flt, cast, cint
 from portal.sales_portal.doctype.cart.cart import validate_item_uom, make_sales_order
 from erpnext.stock.get_item_details import get_conversion_factor
-from portal.permissions import is_system_user
+from portal.permissions import is_system_user, are_item_prices_hidden, remove_prices_from_transaction
 
 
 @frappe.whitelist()
@@ -295,6 +295,9 @@ def process_cart(cart_doc, for_save):
 
 def get_output(cart_doc):
 	from portal.sales_portal.api.customers import get_customer_contacts, get_customer_addresses
+
+	if are_item_prices_hidden(cart_doc.customer):
+		remove_prices_from_transaction(cart_doc)
 
 	return {
 		"doc": cart_doc,

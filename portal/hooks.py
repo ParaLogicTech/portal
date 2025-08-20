@@ -97,6 +97,8 @@ fixtures = [
 
 				'Customer-tab_sales_portal',
 				'Customer-portal_users',
+				'Customer-sec_portal_permissions',
+				'Customer-hide_item_prices_from_customer_portal',
 
 				'Sales Order-cart',
 				'Sales Order Item-cart_item',

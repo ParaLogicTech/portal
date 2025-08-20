@@ -19,6 +19,7 @@ export const customer_list = createListResource({
 		'address_line2',
 		'city',
 		'state',
+		'hide_item_prices_from_customer_portal',
 	],
 	orderBy: 'name',
 	pageLength: 99999,
@@ -31,6 +32,10 @@ export const customer_list = createListResource({
 		}
 	},
 });
+
+export const get_customer = (customer) => {
+	return (customer_list.dataMap || {})[customer];
+}
 
 export const active_customers = computed(() => {
 	return (customer_list.data || []).filter((d) => {

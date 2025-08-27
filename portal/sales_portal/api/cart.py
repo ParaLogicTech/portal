@@ -140,6 +140,9 @@ def _update_item_qty(cart_doc, item_code, qty, uom):
 		row.qty = qty
 		if uom:
 			row.uom = uom
+		elif not row.uom:
+			item_doc = frappe.get_cached_doc("Item", item_code)
+			row.uom = item_doc.sales_uom or item_doc.stock_uom
 
 		previous_conversion_factor = row.conversion_factor
 		row.conversion_factor = get_conversion_factor(item_code, row.uom).get("conversion_factor")

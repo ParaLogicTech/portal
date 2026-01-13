@@ -86,7 +86,7 @@ export const get_item_group_print_heading = (item_group) => {
 		const current_item_group_doc = get_item_group(current_item_group);
 
 		if (current_item_group_doc.is_print_heading) {
-			item_group_print_heading = current_item_group_doc.print_heading || current_item_group;
+			item_group_print_heading = current_item_group;
 			break;
 		}
 

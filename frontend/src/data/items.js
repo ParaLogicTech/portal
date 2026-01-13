@@ -32,6 +32,7 @@ export const item_list = createListResource({
 			d.item_code = d.name;
 
 			d.is_end_of_life = d.end_of_life && moment().isSameOrAfter(moment(d.end_of_life), "date");
+			d.item_group_heading = computed(() => get_item_group_print_heading(d.item_group));
 
 			d.route = {
 				name: 'Item',
@@ -70,11 +71,30 @@ export const item_group_list = createListResource({
 		'lft',
 		'rgt',
 		'image',
+		'is_print_heading',
 		'thumbnail',
 	],
 	orderBy: 'name',
 	pageLength: 99999,
 });
+
+export const get_item_group_print_heading = (item_group) => {
+	let item_group_print_heading = item_group;
+	let current_item_group = item_group;
+
+	while (current_item_group) {
+		const current_item_group_doc = get_item_group(current_item_group);
+
+		if (current_item_group_doc.is_print_heading) {
+			item_group_print_heading = current_item_group;
+			break;
+		}
+
+		current_item_group = current_item_group_doc.parent_item_group;
+	}
+
+	return item_group_print_heading;
+};
 
 export const in_item_group = (item_group_item, item_group_filter) => {
 	if (!item_group_filter) {

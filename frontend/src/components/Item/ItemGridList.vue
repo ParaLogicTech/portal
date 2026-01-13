@@ -135,7 +135,7 @@ export default {
 		},
 
 		select_group(group_field, group) {
-			if (group_field == "item_group") {
+			if (group_field == "item_group" || group_field == "item_group_heading") {
 				this.$emit('item-group-selected', group);
 			} else if (group_field == "brand") {
 				this.$emit('brand-selected', group);
@@ -153,12 +153,12 @@ export default {
 		group_list() {
 			let out = [];
 
-			if (this.group_field == "item_group") {
+			if (this.group_field == "item_group" || this.group_field == "item_group_heading") {
 				out = sorted_item_groups.value.map(d => d.name);
 			} else if (this.group_field == "brand") {
 				out = sorted_brands.value.map(d => d.name);
 			} else {
-				out = (items || []).map(d => d[this.group_field]);
+				out = (this.items || []).map(d => d[this.group_field]);
 			}
 
 			return out;

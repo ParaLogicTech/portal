@@ -32,7 +32,7 @@ export const item_list = createListResource({
 			d.item_code = d.name;
 
 			d.is_end_of_life = d.end_of_life && moment().isSameOrAfter(moment(d.end_of_life), "date");
-			d.item_group_heading = get_item_group_print_heading(d.item_group);
+			d.item_group_heading = computed(() => get_item_group_print_heading(d.item_group));
 
 			d.route = {
 				name: 'Item',

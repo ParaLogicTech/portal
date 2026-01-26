@@ -2,7 +2,7 @@ import frappe
 from frappe.utils import cint
 from frappe.client import get_list
 from portal.permissions import check_customer_permission
-from erpnext.accounts.party import get_address_display
+from erpnext.accounts.party import render_address
 
 
 @frappe.whitelist()
@@ -53,7 +53,7 @@ def get_customer_addresses(customer):
 
 
 def postprocess_address(address):
-	address.address_display = get_address_display(address)
+	address.address_display = render_address(address)
 	return address
 
 

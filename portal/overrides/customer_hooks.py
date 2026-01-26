@@ -39,11 +39,11 @@ def validate_customer_user_type(doc):
 
 
 def set_user_contact_details(doc):
-	from erpnext.accounts.party import get_contact_details
+	from erpnext.accounts.party import _get_contact_details
 
 	for d in doc.get("portal_users"):
 		# set contact name
-		contact_details = get_contact_details(d.user_contact)
+		contact_details = _get_contact_details(d.user_contact)
 		d.user_contact_display = contact_details.contact_display
 
 

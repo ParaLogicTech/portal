@@ -1107,7 +1107,7 @@
    "allow_on_submit": 1,
    "fieldname": "contact_phone",
    "fieldtype": "Data",
-   "label": "Phone No",
+   "label": "Landline No",
    "read_only": 1
   },
   {
@@ -1167,10 +1167,11 @@
    "read_only": 1
   }
  ],
+ "grid_page_length": 500,
  "icon": "fa fa-file-text",
  "is_submittable": 1,
  "links": [],
- "modified": "2024-07-19 07:00:32.481593",
+ "modified": "2026-02-01 04:41:10.800067",
  "modified_by": "Administrator",
  "module": "Sales Portal",
  "name": "Cart",
@@ -1283,6 +1284,7 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "search_fields": "transaction_date,customer,customer_name,company",
  "sort_field": "modified",
  "sort_order": "DESC",

@@ -37,6 +37,24 @@
 				</div>
 
 				<FormControl
+					v-if="settings.is_system_user"
+					class="col-row"
+					type="email"
+					label="Cc"
+					v-model="email_address_cc"
+					variant="subtle"
+				/>
+				<div v-else class="col-row space-y-1.5">
+					<label>Cc</label>
+					<Autocomplete
+						:options="allowed_recipient_options"
+						v-model="cc"
+						placeholder="Cc"
+						variant="outline"
+					/>
+				</div>
+
+				<FormControl
 					class="col-row"
 					type="text"
 					label="Subject"
@@ -82,11 +100,13 @@ export default {
 		doc: Object,
 		email_template: String,
 		default_recipient: String,
+		default_cc: String,
 	},
 
 	data() {
 		return {
 			recipient: null,
+			cc: null,
 			email_subject: "",
 			email_message: "",
 			sending: false,
@@ -107,6 +127,7 @@ export default {
 
 			if (!this.email_address && default_recipient) {
 				this.email_address = default_recipient;
+				this.email_address_cc = this.default_cc;
 			}
 		},
 
@@ -164,6 +185,19 @@ export default {
 			},
 		},
 
+		email_address_cc: {
+			get() {
+				return this.cc?.value || "";
+			},
+			set(value) {
+				if (value) {
+					this.cc = {label: value, value: value};
+				} else {
+					this.cc = null;
+				}
+			},
+		},
+
 		message_read_only() {
 			if (settings.value.is_system_user) {
 				return false;
@@ -182,6 +216,9 @@ export default {
 			let allowed = [];
 			if (this.default_recipient) {
 				allowed.push(this.default_recipient);
+			}
+			if (this.default_cc) {
+				allowed.push(this.default_cc);
 			}
 			if (session.user && !allowed.includes(session.user)) {
 				allowed.push(session.user);
@@ -221,6 +258,7 @@ export default {
 					return {
 						name: this.doc.name,
 						recipient: this.email_address,
+						cc: this.email_address_cc,
 						subject: this.email_subject,
 						message: this.email_message,
 					}

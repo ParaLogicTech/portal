@@ -110,7 +110,7 @@ def get_output(doc):
 
 
 @frappe.whitelist()
-def send_sales_order_email(name, recipient=None, subject=None, message=None):
+def send_sales_order_email(name, recipient=None, cc=None, subject=None, message=None):
 	from frappe.core.doctype.communication.email import _make
 	from frappe.email.doctype.email_template.email_template import get_email_template
 
@@ -121,7 +121,7 @@ def send_sales_order_email(name, recipient=None, subject=None, message=None):
 
 	# Validate recipients / Do not let customer set email manually
 	if not is_system_user():
-		allowed_recipients = [doc.contact_email, frappe.session.user]
+		allowed_recipients = [doc.contact_email, doc.get("contact_email_cc"), frappe.session.user]
 		allowed_recipients = [e for e in allowed_recipients if e]
 
 		if not recipient or recipient not in allowed_recipients:
@@ -132,6 +132,13 @@ def send_sales_order_email(name, recipient=None, subject=None, message=None):
 		frappe.throw(_("Recipient is not provided"))
 
 	recipient = validate_email_address(recipient, throw=True)
+
+	cc = cstr(cc).strip()
+	if cc == recipient:
+		cc = None
+
+	if cc:
+		cc = validate_email_address(cc, throw=True)
 
 	# Set missing message and subject
 	stripped_message = strip_html(message)
@@ -151,6 +158,7 @@ def send_sales_order_email(name, recipient=None, subject=None, message=None):
 		doctype="Sales Order",
 		name=name,
 		recipients=[recipient],
+		cc=[cc] if cc else None,
 		subject=subject,
 		content=message,
 		send_email=True,
@@ -158,4 +166,8 @@ def send_sales_order_email(name, recipient=None, subject=None, message=None):
 		print_letterhead=True,
 	)
 
-	return recipient
+	out = recipient
+	if cc:
+		out += f", {cc}"
+
+	return out

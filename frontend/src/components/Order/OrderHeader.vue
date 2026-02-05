@@ -158,6 +158,7 @@
 			:doc="doc"
 			:email_template="settings.sales_order_email_template"
 			:default_recipient="doc.contact_email"
+			:default_cc="doc.contact_email_cc"
 		/>
 
 		<Dialog

@@ -22,7 +22,6 @@ class Cart(SellingController):
 
 	def validate(self):
 		super().validate()
-		self.validate_uom_is_integer("stock_uom", "qty")
 		self.set_is_customer_cart()
 		self.set_sales_person_from_user()
 		self.validate_order_confirmed()

@@ -219,10 +219,11 @@ def get_sales_persons_by_customers(customers):
 	if not customers:
 		return []
 
-	customer_sales_persons = frappe.get_all("Sales Team", filters={
-		"parenttype": "Customer",
-		"parent": ["in", customers]
-	}, pluck="sales_person")
+	customer_sales_persons = frappe.db.sql_list("""
+		select distinct account_manager
+		from `tabCustomer`
+		where name in %s and account_manager is not null and account_manager != ''
+	""", [customers])
 
 	order_sales_persons = frappe.db.sql_list("""
 		select distinct steam.sales_person

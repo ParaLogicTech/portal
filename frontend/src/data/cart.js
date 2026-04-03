@@ -76,6 +76,20 @@ export const cart = reactive({
 		});
 	},
 
+	reload_cart_if_stale(seconds) {
+		if (!this.last_reload) {
+			return this.reload_cart();
+		}
+
+		let now = moment();
+		let last_reload = moment(this.last_reload);
+		let diff = now.diff(last_reload, 'milliseconds') / 1000;
+
+		if (diff > seconds) {
+			return this.reload_cart();
+		}
+	},
+
 	reload_cart() {
 		if (!this.customer && !this.cart_id) {
 			return;
@@ -181,7 +195,7 @@ export const cart = reactive({
 
 export const cart_queue = reactive({
 	running: false,
-	promise: null,
+	promise: new Promise((resolve) => resolve()),
 
 	running_action: null,
 	queued_actions: [],
@@ -234,9 +248,11 @@ export const cart_queue = reactive({
 		}
 
 		// Run the queue if not already running
-		if (!this.running) {
-			this.promise = this.run();
-		}
+		this.promise.finally(() => {
+			if (this.pending_actions.length) {
+				this.promise = this.run();
+			}
+		});
 
 		return promise;
 	},
@@ -298,6 +314,8 @@ const update_cart_data = (data) => {
 	cart.addresses = data?.addresses || [];
 	cart.contacts = data?.contacts || [];
 
+	cart.last_reload = moment();
+
 	if (!cart.doc) {
 		_selected_customer.value = null;
 		localStorage.removeItem('last_selected_customer');
@@ -330,7 +348,7 @@ export const setup_cart_realtime = () => {
 		cart.reload_cart();
 	});
 
-	$socket.on("cart_created", (data) => {
+	$socket.on("cart_available", (data) => {
 		// Ignore if cart id is already set or customer does not match selected customer
 		if (cart.cart_id || data.customer !== cart.customer) {
 			return;

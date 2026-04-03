@@ -106,6 +106,8 @@ export default {
 							}
 						});
 					}
+				} catch(e) {
+					cart.reload_cart();
 				} finally {
 					this.placing_order = false;
 				}
@@ -122,5 +124,9 @@ export default {
 			return cart.contacts || [];
 		},
 	},
+
+	activated() {
+		cart.reload_cart();
+	}
 }
 </script>

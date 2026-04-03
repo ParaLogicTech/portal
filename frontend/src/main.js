@@ -50,7 +50,7 @@ import {
 
 import {settings, reload_settings_data} from "@/data/settings";
 
-import {cart, setup_cart_realtime} from "@/data/cart";
+import {cart, cart_queue, setup_cart_realtime} from "@/data/cart";
 
 import {
 	setConfig,
@@ -91,6 +91,7 @@ if (import.meta.env.DEV) {
 	window.$customer_list = customer_list;
 	window.$sales_person_list = sales_person_list;
 	window.$cart = cart;
+	window.$cart_queue = cart_queue;
 	window.$settings = settings;
 	window.$alert = createAlert;
 }

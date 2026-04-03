@@ -262,7 +262,16 @@ def reorder_items(sales_order, customer=None, cart_id=None):
 
 @frappe.whitelist()
 def place_order(customer=None, cart_id=None):
-	cart_doc = get_cart_doc(customer, cart_id)
+	if not cart_id and not customer:
+		frappe.throw(_("Customer or Cart ID is required to place an order"))
+
+	if cart_id:
+		cart_doc = get_cart_by_id(cart_id)
+		if not cart_doc:
+			frappe.throw(_("The Cart is no longer available"), exc=frappe.DoesNotExistError)
+	else:
+		cart_doc = get_cart_doc(customer=customer)
+
 	cart_doc.validate_can_modify()
 
 	cart_doc.order_confirmed = 1

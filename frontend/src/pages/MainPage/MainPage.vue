@@ -114,6 +114,10 @@ export default {
 				}
 			});
 		},
+
+		handle_page_visible() {
+			cart.reload_cart_if_stale(15);
+		},
 	},
 
 	computed: {
@@ -146,6 +150,14 @@ export default {
 				toggle_change_cart_customer(val);
 			},
 		},
+	},
+
+	created() {
+		document.addEventListener("visibilitychange", () => {
+			if (!document.hidden) {
+				this.handle_page_visible();
+			}
+		});
 	},
 
 	pageMeta() {

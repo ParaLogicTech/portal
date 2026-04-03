@@ -31,8 +31,12 @@ class Cart(SellingController):
 		self.set_status()
 		self.set_title()
 
+	def on_update(self):
+		if self.flags.previous_status and self.flags.previous_status != self.status and self.status == "Draft":
+			self.publish_cart_available()
+
 	def after_insert(self):
-		self.publish_cart_created()
+		self.publish_cart_available()
 
 	def before_submit(self):
 		self.validate_order_confirmed_before_submit()
@@ -70,9 +74,9 @@ class Cart(SellingController):
 		if self.order_confirmed:
 			frappe.throw(_("Cannot modify confirmed order cart"))
 
-	def publish_cart_created(self):
+	def publish_cart_available(self):
 		frappe.publish_realtime(
-			"cart_created",
+			"cart_available",
 			{
 				"name": self.name,
 				"is_customer_cart": self.is_customer_cart,
@@ -115,6 +119,14 @@ class Cart(SellingController):
 
 			for i, d in enumerate(self.get("items")):
 				d.idx = i + 1
+
+	def set_status(self, update=False, status=None, update_modified=True):
+		if self.is_new():
+			self.flags.previous_status = self.status
+		else:
+			self.flags.previous_status = self.db_get("status")
+
+		super().set_status(update=update, status=status, update_modified=update_modified)
 
 
 def validate_item_uom(item_code, uom):

@@ -23,7 +23,7 @@
 <script>
 import OrderForm from "@/components/Order/OrderForm.vue";
 import OrderHeader from "@/components/Order/OrderHeader.vue";
-import {createAlert} from "@/utils/alerts";
+import {handleRequestError} from "@/utils/alerts";
 import {subscribe_doc, unsubscribe_doc} from "@/socket";
 
 export default {
@@ -49,7 +49,7 @@ export default {
 			try {
 				await this.order_resource.fetch();
 			} catch (e) {
-				createAlert({"title": "Error Loading Sales Order", "message": e, "variant": "error"});
+				handleRequestError(e, "Error Loading Sales Order");
 			}
 			this.refresh_view();
 		},

@@ -85,7 +85,7 @@
 import {FormControl, Autocomplete} from "frappe-ui";
 import {QuillEditor} from '@vueup/vue-quill';
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
-import {createAlert} from "@/utils/alerts";
+import {createAlert, handleRequestError} from "@/utils/alerts";
 import {settings} from "@/data/settings";
 import {session} from "@/data/session";
 import CustomerSelection from "@/components/Customer/CustomerSelection.vue";
@@ -155,7 +155,7 @@ export default {
 				await this.send_email_resource.fetch();
 				this.model = false;
 			} catch (e) {
-				createAlert({"title": "Error Sending Email", "message": e, "variant": "error"});
+				handleRequestError(e, "Error Sending Email");
 			} finally {
 				this.sending = false;
 			}

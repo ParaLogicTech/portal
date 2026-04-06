@@ -1,5 +1,5 @@
 import {createResource} from "frappe-ui";
-import {createAlert} from "@/utils/alerts";
+import {handleRequestError} from "@/utils/alerts";
 import {computed} from "vue";
 
 export const settings_resource = createResource({
@@ -14,6 +14,6 @@ export const settings = computed(() => {
 
 export const reload_settings_data = () => {
 	settings_resource.reload().catch(e => {
-		createAlert({"title": "Error Loading Sales Portal Settings", "message": e, "variant": "error"});
+		handleRequestError(e, "Error Loading Sales Portal Settings");
 	});
 }

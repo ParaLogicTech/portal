@@ -26,7 +26,7 @@
 <script>
 import OrderList from "@/components/Order/OrderList.vue";
 import {subscribe_doctype} from "@/socket";
-import {createAlert} from "@/utils/alerts";
+import {handleRequestError} from "@/utils/alerts";
 import {cart} from "@/data/cart";
 import OrderFilters from "@/components/Order/OrderFilters.vue";
 import debounce from "frappe-ui/src/utils/debounce";
@@ -65,7 +65,7 @@ export default {
 				await this.list_resource.reload();
 				this.page_length = this.list_resource.pageLength - 1;
 			} catch (e) {
-				createAlert({"title": "Error Loading Sales Orders", "message": e, "variant": "error"});
+				handleRequestError(e, "Error Loading Sales Orders");
 			}
 		},
 

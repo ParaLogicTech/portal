@@ -1,5 +1,5 @@
 import { createListResource } from "frappe-ui";
-import {createAlert} from "@/utils/alerts";
+import {handleRequestError} from "@/utils/alerts";
 
 export let currency_list = createListResource({
 	doctype: 'Currency',
@@ -16,6 +16,6 @@ export let currency_list = createListResource({
 // Reload Customers
 export let reload_currency_data = () => {
 	currency_list.reload().catch(e => {
-		createAlert({"title": "Error Loading Currency Data", "message": e, "variant": "error"});
+		handleRequestError(e, "Error Loading Currency Data");
 	});
 }

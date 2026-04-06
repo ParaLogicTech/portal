@@ -1,6 +1,6 @@
 import { computed } from "vue";
 import { createListResource, createResource } from 'frappe-ui'
-import {createAlert} from "@/utils/alerts";
+import {handleRequestError} from "@/utils/alerts";
 import {on_doctype_list_update} from "@/socket";
 import {settings} from "@/data/settings";
 import {reactive} from "vue";
@@ -259,7 +259,7 @@ export const get_item_prices_resource = (customer) => {
 		});
 
 		resource.reload().catch(e => {
-			createAlert({"title": `Error Loading Prices for Customer ${customer}`, "message": e, "variant": "error"});
+			handleRequestError(e, `Error Loading Prices for Customer ${customer}`);
 		});
 	}
 
@@ -298,16 +298,16 @@ export const reload_items_data = () => {
 	reload_brands();
 
 	item_stock.reload().catch(e => {
-		createAlert({"title": "Error Loading Item Stock", "message": e, "variant": "error"});
+		handleRequestError(e, "Error Loading Item Stock");
 	});
 	standard_prices.reload().catch(e => {
-		createAlert({"title": "Error Loading Standard Prices", "message": e, "variant": "error"});
+		handleRequestError(e, "Error Loading Standard Prices");
 	});
 }
 
 const reload_items = () => {
 	item_list.reload().catch(e => {
-		createAlert({"title": "Error Loading Items", "message": e, "variant": "error"});
+		handleRequestError(e, "Error Loading Items");
 	});
 }
 
@@ -315,7 +315,7 @@ const debounced_reload_items = debounce(reload_items, 500);
 
 const reload_item_groups = () => {
 	item_group_list.reload().catch(e => {
-		createAlert({"title": "Error Loading Item Groups", "message": e, "variant": "error"});
+		handleRequestError(e, "Error Loading Item Groups");
 	});
 }
 
@@ -323,7 +323,7 @@ const debounced_reload_item_groups = debounce(reload_item_groups, 500);
 
 const reload_brands = () => {
 	brand_list.reload().catch(e => {
-		createAlert({"title": "Error Loading Brands", "message": e, "variant": "error"});
+		handleRequestError(e, "Error Loading Brands");
 	});
 }
 

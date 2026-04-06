@@ -1,5 +1,5 @@
 import {createListResource} from "frappe-ui";
-import {createAlert} from "@/utils/alerts";
+import {handleRequestError} from "@/utils/alerts";
 import {computed} from "vue";
 import {on_doctype_list_update} from "@/socket";
 import debounce from "frappe-ui/src/utils/debounce";
@@ -34,7 +34,7 @@ export const reload_sales_person_data = () => {
 
 const reload_sales_persons = () => {
 	sales_person_list.reload().catch(e => {
-		createAlert({"title": "Error loading Sales Persons", "message": e, "variant": "error"});
+		handleRequestError(e, "Error loading Sales Persons");
 	});
 }
 

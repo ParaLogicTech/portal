@@ -191,8 +191,20 @@ def _update_item_value(cart_doc, item_code, fieldname, value):
 	row.set(fieldname, value)
 
 	if fieldname == "rate":
-		row.discount_percentage = None
-		row.margin_rate_or_amount = None
+		if flt(row.price_list_rate):
+			if flt(row.rate) > flt(row.price_list_rate):
+				row.discount_percentage = 0
+				row.margin_type = "Amount"
+				row.margin_rate_or_amount = flt(
+					row.rate - row.price_list_rate,
+					row.precision("margin_rate_or_amount")
+				)
+				row.rate_with_margin = row.rate
+			else:
+				row.discount_percentage = (1 - flt(row.rate) / flt(row.price_list_rate)) * 100.0
+				row.discount_amount = flt(row.price_list_rate) - flt(row.rate)
+				row.margin_rate_or_amount = 0
+				row.rate_with_margin = 0
 	elif fieldname == "discount_percentage":
 		row.rate = None
 		row.margin_rate_or_amount = None

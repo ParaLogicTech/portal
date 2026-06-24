@@ -1,6 +1,6 @@
 import frappe
 from frappe import _
-from frappe.utils import cint
+from frappe.utils import cint, flt
 from erpnext.controllers.selling_controller import SellingController
 from frappe.model.mapper import get_mapped_doc
 from crm.crm.doctype.sales_person.sales_person import get_sales_person_from_user
@@ -9,7 +9,7 @@ from portal.permissions import is_system_user
 
 class Cart(SellingController):
 	def __init__(self, *args, **kwargs):
-		super(Cart, self).__init__(*args, **kwargs)
+		super().__init__(*args, **kwargs)
 		self.status_map = [
 			["Draft", None],
 			["To Receive", "eval:self.order_confirmed"],
@@ -73,6 +73,19 @@ class Cart(SellingController):
 			frappe.throw(_("Cannot modify cancelled Cart"))
 		if self.order_confirmed:
 			frappe.throw(_("Cannot modify confirmed order cart"))
+
+	def validate_item_row(self, row):
+		# do not validate if row is unchanged and draft
+		if not row.is_new() and self.docstatus == 0:
+			previous_qty, previous_rate, previous_uom = row.db_get(["qty", "uom", "rate"])
+			if (
+				flt(previous_qty, row.precision("qty")) == flt(row.qty, row.precision("qty"))
+				and flt(previous_rate, row.precision("rate")) != flt(row.rate, row.precision("rate"))
+				and previous_uom != row.uom
+			):
+				return
+
+		super().validate_item_row(row)
 
 	def publish_cart_available(self):
 		frappe.publish_realtime(

@@ -20,7 +20,7 @@ def get_settings():
 		"customer_item_list_view_type": settings_doc.customer_item_list_view_type,
 
 		# Item Group / Brand Ordering
-		"item_group_order": price_list_settings.item_group_order,
+		"item_group_order": price_list_settings.get_exploded_item_group_order(),
 		"brand_order": price_list_settings.brand_order,
 
 		# Permissions

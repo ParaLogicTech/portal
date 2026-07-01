@@ -131,7 +131,7 @@ export default {
 			if (this.filters.item_group && (this.filters.item_sub_group || !this.has_sub_item_groups)) {
 				return "brand";
 			} else {
-				if (!this.filters.item_group) {
+				if (!this.filters.item_group && !this.filters.brand) {
 					return "item_group_heading";
 				} else {
 					return "item_group";

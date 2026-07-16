@@ -6,6 +6,7 @@ import {settings} from "@/data/settings";
 import {reactive} from "vue";
 import debounce from "frappe-ui/src/utils/debounce";
 import {get_customer} from "@/data/customers";
+import {cart} from "@/data/cart";
 
 // Item Data
 export const item_list = createListResource({
@@ -52,12 +53,26 @@ export const get_item = (item_code) => {
 }
 
 export const active_items = computed(() => {
-	let active_items = (item_list.data || []).filter((d) => {
-		return !d.disabled
-			&& d.is_sales_item
-			&& !d.is_end_of_life
-			&& d.show_in_customer_portal
+	let active_items = (item_list.data || []).filter((item) => {
+		return (
+			!item.disabled
+			&& item.is_sales_item
+			&& !item.is_end_of_life
+			&& item.show_in_customer_portal
+		)
 	});
+
+	let customer = cart.selected_customer;
+	if (customer) {
+		let customer_obj = get_customer(customer);
+		if (customer_obj?.portal_restricted_item_groups?.length) {
+			active_items = active_items.filter((item) => {
+				return customer_obj.portal_restricted_item_groups.some((ig_filter) => {
+					return in_item_group(item.item_group, ig_filter);
+				});
+			});
+		}
+	}
 
 	return active_items;
 });
@@ -86,6 +101,9 @@ export const get_item_group_print_heading = (item_group) => {
 
 	while (current_item_group) {
 		const current_item_group_doc = get_item_group(current_item_group);
+		if (!current_item_group_doc) {
+			break;
+		}
 
 		if (current_item_group_doc.is_print_heading) {
 			item_group_print_heading = current_item_group;

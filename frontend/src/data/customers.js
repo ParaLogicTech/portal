@@ -20,6 +20,7 @@ export const customer_list = createListResource({
 		'city',
 		'state',
 		'hide_item_prices_from_customer_portal',
+		'portal_restricted_item_groups',
 	],
 	orderBy: 'name',
 	pageLength: 99999,

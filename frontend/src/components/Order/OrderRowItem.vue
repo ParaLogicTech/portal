@@ -11,6 +11,7 @@
 	>
 		<ItemImage
 			:item="item"
+			:item_row="row"
 			class="w-[45px] h-[45px] flex-none border border-gray-200"
 			rounded="rounded"
 			font="text-xs"

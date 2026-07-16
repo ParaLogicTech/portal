@@ -5,6 +5,9 @@ from portal.permissions import check_customer_permission
 from erpnext.accounts.party import render_address
 
 
+mandatory_customer_fields = ["name"]
+
+
 @frappe.whitelist()
 def get_customer_list(doctype="Customer", fields=None, filters=None, order_by=None, start=0, limit=20, group_by=None, parent=None):
 	doctype = "Customer"
@@ -12,7 +15,19 @@ def get_customer_list(doctype="Customer", fields=None, filters=None, order_by=No
 
 	filters = frappe.parse_json(filters)
 
-	return get_list(
+	# Mandatory fields
+	if not fields:
+		fields = []
+	for f in mandatory_customer_fields:
+		if f not in fields:
+			fields.append(f)
+
+	include_restricted_item_groups = False
+	if "portal_restricted_item_groups" in fields:
+		fields.remove("portal_restricted_item_groups")
+		include_restricted_item_groups = True
+
+	out = get_list(
 		doctype=doctype,
 		fields=fields,
 		filters=filters,
@@ -22,6 +37,26 @@ def get_customer_list(doctype="Customer", fields=None, filters=None, order_by=No
 		group_by=group_by,
 		parent=parent,
 	)
+
+	# Item Group Restriction Data
+	if out and include_restricted_item_groups:
+		customers_map = {}
+		for customer in out:
+			customers_map[customer.name] = customer
+			customer.portal_restricted_item_groups = []
+
+		customers = list(customers_map.keys())
+		restricted_item_group_data = frappe.db.sql("""
+			select parent, item_group
+			from `tabItem Group Option`
+			where parent in %s and parenttype = 'Customer'
+			order by idx
+		""", [customers], as_dict=1)
+
+		for d in restricted_item_group_data:
+			customers_map[d.parent].portal_restricted_item_groups.append(d.item_group)
+
+	return out
 
 
 @frappe.whitelist()

@@ -51,6 +51,7 @@
 
 			<ItemImage
 				:item="item"
+				:item_row="row"
 				class="w-[65px] h-[65px] flex-none border border-gray-300"
 				rounded="rounded"
 				font="text-md"

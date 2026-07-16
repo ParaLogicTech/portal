@@ -2,7 +2,7 @@
 	<div class="bg-white relative" :class="rounded">
 		<!-- Full View Button Icon -->
 		<button
-			v-if="(this.item.image || item.thumbnail) && enable_full_view"
+			v-if="(image || thumbnail) && enable_full_view"
 			class="absolute top-[6px] left-[6px] hover:scale-110 transition-transform ease-out duration-200"
 			@click.stop="this.modal = true"
 		>
@@ -14,11 +14,11 @@
 
 		<!-- Image -->
 		<img
-			v-if="item.thumbnail || item.image"
+			v-if="thumbnail || image"
 			class="w-full h-full mx-auto"
 			:class="[rounded, object_fit]"
-			:src="item.thumbnail || item.image"
-			:alt="item.item_name || item.name"
+			:src="thumbnail || image"
+			:alt="item_name || item_code"
 			loading="lazy"
 		/>
 		<div
@@ -26,14 +26,14 @@
 			class="w-full h-full bg-gray-50 flex items-center justify-center p-5 text-gray-300 text-center text-ellipsis overflow-hidden"
 			:class="[rounded, font ? font : 'text-6xl']"
 		>
-			{{ item.name }}
+			{{ item_code }}
 		</div>
 
 		<!-- Full View Modal -->
 		<Teleport to="#modals" v-if="enable_full_view">
 			<vue-easy-lightbox
 				:visible="this.modal"
-				:imgs="[this.item.image || item.thumbnail]"
+				:imgs="[image || thumbnail]"
 				:zoom-disabled="true"
 				:move-disabled="true"
 				:dblclick-disabled="true"
@@ -68,6 +68,10 @@ export default {
 			type: Object,
 			required: true,
 		},
+		item_row: {
+			type: Object,
+			required: false,
+		},
 		rounded: String,
 		font: String,
 		object_fit: {
@@ -75,6 +79,24 @@ export default {
 			default: "object-cover"
 		},
 		enable_full_view: Boolean
+	},
+
+	computed: {
+		thumbnail() {
+			return this.item?.thumbnail || this.item?.image || this.item_row?.thumbnail || this.item_row?.image;
+		},
+
+		image() {
+			return this.item?.image || this.item_row?.image;
+		},
+
+		item_code() {
+			return this.item?.name || this.item_row?.item_code;
+		},
+
+		item_name() {
+			return this.item?.item_name || this.item_row?.item_name;
+		},
 	},
 }
 </script>

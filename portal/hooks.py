@@ -99,6 +99,8 @@ fixtures = [
 				'Customer-portal_users',
 				'Customer-sec_portal_permissions',
 				'Customer-hide_item_prices_from_customer_portal',
+				'Customer-custom_column_break_pcbyv',
+				'Customer-portal_restricted_item_groups',
 
 				'Sales Order-cart',
 				'Sales Order Item-cart_item',

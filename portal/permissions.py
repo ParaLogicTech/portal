@@ -1,6 +1,7 @@
 import frappe
 from frappe import _
 from frappe.utils import cint
+from erpnext.setup.doctype.item_group.item_group import get_item_groups_with_ancestors, get_exploded_item_groups
 
 
 def has_permission_customer(doc, user=None, permission_type=None):
@@ -29,6 +30,10 @@ def has_permission_item(doc, user=None, permission_type=None):
 	if is_system_user(user):
 		return
 
+	restricted_item_groups = get_restricted_item_groups(user)
+	if restricted_item_groups and doc.item_group not in restricted_item_groups:
+		return False
+
 	if not doc.show_in_customer_portal:
 		return False
 
@@ -37,17 +42,24 @@ def permission_query_conditions_item(user=None):
 	if is_system_user(user):
 		return
 
-	return f"(`tabItem`.show_in_customer_portal = 1)"
+	conditions = [
+		"`tabItem`.show_in_customer_portal = 1"
+	]
+
+	restricted_item_groups = get_restricted_item_groups(user)
+	if restricted_item_groups:
+		formatted_item_groups = ", ".join([frappe.db.escape(c) for c in restricted_item_groups])
+		conditions.append(f"`tabItem`.item_group in ({formatted_item_groups})")
+
+	return f"({' and '.join(conditions)})"
 
 
 def has_permission_item_group(doc, user=None, permission_type=None):
 	if is_system_user(user):
 		return
 
-	has_permitted_item = frappe.db.get_value("Item", {
-		"item_group": doc.name, "show_in_customer_portal": 1,
-	})
-	if not has_permitted_item:
+	allowed_item_groups = get_item_groups_for_customer_portal(user=user)
+	if doc.name not in allowed_item_groups:
 		return False
 
 
@@ -55,8 +67,54 @@ def permission_query_conditions_item_group(user=None):
 	if is_system_user(user):
 		return
 
-	return """(exists(select `tabItem`.name from `tabItem`
-		where `tabItem`.item_group = `tabItem Group`.name and `tabItem`.show_in_customer_portal = 1))"""
+	allowed_item_groups = get_item_groups_for_customer_portal(user=user)
+	if allowed_item_groups:
+		formatted_item_groups = ", ".join([frappe.db.escape(c) for c in allowed_item_groups])
+		return f"(`tabItem Group`.name IN ({formatted_item_groups}))"
+	else:
+		return "(1 != 1)"
+
+
+def get_item_groups_for_customer_portal(user=None):
+	if not user:
+		user = frappe.session.user
+
+	def generator():
+		allowed_item_groups = frappe.db.sql_list("""
+			select distinct item_group
+			from `tabItem`
+			where show_in_customer_portal = 1
+		""")
+
+		restricted_item_groups = get_restricted_item_groups(user)
+		if restricted_item_groups:
+			allowed_item_groups = [ig for ig in allowed_item_groups if ig in restricted_item_groups]
+
+		return get_item_groups_with_ancestors(allowed_item_groups)
+
+	return frappe.local_cache("get_item_groups_for_customer_portal", user, generator)
+
+
+def get_restricted_item_groups(user=None):
+	if not user:
+		user = frappe.session.user
+
+	def generator():
+		restricted_item_groups = []
+
+		allowed_customers = get_user_customers(user)
+		for customer in allowed_customers:
+			customer_doc = frappe.get_cached_doc("Customer", customer)
+			if not customer_doc.get("portal_restricted_item_groups"):
+				return []
+
+			for d in customer_doc.get("portal_restricted_item_groups"):
+				restricted_item_groups.append(d.item_group)
+
+		restricted_item_groups = get_exploded_item_groups(restricted_item_groups)
+		return restricted_item_groups
+
+	return frappe.local_cache("get_restricted_item_groups", user, generator)
 
 
 def has_permission_brand(doc, user=None, permission_type=None):

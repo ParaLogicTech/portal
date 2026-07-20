@@ -610,7 +610,7 @@
   },
   {
    "fieldname": "other_charges_calculation",
-   "fieldtype": "Long Text",
+   "fieldtype": "HTML",
    "label": "Taxes and Charges Calculation",
    "no_copy": 1,
    "oldfieldtype": "HTML",
@@ -1171,7 +1171,7 @@
  "icon": "fa fa-file-text",
  "is_submittable": 1,
  "links": [],
- "modified": "2026-02-01 04:41:10.800067",
+ "modified": "2026-07-20 05:55:13.115811",
  "modified_by": "Administrator",
  "module": "Sales Portal",
  "name": "Cart",
@@ -1285,6 +1285,7 @@
   }
  ],
  "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
  "search_fields": "transaction_date,customer,customer_name,company",
  "sort_field": "modified",
  "sort_order": "DESC",

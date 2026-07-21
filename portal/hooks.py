@@ -87,7 +87,8 @@ fixtures = [
 			"name": ["in", [
 				'File-is_portal_optimized',
 
-				'Item-show_in_customer_portal',
+				'Item-show_in_sales_portal',
+				'Item-hide_from_customer_portal',
 				'Item-featured_in_sales_portal',
 				'Item-thumbnail',
 

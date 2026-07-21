@@ -34,7 +34,7 @@ export default {
 				return "";
 			}
 
-			if (flt(this.available_qty, 2) > 0) {
+			if (flt(this.available_qty, 2) > 0 || !this.item.is_stock_item) {
 				if (this.show_qty) {
 					return `Available: ${format_number(this.available_qty, null, 1)} ${this.stock_data?.uom || ""}`;
 				} else {
@@ -50,7 +50,9 @@ export default {
 				return ['text-gray-600', 'bg-gray-100'];
 			} else if (item_stock.fetched) {
 				let stock_data = this.stock_data;
-				if (stock_data?.actual_qty > 0) {
+				if (!this.item.is_stock_item) {
+					return ['text-blue-700', 'bg-blue-200'];
+				} else if (stock_data?.actual_qty > 0) {
 					return ['text-green-800', 'bg-green-200'];
 				} else {
 					return ['text-red-800', 'bg-red-200'];
@@ -69,7 +71,11 @@ export default {
 		},
 
 		show_qty() {
-			return settings.value.show_stock_availability == "Show Availability with Qty" && this.show_availability;
+			return (
+				settings.value.show_stock_availability == "Show Availability with Qty"
+				&& this.show_availability
+				&& this.item.is_stock_item
+			);
 		},
 
 		show_availability() {

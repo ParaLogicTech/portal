@@ -7,3 +7,4 @@ portal.patches.update_cart_ordered_status
 portal.patches.set_optimized_and_thumbnail_images
 portal.patches.set_show_item_prices
 portal.patches.drop_other_charges_calculation_column
+portal.patches.rename_show_in_sales_portal

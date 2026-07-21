@@ -27,4 +27,4 @@ def execute():
 
 	sync_fixtures("portal")
 
-	frappe.db.sql("update tabItem set show_in_customer_portal = 1")
+	frappe.db.sql("update tabItem set show_in_sales_portal = 1")

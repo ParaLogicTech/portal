@@ -34,7 +34,7 @@ def has_permission_item(doc, user=None, permission_type=None):
 	if restricted_item_groups and doc.item_group not in restricted_item_groups:
 		return False
 
-	if not doc.show_in_customer_portal:
+	if not doc.show_in_sales_portal or doc.hide_from_customer_portal:
 		return False
 
 
@@ -43,7 +43,8 @@ def permission_query_conditions_item(user=None):
 		return
 
 	conditions = [
-		"`tabItem`.show_in_customer_portal = 1"
+		"`tabItem`.show_in_sales_portal = 1",
+		"`tabItem`.hide_from_customer_portal = 0",
 	]
 
 	restricted_item_groups = get_restricted_item_groups(user)
@@ -83,7 +84,7 @@ def get_item_groups_for_customer_portal(user=None):
 		allowed_item_groups = frappe.db.sql_list("""
 			select distinct item_group
 			from `tabItem`
-			where show_in_customer_portal = 1
+			where show_in_sales_portal = 1 and hide_from_customer_portal = 0
 		""")
 
 		restricted_item_groups = get_restricted_item_groups(user)
@@ -122,7 +123,7 @@ def has_permission_brand(doc, user=None, permission_type=None):
 		return
 
 	has_permitted_item = frappe.db.get_value("Item", {
-		"brand": doc.name, "show_in_customer_portal": 1,
+		"brand": doc.name, "show_in_sales_portal": 1, "hide_from_customer_portal": 0,
 	})
 	if not has_permitted_item:
 		return False
@@ -133,7 +134,9 @@ def permission_query_conditions_brand(user=None):
 		return
 
 	return """(exists(select `tabItem`.name from `tabItem`
-		where `tabItem`.brand = `tabBrand`.name and `tabItem`.show_in_customer_portal = 1))"""
+		where `tabItem`.brand = `tabBrand`.name
+			and `tabItem`.show_in_sales_portal = 1
+			and `tabItem`.hide_from_customer_portal = 0))"""
 
 
 def has_permission_sales_person(doc, user=None, permission_type=None):

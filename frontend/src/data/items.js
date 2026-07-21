@@ -25,7 +25,8 @@ export const item_list = createListResource({
 		'disabled',
 		'end_of_life',
 		'is_sales_item',
-		'show_in_customer_portal',
+		'is_stock_item',
+		'show_in_sales_portal',
 	],
 	orderBy: 'featured_in_sales_portal desc, name asc',
 	pageLength: 99999,
@@ -58,7 +59,8 @@ export const active_items = computed(() => {
 			!item.disabled
 			&& item.is_sales_item
 			&& !item.is_end_of_life
-			&& item.show_in_customer_portal
+			&& item.show_in_sales_portal
+			&& (settings.value.is_system_user || !item.hide_from_customer_portal)
 		)
 	});
 

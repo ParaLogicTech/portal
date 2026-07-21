@@ -4,6 +4,7 @@ from frappe.utils import getdate, flt, cast, cint
 from portal.sales_portal.doctype.cart.cart import validate_item_uom, make_sales_order
 from erpnext.stock.get_item_details import get_conversion_factor
 from portal.permissions import is_system_user, are_item_prices_hidden, remove_prices_from_transaction
+from portal.utils import set_thumbnail_for_line_items
 
 
 @frappe.whitelist()
@@ -322,6 +323,9 @@ def get_output(cart_doc):
 
 	if are_item_prices_hidden(cart_doc.customer):
 		remove_prices_from_transaction(cart_doc)
+
+	cart_doc = cart_doc.as_dict()
+	set_thumbnail_for_line_items(cart_doc)
 
 	return {
 		"doc": cart_doc,

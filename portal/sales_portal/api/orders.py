@@ -8,6 +8,7 @@ from portal.permissions import (
 	remove_prices_from_transaction,
 	remove_prices_from_dict,
 )
+from portal.utils import set_thumbnail_for_line_items
 from frappe.client import get_list
 
 
@@ -105,6 +106,9 @@ def get_output(doc):
 	if doc.contact_person:
 		out.contact = frappe.get_doc("Contact", doc.contact_person).as_dict()
 		postprocess_contact(out.contact)
+
+	out.doc = out.doc.as_dict()
+	set_thumbnail_for_line_items(out.doc)
 
 	return out
 

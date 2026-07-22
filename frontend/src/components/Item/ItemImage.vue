@@ -1,16 +1,18 @@
 <template>
-	<div class="bg-white relative" :class="rounded">
+	<div
+		class="bg-white relative"
+		:class="[rounded, {'cursor-pointer': clickable}]"
+		@click="handle_click"
+		@dblclick="handle_double_click"
+	>
 		<!-- New Ribbon -->
-		<div
-			v-if="is_new"
-			class="ribbon-top-left"
-		>
+		<div v-if="is_new" class="ribbon-top-left">
 			<div class="ribbon-text">NEW</div>
 		</div>
 
 		<!-- Full View Button Icon -->
 		<button
-			v-if="(image || thumbnail) && enable_full_view"
+			v-if="image && enable_full_view && full_view_trigger == 'button'"
 			class="absolute top-[6px] left-[6px] hover:scale-110 transition-transform ease-out duration-200"
 			@click.stop="this.modal = true"
 		>
@@ -22,10 +24,10 @@
 
 		<!-- Image -->
 		<img
-			v-if="thumbnail || image"
+			v-if="thumbnail"
 			class="w-full h-full mx-auto"
 			:class="[rounded, object_fit]"
-			:src="thumbnail || image"
+			:src="thumbnail"
 			:alt="item_name || item_code"
 			loading="lazy"
 		/>
@@ -41,7 +43,7 @@
 		<Teleport to="#modals" v-if="enable_full_view">
 			<vue-easy-lightbox
 				:visible="this.modal"
-				:imgs="[image || thumbnail]"
+				:imgs="[image]"
 				:zoom-disabled="true"
 				:move-disabled="true"
 				:dblclick-disabled="true"
@@ -87,16 +89,20 @@ export default {
 			default: "object-cover"
 		},
 		enable_full_view: Boolean,
+		full_view_trigger: {
+			type: String,
+			default: "button"
+		},
 		is_new: [Boolean, Number],
 	},
 
 	computed: {
 		thumbnail() {
-			return this.item?.thumbnail || this.item?.image || this.item_row?.thumbnail || this.item_row?.image;
+			return this.item?.thumbnail || this.item_row?.thumbnail || this.item?.image || this.item_row?.image;
 		},
 
 		image() {
-			return this.item?.image || this.item_row?.image;
+			return this.item?.image || this.item_row?.image || this.item?.thumbnail || this.item_row?.thumbnail;
 		},
 
 		item_code() {
@@ -105,6 +111,24 @@ export default {
 
 		item_name() {
 			return this.item?.item_name || this.item_row?.item_name;
+		},
+
+		clickable() {
+			return this.enable_full_view && this.full_view_trigger == "click" && this.image;
+		}
+	},
+
+	methods: {
+		handle_click() {
+			if (this.clickable) {
+				this.modal = true;
+			}
+		},
+
+		handle_double_click() {
+			if (this.enable_full_view && this.full_view_trigger == "double-click" && this.image) {
+				this.modal = true;
+			}
 		},
 	},
 }

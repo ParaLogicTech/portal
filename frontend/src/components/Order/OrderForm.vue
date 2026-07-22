@@ -125,6 +125,7 @@
 			:show_empty_explore_button="!read_only"
 			border_color_class="border-gray-300"
 			:no_last_border="true"
+			:enable_image_full_view="true"
 			ref="compact_items"
 			class="section !p-0"
 			@qty-changed="handle_qty_change"

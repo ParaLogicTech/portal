@@ -52,6 +52,8 @@
 			<ItemImage
 				:item="item"
 				:item_row="row"
+				:enable_full_view="enable_image_full_view"
+				full_view_trigger="double-click"
 				class="w-[65px] h-[65px] flex-none border border-gray-300"
 				rounded="rounded"
 				font="text-md"
@@ -135,6 +137,7 @@ export default {
 		read_only: Boolean,
 		border_color_class: String,
 		no_last_border: Boolean,
+		enable_image_full_view: Boolean,
 	},
 
 	data() {

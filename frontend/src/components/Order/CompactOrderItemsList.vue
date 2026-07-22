@@ -28,6 +28,7 @@
 			:read_only="read_only"
 			:border_color_class="border_color_class"
 			:no_last_border="no_last_border"
+			:enable_image_full_view="enable_image_full_view"
 			@select-next-row="select_next_row"
 			@select-previous-row="select_previous_row"
 			@qty-changed="handle_qty_change"
@@ -56,6 +57,7 @@ export default {
 		show_empty_explore_button: Boolean,
 		border_color_class: String,
 		no_last_border: Boolean,
+		enable_image_full_view: Boolean,
 	},
 
 	methods: {

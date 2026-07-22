@@ -1,7 +1,7 @@
 <template>
 	<div class="flex flex-col h-full">
 		<!-- Title -->
-		<div class="flex justify-between top-bar-height controls-bg px-3 py-1 border-b border-gray-400">
+		<div class="flex flex-none justify-between top-bar-height controls-bg px-3 py-1 border-b border-gray-400">
 			<div class="flex items-center">
 				<PackageSearch class="inline h-[19px] text-gray-900" stroke-width="1.6px"/>
 				<h1 class="text-xl font-semibold ml-1">Item List</h1>
@@ -10,28 +10,31 @@
 			<GridListSelector v-model="view_type" @update:modelValue="handle_view_type_change" />
 		</div>
 
-		<ItemFilters
-			:filters="filters"
-			class="flex-none border-b border-gray-400 shadow-sm"
-			ref="item_filters"
-		/>
+		<div class="flex flex-col h-full min-h-0" :class="{'overflow-y-scroll': is_mobile}">
+			<ItemFilters
+				:filters="filters"
+				class="flex-none border-b border-gray-400 shadow-sm"
+				ref="item_filters"
+			/>
 
-		<ItemGridList
-			:items="filtered_items"
-			:cart_doc="model"
-			:loading="item_list.list.loading"
-			:has_data="item_list.data?.length > 0"
-			:show_groups="show_groups"
-			:group_field="group_field"
-			:group_page_length="group_page_length"
-			:matches="fuzzy_matches"
-			:view_type="view_type"
-			class="h-full"
-			@item-selected="this.handle_item_selected"
-			@item-group-selected="this.handle_item_group_selected"
-			@qty-changed="this.handle_qty_change"
-			ref="items"
-		/>
+			<ItemGridList
+				:items="filtered_items"
+				:cart_doc="model"
+				:loading="item_list.list.loading"
+				:has_data="item_list.data?.length > 0"
+				:show_groups="show_groups"
+				:group_field="group_field"
+				:group_page_length="group_page_length"
+				:matches="fuzzy_matches"
+				:view_type="view_type"
+				:scrollable="!is_mobile"
+				class="h-full"
+				@item-selected="this.handle_item_selected"
+				@item-group-selected="this.handle_item_group_selected"
+				@qty-changed="this.handle_qty_change"
+				ref="items"
+			/>
+		</div>
 	</div>
 </template>
 
@@ -44,6 +47,7 @@ import {PackageSearch} from "lucide-vue-next";
 import GridListSelector from "@/components/GridList/GridListSelector.vue";
 import CartController from "@/mixins/CartController";
 import {settings} from "@/data/settings";
+import {is_mobile} from "@/utils/responsive";
 
 export default {
 	name: "ItemListView",
@@ -151,6 +155,10 @@ export default {
 
 		list_data() {
 			return active_items.value || [];
+		},
+
+		is_mobile() {
+			return is_mobile.value;
 		},
 	},
 

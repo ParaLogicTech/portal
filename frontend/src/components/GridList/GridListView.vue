@@ -1,5 +1,5 @@
 <template>
-	<div class="@container overflow-y-scroll">
+	<div class="@container" :class="{'overflow-y-scroll': scrollable}">
 		<div v-if="loading && !has_data" class="h-full flex items-center justify-center text-gray-700 text-xl">
 			<Spinner class="w-5 mr-2" />
 			<span>{{ loading_message }}</span>
@@ -93,6 +93,10 @@ export default {
 		show_groups: {
 			type: Boolean,
 			default: false,
+		},
+		scrollable: {
+			type: Boolean,
+			default: true,
 		},
 		groups: Array,
 		group_field: String,

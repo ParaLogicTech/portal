@@ -8,6 +8,7 @@
 		:view_type="view_type"
 		:show_groups="show_groups"
 		:group_page_length="group_page_length"
+		:scrollable="scrollable"
 		loading_message="Loading Items..."
 		empty_message="No Items Found"
 	>
@@ -89,6 +90,7 @@ export default {
 		group_field: String,
 		group_page_length: Number,
 		view_type: String,
+		scrollable: Boolean,
 	},
 
 	data() {

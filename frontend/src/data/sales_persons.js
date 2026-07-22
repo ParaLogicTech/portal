@@ -38,7 +38,7 @@ const reload_sales_persons = () => {
 	});
 }
 
-const debounced_reload_sales_persons = debounce(reload_sales_persons, 500);
+const debounced_reload_sales_persons = debounce(reload_sales_persons, 1000);
 
 export const setup_sales_person_data_realtime = () => {
 	on_doctype_list_update($socket, "Sales Person", (name) => {

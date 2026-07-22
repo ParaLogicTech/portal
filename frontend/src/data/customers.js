@@ -61,7 +61,7 @@ const reload_customers = () => {
 	});
 }
 
-const debounced_reload_customers = debounce(reload_customers, 500);
+const debounced_reload_customers = debounce(reload_customers, 1000);
 
 export const setup_customer_data_realtime = () => {
 	on_doctype_list_update($socket, "Customer", (name) => {

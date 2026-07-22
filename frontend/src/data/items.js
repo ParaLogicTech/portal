@@ -333,7 +333,7 @@ const reload_items = () => {
 	});
 }
 
-const debounced_reload_items = debounce(reload_items, 500);
+const debounced_reload_items = debounce(reload_items, 1000);
 
 const reload_item_groups = () => {
 	item_group_list.reload().catch(e => {
@@ -341,7 +341,7 @@ const reload_item_groups = () => {
 	});
 }
 
-const debounced_reload_item_groups = debounce(reload_item_groups, 500);
+const debounced_reload_item_groups = debounce(reload_item_groups, 1000);
 
 const reload_brands = () => {
 	brand_list.reload().catch(e => {
@@ -349,7 +349,7 @@ const reload_brands = () => {
 	});
 }
 
-const debounced_reload_brands = debounce(reload_brands, 500);
+const debounced_reload_brands = debounce(reload_brands, 1000);
 
 export const setup_item_data_realtime = () => {
 	on_doctype_list_update($socket, "Item", (name) => {

@@ -8,7 +8,7 @@
 		:view_type="view_type"
 		:show_groups="show_groups"
 		:group_page_length="group_page_length"
-		loding="Loading Items..."
+		loading_message="Loading Items..."
 		empty_message="No Items Found"
 	>
 		<template #default="{item}">
@@ -58,7 +58,6 @@
 <script>
 import ItemCard from "@/components/Item/ItemCard.vue";
 import GridListView from "@/components/GridList/GridListView.vue"
-import CompactOrderItem from "@/components/Order/CompactOrderItem.vue";
 import SelectableItems from "@/mixins/SelectableItems";
 import {sorted_item_groups, sorted_brands} from "@/data/items";
 import {Eye} from "lucide-vue-next";
@@ -69,7 +68,6 @@ export default {
 	mixins: [SelectableItems],
 
 	components: {
-		CompactOrderItem,
 		ItemCard,
 		GridListView,
 		Eye,

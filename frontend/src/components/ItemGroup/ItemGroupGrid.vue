@@ -3,7 +3,7 @@
 		:items="item_groups"
 		:has_data="has_data"
 		:loading="loading"
-		loding="Loading Item Groups..."
+		loading_message="Loading Item Groups..."
 		empty_message="No Item Groups Found"
 		v-slot="{item: d}"
 	>

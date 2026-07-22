@@ -3,7 +3,7 @@
 		:items="brands"
 		:has_data="has_data"
 		:loading="loading"
-		loding="Loading Brands..."
+		loading_message="Loading Brands..."
 		empty_message="No Brands Found"
 		v-slot="{item: d}"
 	>

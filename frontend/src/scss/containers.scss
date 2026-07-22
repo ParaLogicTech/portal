@@ -44,6 +44,23 @@
 			@apply border-yellow-800;
 		}
 	}
+
+	.ribbon-top-left {
+		@apply absolute top-[-1px] left-[-1px] overflow-hidden;
+		@apply w-[90px] h-[90px];
+		@apply flex items-center justify-center;
+		@apply text-md font-bold text-white;
+		@apply pointer-events-none;
+
+		.ribbon-text {
+			@apply flex items-center justify-center;
+			@apply absolute w-[150%] h-[25px];
+			@apply bg-cyan-500 shadow-sm;
+			transform: rotate(-45deg) translateY(-55%);
+			line-height: 1;
+			letter-spacing: 0.1em;
+		}
+	}
 }
 
 // List view width fix

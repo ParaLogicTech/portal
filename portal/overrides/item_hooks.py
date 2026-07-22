@@ -1,5 +1,5 @@
 import frappe
-from frappe.utils import cstr
+from frappe.utils import cstr, getdate
 from frappe.core.doctype.file.utils import get_local_image
 from PIL import Image, ImageOps
 import mimetypes
@@ -7,6 +7,7 @@ import io
 
 
 def item_validate(doc, method):
+	validate_is_new(doc)
 	validate_image(doc)
 
 
@@ -16,6 +17,12 @@ def item_group_validate(doc, method):
 
 def brand_validate(doc, method):
 	validate_image(doc)
+
+
+def validate_is_new(doc):
+	if doc.sales_portal_is_new and doc.sales_portal_new_until:
+		if getdate() > getdate(doc.sales_portal_new_until):
+			doc.sales_portal_is_new = 0
 
 
 def validate_image(doc):
@@ -146,3 +153,12 @@ def get_thumbnail(file_url):
 
 	doc = frappe.get_doc("File", file_details)
 	return doc.make_thumbnail(width=600, height=600)
+
+
+def unset_is_new_based_on_date():
+	today_date = getdate()
+	frappe.db.sql("""
+		update `tabItem`
+		set sales_portal_is_new = 0
+		where sales_portal_is_new = 1 and sales_portal_new_until < %s
+	""", today_date)

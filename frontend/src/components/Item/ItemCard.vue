@@ -28,6 +28,7 @@
 			<!-- Left Side Image -->
 			<ItemImage
 				:item="item"
+				:is_new="item.sales_portal_is_new"
 				:enable_full_view="true"
 				class="w-[120px] @lg:w-[150px] @2xl:w-[170px] min-h-[110px] max-h-[140px] flex-none"
 				rounded="rounded rounded-r-none"
@@ -92,6 +93,7 @@
 			<!-- Top Image -->
 			<ItemImage
 				:item="item"
+				:is_new="item.sales_portal_is_new"
 				:enable_full_view="true"
 				class="h-[200px] @3xs:h-[220px] flex-none"
 				rounded="rounded rounded-b-none"

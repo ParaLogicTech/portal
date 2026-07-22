@@ -78,6 +78,12 @@ override_doctype_dashboards = {
 	"User": "portal.overrides.user_hooks.override_user_dashboard",
 }
 
+scheduler_events = {
+	"daily": [
+		"portal.overrides.item_hooks.unset_is_new_based_on_date",
+	],
+}
+
 after_migrate = "portal.install.setup_customer_role_profile"
 
 fixtures = [
@@ -87,10 +93,14 @@ fixtures = [
 			"name": ["in", [
 				'File-is_portal_optimized',
 
+				'Item-thumbnail',
 				'Item-show_in_sales_portal',
 				'Item-hide_from_customer_portal',
+				'Item-sec_sales_portal',
+				'Item-sales_portal_is_new',
 				'Item-featured_in_sales_portal',
-				'Item-thumbnail',
+				'Item-custom_column_break_tfu6q',
+				'Item-sales_portal_new_until',
 
 				'Item Group-thumbnail',
 

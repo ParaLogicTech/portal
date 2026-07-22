@@ -1,5 +1,13 @@
 <template>
 	<div class="bg-white relative" :class="rounded">
+		<!-- New Ribbon -->
+		<div
+			v-if="is_new"
+			class="ribbon-top-left"
+		>
+			<div class="ribbon-text">NEW</div>
+		</div>
+
 		<!-- Full View Button Icon -->
 		<button
 			v-if="(image || thumbnail) && enable_full_view"
@@ -78,7 +86,8 @@ export default {
 			type: String,
 			default: "object-cover"
 		},
-		enable_full_view: Boolean
+		enable_full_view: Boolean,
+		is_new: [Boolean, Number],
 	},
 
 	computed: {

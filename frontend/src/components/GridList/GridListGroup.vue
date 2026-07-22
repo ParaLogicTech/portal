@@ -2,7 +2,7 @@
 	<div class="grid-list-group">
 		<div
 			v-if="$slots.group"
-			class="sticky top-0 z-[1]"
+			class="sticky top-0 z-[2]"
 		>
 			<div class="group-heading">
 				<slot

@@ -27,8 +27,10 @@ export const item_list = createListResource({
 		'is_sales_item',
 		'is_stock_item',
 		'show_in_sales_portal',
+		'featured_in_sales_portal',
+		'sales_portal_is_new',
 	],
-	orderBy: 'featured_in_sales_portal desc, name asc',
+	orderBy: 'sales_portal_is_new desc, featured_in_sales_portal desc, name asc',
 	pageLength: 99999,
 	transform(items) {
 		return items.map((d) => {

@@ -49,10 +49,9 @@ export default {
 			if (item_stock.loading) {
 				return ['text-gray-600', 'bg-gray-100'];
 			} else if (item_stock.fetched) {
-				let stock_data = this.stock_data;
 				if (!this.item.is_stock_item) {
 					return ['text-blue-700', 'bg-blue-200'];
-				} else if (stock_data?.actual_qty > 0) {
+				} else if (flt(this.available_qty, 2) > 0) {
 					return ['text-green-800', 'bg-green-200'];
 				} else {
 					return ['text-red-800', 'bg-red-200'];

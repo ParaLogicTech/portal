@@ -143,7 +143,7 @@ def has_permission_sales_person(doc, user=None, permission_type=None):
 	if is_system_user(user):
 		return
 
-	allowed_customers = get_user_customers()
+	allowed_customers = get_user_customers(user)
 	allowed_sales_persons = get_sales_persons_by_customers(allowed_customers)
 
 	if doc.name not in allowed_sales_persons:
@@ -154,7 +154,7 @@ def permission_query_conditions_sales_person(user=None):
 	if is_system_user(user):
 		return
 
-	allowed_customers = get_user_customers()
+	allowed_customers = get_user_customers(user)
 	allowed_sales_persons = get_sales_persons_by_customers(allowed_customers)
 
 	if allowed_sales_persons:
@@ -184,7 +184,7 @@ def has_permission_order(doc, user):
 	if is_system_user(user):
 		return
 
-	allowed_customers = get_user_customers()
+	allowed_customers = get_user_customers(user)
 	if doc.customer not in allowed_customers:
 		return False
 
@@ -193,7 +193,7 @@ def permission_query_conditions_order(doctype, user):
 	if is_system_user(user):
 		return
 
-	allowed_customers = get_user_customers()
+	allowed_customers = get_user_customers(user)
 
 	if allowed_customers:
 		formatted_customers = ", ".join([frappe.db.escape(c) for c in allowed_customers])
@@ -222,7 +222,7 @@ def has_permission_contact_address(doc, user=None):
 	if is_system_user(user):
 		return
 
-	allowed_customers = set(get_user_customers())
+	allowed_customers = set(get_user_customers(user))
 	linked_customers = set([d.link_name for d in doc.get("links") if d.link_doctype == "Customer" and d.link_name])
 
 	if doc.doctype == "Contact" and doc.user == user:
@@ -236,7 +236,7 @@ def permission_query_conditions_contact_address(doctype, user):
 	if is_system_user(user):
 		return
 
-	allowed_customers = get_user_customers()
+	allowed_customers = get_user_customers(user)
 	if allowed_customers:
 		formatted_customers = ", ".join([frappe.db.escape(c) for c in allowed_customers])
 

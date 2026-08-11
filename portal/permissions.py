@@ -4,7 +4,7 @@ from frappe.utils import cint
 from erpnext.setup.doctype.item_group.item_group import get_item_groups_with_ancestors, get_exploded_item_groups
 
 
-def has_permission_customer(doc, user=None, permission_type=None):
+def has_permission_customer(doc, user=None, ptype=None):
 	if is_system_user(user):
 		return
 
@@ -26,7 +26,7 @@ def permission_query_conditions_customer(user=None):
 		return "(1 != 1)"
 
 
-def has_permission_item(doc, user=None, permission_type=None):
+def has_permission_item(doc, user=None, ptype=None):
 	if is_system_user(user):
 		return
 
@@ -55,7 +55,7 @@ def permission_query_conditions_item(user=None):
 	return f"({' and '.join(conditions)})"
 
 
-def has_permission_item_group(doc, user=None, permission_type=None):
+def has_permission_item_group(doc, user=None, ptype=None):
 	if is_system_user(user):
 		return
 
@@ -118,7 +118,7 @@ def get_restricted_item_groups(user=None):
 	return frappe.local_cache("get_restricted_item_groups", user, generator)
 
 
-def has_permission_brand(doc, user=None, permission_type=None):
+def has_permission_brand(doc, user=None, ptype=None):
 	if is_system_user(user):
 		return
 
@@ -139,7 +139,7 @@ def permission_query_conditions_brand(user=None):
 			and `tabItem`.hide_from_customer_portal = 0))"""
 
 
-def has_permission_sales_person(doc, user=None, permission_type=None):
+def has_permission_sales_person(doc, user=None, ptype=None):
 	if is_system_user(user):
 		return
 
@@ -164,7 +164,7 @@ def permission_query_conditions_sales_person(user=None):
 		return "(1 != 1)"
 
 
-def has_permission_sales_order(doc, user=None, permission_type=None):
+def has_permission_sales_order(doc, user=None, ptype=None):
 	return has_permission_order(doc, user)
 
 
@@ -172,7 +172,7 @@ def permission_query_conditions_sales_order(user=None):
 	return permission_query_conditions_order("Sales Order", user)
 
 
-def has_permission_cart(doc, user=None, permission_type=None):
+def has_permission_cart(doc, user=None, ptype=None):
 	return has_permission_order(doc, user)
 
 

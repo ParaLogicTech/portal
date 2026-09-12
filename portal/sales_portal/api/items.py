@@ -151,6 +151,7 @@ def get_item_prices(customer=None):
 			"item_code": d.item_code,
 			"price_list_rate": d.print_price_list_rate,
 			"pricing_rule_rate": d.pricing_rule_rate,
+			"pricing_rule_conditional": d.pricing_rule_conditional,
 			"discount_percentage": d.discount_percentage,
 			"discount_amount": d.discount_amount,
 			"uom": d.uom,

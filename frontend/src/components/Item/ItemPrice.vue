@@ -15,7 +15,7 @@
 				-{{ output.discount }}
 			</div>
 
-			<div class="!font-semibold text-violet-900">
+			<div class="!font-semibold text-violet-900" :class="{'asterisk': output.conditional}">
 				{{ output.rate }}
 			</div>
 		</div>
@@ -57,7 +57,8 @@ export default {
 					return {
 						discount: discount,
 						rate_before: rate_before,
-						rate: format_currency(this.price.pricing_rule_rate, this.currency)
+						rate: format_currency(this.price.pricing_rule_rate, this.currency),
+						conditional: this.price.pricing_rule_conditional,
 					}
 				} else {
 					return {rate: format_currency(this.price.price_list_rate, this.currency)};

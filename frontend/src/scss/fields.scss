@@ -68,3 +68,8 @@ input.field {
 	appearance: none;
 	background-position: right 0.2rem center;
 }
+
+.asterisk::after {
+	content: "*";
+	white-space: nowrap;
+}

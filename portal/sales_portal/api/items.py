@@ -101,6 +101,7 @@ def get_brand_list(doctype="Brand", fields=None, filters=None, order_by=None, st
 @frappe.whitelist()
 def get_item_prices(customer=None):
 	from erpnext.stock.report.item_prices.item_prices import get_item_price_data, process_filters
+	from erpnext.accounts.party import get_default_price_list
 	from portal.permissions import permission_query_conditions_item
 
 	frappe.has_permission("Item", "read", throw=True)
@@ -116,13 +117,7 @@ def get_item_prices(customer=None):
 		return out
 
 	# Determine Price List
-	out.price_list = frappe.db.get_single_value("Selling Settings", "selling_price_list")
-
-	customer_price_list = None
-	if customer:
-		customer_price_list = frappe.get_cached_value("Customer", customer, "default_price_list")
-	if customer_price_list:
-		out.price_list = customer_price_list
+	out.price_list = get_default_price_list("Customer", customer)
 
 	if not out.price_list:
 		return out

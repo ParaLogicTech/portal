@@ -1,4 +1,12 @@
 import frappe
+import erpnext
+
+
+def get_sales_portal_company():
+	return (
+		frappe.get_cached_value("Sales Portal Settings", None, "company")
+		or erpnext.get_default_company()
+	)
 
 
 def set_thumbnail_for_line_items(doc):

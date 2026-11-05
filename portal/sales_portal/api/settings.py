@@ -1,7 +1,7 @@
 import frappe
-from erpnext import get_default_company
 from frappe.utils import get_system_timezone
 from portal.permissions import is_system_user
+from portal.utils import get_sales_portal_company
 
 
 @frappe.whitelist()
@@ -10,7 +10,7 @@ def get_settings():
 	price_list_settings = frappe.get_cached_doc("Price List Settings", None)
 
 	out = frappe._dict({
-		"company": settings_doc.company or get_default_company(),
+		"company": get_sales_portal_company(),
 		"customer_naming_by": frappe.get_cached_value("Selling Settings", None, "cust_master_name"),
 		"stock_availability_based_on": settings_doc.stock_availability_based_on,
 		"show_stock_availability": settings_doc.show_stock_availability,

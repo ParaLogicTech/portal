@@ -4,7 +4,7 @@ from frappe.utils import getdate, flt, cast, cint
 from portal.sales_portal.doctype.cart.cart import validate_item_uom, make_sales_order
 from erpnext.stock.get_item_details import get_conversion_factor
 from portal.permissions import is_system_user, are_item_prices_hidden, remove_prices_from_transaction
-from portal.utils import set_thumbnail_for_line_items
+from portal.utils import set_thumbnail_for_line_items, get_sales_portal_company
 
 
 @frappe.whitelist()
@@ -75,6 +75,7 @@ def get_cart_by_id(cart_id):
 
 def make_cart_doc(customer):
 	cart_doc = frappe.new_doc("Cart")
+	cart_doc.company = get_sales_portal_company()
 	cart_doc.customer = customer
 	process_cart(cart_doc, for_save=False)
 	return cart_doc

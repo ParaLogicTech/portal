@@ -2,6 +2,7 @@ import frappe
 from frappe.utils import getdate, cstr, cint
 from frappe.client import get_list
 from portal.permissions import check_customer_permission, are_item_prices_hidden
+from portal.utils import get_sales_portal_company
 
 mandatory_item_fields = ['name', 'stock_uom', 'sales_uom']
 
@@ -101,7 +102,7 @@ def get_brand_list(doctype="Brand", fields=None, filters=None, order_by=None, st
 @frappe.whitelist()
 def get_item_prices(customer=None):
 	from erpnext.stock.report.item_prices.item_prices import get_item_price_data, process_filters
-	from erpnext.accounts.party import get_default_price_list
+	from erpnext.accounts.party import get_default_price_list, get_party_default_currency
 	from portal.permissions import permission_query_conditions_item
 
 	frappe.has_permission("Item", "read", throw=True)
@@ -117,7 +118,9 @@ def get_item_prices(customer=None):
 		return out
 
 	# Determine Price List
-	out.price_list = get_default_price_list("Customer", customer)
+	company = get_sales_portal_company()
+	party_currency = get_party_default_currency("Customer", customer, company)
+	out.price_list = get_default_price_list("Customer", customer, currency=party_currency)
 
 	if not out.price_list:
 		return out

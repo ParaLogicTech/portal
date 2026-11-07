@@ -39,10 +39,8 @@ class Cart(SellingController):
 		self.publish_cart_available()
 
 	def before_submit(self):
+		super().before_submit()
 		self.validate_order_confirmed_before_submit()
-
-	def on_submit(self):
-		pass
 
 	def on_cancel(self):
 		self.update_status_on_cancel()

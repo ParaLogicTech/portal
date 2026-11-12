@@ -28,7 +28,11 @@ export default {
 
 	computed: {
 		cart_qty() {
-			let qty = cart.get_row_by_item(this.item.name)?.qty || 0;
+			let rows = cart.get_rows_by_item(this.item.name) || [];
+			let qty = 0;
+			for (let row of rows) {
+				qty += flt(row.qty);
+			}
 			return format_number(qty);
 		},
 

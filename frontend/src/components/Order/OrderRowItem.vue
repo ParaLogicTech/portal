@@ -38,6 +38,9 @@
 	>
 		{{ formatted_value }}
 	</div>
+	<div v-else-if="column.key == 'rate' && !editable" class="text-right">
+		<OrderItemRate :row="row" :doc="doc"/>
+	</div>
 	<div v-else-if="column.key == 'rate' && editable">
 		<CurrencyField
 			v-model="row.rate"
@@ -83,11 +86,13 @@ import CurrencyField from "@/components/Fields/CurrencyField.vue";
 import PercentField from "@/components/Fields/PercentField.vue";
 import {settings} from "@/data/settings";
 import ReorderItemButton from "@/components/Order/ReorderItemButton.vue";
+import OrderItemRate from "@/components/Order/OrderItemRate.vue";
 
 export default {
 	name: "OrderRowItem",
 
 	components: {
+		OrderItemRate,
 		ReorderItemButton,
 		PercentField,
 		CurrencyField,
@@ -166,6 +171,10 @@ export default {
 
 		editable() {
 			if (this.read_only) {
+				return false;
+			}
+
+			if (this.row.is_free_item) {
 				return false;
 			}
 

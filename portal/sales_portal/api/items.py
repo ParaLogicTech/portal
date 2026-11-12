@@ -143,18 +143,26 @@ def get_item_prices(customer=None):
 	# Prepare Output
 	out.price_list_currency = frappe.get_cached_value("Price List", out.price_list, "currency")
 
+	copy_fields = [
+		"item_code",
+		"price_list_rate",
+		"uom",
+		"stock_uom",
+		"pricing_rule_rate",
+		"discount_percentage",
+		"discount_amount",
+		"pricing_rule_free_item",
+		"pricing_rule_free_qty",
+		"pricing_rule_buy_qty",
+		"pricing_rule_free_item_uom",
+		"pricing_rule_conditional",
+	]
+
 	out.item_prices_map = {}
 	for item_code, d in item_prices_map.items():
-		out.item_prices_map[item_code] = {
-			"item_code": d.item_code,
-			"price_list_rate": d.print_price_list_rate,
-			"pricing_rule_rate": d.pricing_rule_rate,
-			"pricing_rule_conditional": d.pricing_rule_conditional,
-			"discount_percentage": d.discount_percentage,
-			"discount_amount": d.discount_amount,
-			"uom": d.uom,
-			"stock_uom": d.stock_uom,
-		}
+		price_data = {f: d.get(f) for f in copy_fields}
+		price_data["price_list_rate"] = d.print_price_list_rate
+		out.item_prices_map[item_code] = price_data
 
 	return out
 

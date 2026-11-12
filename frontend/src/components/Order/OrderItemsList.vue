@@ -92,6 +92,10 @@ export default {
 	},
 
 	computed: {
+		selectable_items_elements() {
+			return this.items.filter(d => !d.is_free_item);
+		},
+
 		items() {
 			return this.doc?.items || [];
 		},

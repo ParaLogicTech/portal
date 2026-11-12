@@ -16,7 +16,7 @@
 		>
 			<!-- Menu -->
 			<div
-				v-if="!read_only"
+				v-if="editable"
 				class="absolute top-0.5 right-0.5"
 			>
 				<Popover>
@@ -64,7 +64,7 @@
 
 				<div class="flex justify-between gap-1.5">
 					<div class="min-w-[40%] self-end">
-						<div v-if="read_only">
+						<div v-if="!editable">
 							<div class="text-2xs font-semibold text-gray-600">Qty</div>
 							<div class="text-md text-[13.5px]">{{ format_number(row.qty, null, 2) }} {{ row.uom }}</div>
 						</div>
@@ -86,12 +86,16 @@
 
 					<div class="basis-[25%]" v-if="!are_item_prices_hidden(doc.customer)">
 						<div class="text-2xs font-semibold text-gray-600">Rate</div>
-						<div class="text-md text-[13.5px]">{{ format_currency(row.rate, doc.currency) }}</div>
+						<div class="text-md text-[13.5px]">
+							<OrderItemRate :row="row" :doc="doc"/>
+						</div>
 					</div>
 
 					<div class="basis-[35%] text-right" v-if="!are_item_prices_hidden(doc.customer)">
 						<div class="text-2xs font-semibold text-gray-600">Amount</div>
-						<div class="text-md font-semibold text-[13.5px]">{{ format_currency(row.amount, doc.currency) }}</div>
+						<div class="text-md font-semibold text-[13.5px]">
+							{{ format_currency(row.amount, doc.currency) }}
+						</div>
 					</div>
 				</div>
 			</div>
@@ -118,11 +122,13 @@ import ItemImage from "@/components/Item/ItemImage.vue";
 import QtyField from "@/components/Fields/QtyField.vue";
 import {item_list, are_item_prices_hidden} from "@/data/items";
 import {Popover, Button} from "frappe-ui";
+import OrderItemRate from "@/components/Order/OrderItemRate.vue";
 
 export default {
 	name: "CompactOrderItem",
 
 	components: {
+		OrderItemRate,
 		QtyField,
 		ItemImage,
 		Trash2,
@@ -167,7 +173,7 @@ export default {
 		},
 
 		handle_touch_start(e) {
-			if (this.read_only) {
+			if (!this.editable) {
 				this.reset_slide();
 				return;
 			}
@@ -175,7 +181,7 @@ export default {
 		},
 
 		handle_touch_move(e) {
-			if (this.read_only) {
+			if (!this.editable) {
 				this.reset_slide();
 				return;
 			}
@@ -190,7 +196,7 @@ export default {
 		},
 
 		handle_touch_end() {
-			if (this.read_only) {
+			if (!this.editable) {
 				this.reset_slide();
 				return;
 			}
@@ -257,6 +263,16 @@ export default {
 			}
 			return classes;
 		},
+
+		editable() {
+			if (this.read_only) {
+				return false;
+			}
+			if (this.row.is_free_item) {
+				return false;
+			}
+			return true;
+		}
 	},
 }
 </script>

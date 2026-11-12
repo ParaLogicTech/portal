@@ -175,11 +175,21 @@ export const cart = reactive({
 	},
 
 	has_item(item_code) {
-		return !!this.get_row_by_item(item_code);
+		return this.get_rows_by_item(item_code).length > 0;
 	},
 
 	get_row_by_item(item_code) {
-		return this.doc?.items?.find(item => item.item_code === item_code);
+		let rows = this.get_rows_by_item(item_code);
+		let non_free_rows = rows.filter(row => !row.is_free_item);
+		if (non_free_rows.length) {
+			return non_free_rows[0];
+		} else {
+			return rows[0];
+		}
+	},
+
+	get_rows_by_item(item_code) {
+		return (this.doc?.items || []).filter(row => row.item_code === item_code);
 	},
 
 	items_in_queue: computed(() => {

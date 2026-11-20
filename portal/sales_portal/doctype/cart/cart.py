@@ -166,6 +166,7 @@ def make_sales_order(source_name, target_doc=None, ignore_permissions=False):
 				"allocated_percentage": 100
 			})
 
+		target.ignore_pricing_rule = 1
 		target.flags.ignore_permissions = ignore_permissions
 		target.run_method("postprocess_after_mapping")
 

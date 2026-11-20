@@ -179,6 +179,7 @@ export default {
 		},
 
 		handle_view_type_change() {
+			this.refresh_view();
 			localStorage.setItem("item_list_view_type", this.view_type);
 		},
 

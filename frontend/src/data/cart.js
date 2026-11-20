@@ -101,7 +101,7 @@ export const cart = reactive({
 		});
 	},
 
-	update_item_qty(item_code, qty, uom=null) {
+	update_item_qty(item_code, qty, uom=null, row_id=null) {
 		validate_customer_or_cart_selected();
 		if (!item_code || qty == null) {
 			throw "item_code or qty not provided";
@@ -113,10 +113,11 @@ export const cart = reactive({
 			uom: uom,
 			cart_id: this.cart_id,
 			customer: this.customer,
+			row_id: row_id,
 		});
 	},
 
-	update_item_value(item_code, fieldname, value) {
+	update_item_value(item_code, fieldname, value, row_id=null) {
 		validate_customer_or_cart_selected();
 		if (!item_code || !fieldname) {
 			throw "item_code or fieldname not provided";
@@ -128,6 +129,7 @@ export const cart = reactive({
 			value: value,
 			cart_id: this.cart_id,
 			customer: this.customer,
+			row_id: row_id,
 		});
 	},
 
@@ -174,17 +176,63 @@ export const cart = reactive({
 		});
 	},
 
+	can_edit_qty(row) {
+		if (!row || !row.item_code) {
+			return false;
+		}
+		if (row.doctype != "Cart Item") {
+			return false;
+		}
+
+		if (row.is_free_item && !row.mix_and_match) {
+			let paid_row = cart.get_row_by_item(row.item_code, 0);
+			return !paid_row;
+		} else {
+			return true;
+		}
+	},
+
+	can_edit_rate(row) {
+		if (!row || !row.item_code) {
+			return false;
+		}
+		if (row.doctype != "Cart Item") {
+			return false;
+		}
+
+		if (row.is_free_item) {
+			return false;
+		}
+
+		return !!settings.value.is_system_user;
+	},
+
+	has_mix_and_match_free_item(row) {
+		if (!row?.item_code) {
+			return false;
+		}
+
+		let rows = this.get_rows_by_item(row.item_code);
+		return rows.some(d => d.is_free_item && d.mix_and_match);
+	},
+
 	has_item(item_code) {
 		return this.get_rows_by_item(item_code).length > 0;
 	},
 
-	get_row_by_item(item_code) {
+	get_row_by_item(item_code, is_free_item) {
 		let rows = this.get_rows_by_item(item_code);
-		let non_free_rows = rows.filter(row => !row.is_free_item);
-		if (non_free_rows.length) {
-			return non_free_rows[0];
+
+		let filtered_rows = rows;
+		if (is_free_item != null) {
+			filtered_rows = rows.filter(row => cint(row.is_free_item) == cint(is_free_item));
+		}
+
+		let priority_rows = filtered_rows.filter(row => !row.is_free_item);
+		if (priority_rows.length) {
+			return priority_rows[0];
 		} else {
-			return rows[0];
+			return filtered_rows[0];
 		}
 	},
 
@@ -481,7 +529,7 @@ const change_cart_customer_resource = createResource({
 const update_item_qty_resource = createResource({
 	url: 'portal.sales_portal.api.cart.update_item_qty',
 	method: 'POST',
-	makeParams({ item_code, qty, uom, customer, cart_id }) {
+	makeParams({ item_code, qty, uom, customer, cart_id, row_id }) {
 		let params = {
 			item_code: item_code,
 			qty: qty,
@@ -493,6 +541,9 @@ const update_item_qty_resource = createResource({
 		}
 		if (cart_id) {
 			params.cart_id = cart_id;
+		}
+		if (row_id) {
+			params.row_id = row_id;
 		}
 
 		return params;
@@ -534,7 +585,7 @@ const update_cart_value_resource = createResource({
 const update_item_value_resource = createResource({
 	url: 'portal.sales_portal.api.cart.update_item_value',
 	method: 'POST',
-	makeParams({ item_code, fieldname, value, customer, cart_id }) {
+	makeParams({ item_code, fieldname, value, customer, cart_id, row_id }) {
 		let params = {
 			item_code: item_code,
 			fieldname: fieldname,
@@ -546,6 +597,9 @@ const update_item_value_resource = createResource({
 		}
 		if (cart_id) {
 			params.cart_id = cart_id;
+		}
+		if (row_id) {
+			params.row_id = row_id;
 		}
 
 		return params;
@@ -699,6 +753,7 @@ const action_settings = {
 				&& q.params.item_code == params.item_code
 				&& q.params.customer == params.customer
 				&& q.params.cart_id == params.cart_id
+				&& cstr(q.params.row_id) == cstr(params.row_id)
 			));
 
 			if (existing_action) {
@@ -733,6 +788,7 @@ const action_settings = {
 				&& q.params.fieldname == params.fieldname
 				&& q.params.customer == params.customer
 				&& q.params.cart_id == params.cart_id
+				&& cstr(q.params.row_id) == cstr(params.row_id)
 			));
 
 			if (existing_action) {

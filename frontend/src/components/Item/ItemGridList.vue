@@ -165,7 +165,7 @@ export default {
 		},
 
 		selectable_items_elements() {
-			return this.item_refs;
+			return this.item_refs.filter(d => d?.$refs?.qty_field);
 		}
 	},
 

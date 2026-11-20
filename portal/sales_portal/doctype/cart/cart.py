@@ -105,12 +105,22 @@ class Cart(SellingController):
 		so = frappe.db.get_value("Sales Order", {"cart": self.name, "docstatus": ["!=", 0]})
 		return so or False
 
-	def get_item_row(self, item_code, add_row_if_missing=False):
+	def get_item_row(self, item_code, add_row_if_missing=False, row_id=None):
 		row = None
-		for d in self.get("items"):
-			if d.item_code == item_code:
-				row = d
-				break
+
+		if row_id:
+			for d in self.get("items"):
+				if d.item_code == item_code and d.name == row_id:
+					row = d
+					break
+
+		if not row:
+			item_rows = [d for d in self.get("items") if d.item_code == item_code]
+			priority_rows = [d for d in item_rows if not d.get("is_free_item")]
+			if priority_rows:
+				row = priority_rows[0]
+			elif item_rows:
+				row = item_rows[0]
 
 		if not row and add_row_if_missing:
 			row = self.append("items", frappe.new_doc("Cart Item"))

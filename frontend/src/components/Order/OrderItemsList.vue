@@ -32,6 +32,7 @@ import OrderRowItem from "@/components/Order/OrderRowItem.vue";
 import SelectableItems from "@/mixins/SelectableItems";
 import {settings} from "@/data/settings";
 import {are_item_prices_hidden} from "@/data/items";
+import {cart} from "@/data/cart";
 
 export default {
 	name: "OrderItemsList",
@@ -93,7 +94,7 @@ export default {
 
 	computed: {
 		selectable_items_elements() {
-			return this.items.filter(d => !d.is_free_item);
+			return this.items.filter(d => cart.can_edit_qty(d));
 		},
 
 		items() {

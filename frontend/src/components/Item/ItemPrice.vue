@@ -1,7 +1,13 @@
 <template>
 	<div class="flex flex-wrap gap-x-1 items-center justify-end">
 		<div
-			v-if="output.free_qty"
+			v-if="output.description"
+			class="rounded-sm py-0.5 px-1 mb-0.5 bg-red-500 text-white text-[80%] !font-semibold"
+		>
+			{{ output.description }}
+		</div>
+		<div
+			v-else-if="output.free_qty"
 			class="rounded-sm py-0.5 px-1 mb-0.5 bg-red-500 text-white text-[80%] !font-semibold"
 			:class="{'asterisk': output.free_item_conditional}"
 		>
@@ -9,7 +15,6 @@
 			{{ output.buy_qty }}
 			Get
 			{{ output.free_qty }}
-			{{ output.free_item_name || "" }}
 			Free
 		</div>
 
@@ -64,6 +69,8 @@ export default {
 			};
 
 			if (this.price.pricing_rule_rate) {
+				out.description = this.price.pricing_rule_description;
+
 				out.rate = format_currency(this.price.pricing_rule_rate, this.currency);
 
 				out.rate_before = null;
@@ -81,17 +88,14 @@ export default {
 				out.price_conditional = this.price.pricing_rule_conditional;
 			}
 
-			if (this.price.pricing_rule_free_item) {
+			if (this.price.pricing_rule_free_item || this.price.pricing_rule_mix_and_match) {
+				out.description = this.price.pricing_rule_description;
+
 				out.buy_qty = flt(this.price.pricing_rule_buy_qty) || 1;
 				out.buy_qty = format_number(out.buy_qty, null, 1);
 
 				out.free_qty = flt(this.price.pricing_rule_free_qty) || 1;
 				out.free_qty = format_number(out.free_qty, null, 1);
-
-				if (this.price.pricing_rule_free_item != this.item.name) {
-					let free_item = get_item(this.price.pricing_rule_free_item);
-					out.free_item_name = free_item?.item_name || this.price.pricing_rule_free_item;
-				}
 
 				out.free_item_conditional = this.price.pricing_rule_conditional;
 			}

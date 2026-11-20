@@ -152,9 +152,11 @@ def get_item_prices(customer=None):
 		"discount_percentage",
 		"discount_amount",
 		"pricing_rule_free_item",
+		"pricing_rule_mix_and_match",
 		"pricing_rule_free_qty",
 		"pricing_rule_buy_qty",
 		"pricing_rule_free_item_uom",
+		"pricing_rule_description",
 		"pricing_rule_conditional",
 	]
 

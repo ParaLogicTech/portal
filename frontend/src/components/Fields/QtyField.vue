@@ -150,8 +150,8 @@ export default {
 			return true;
 		},
 
-		refresh() {
-			if (this.focused) {
+		refresh(force) {
+			if (this.focused && !force) {
 				return;
 			}
 			this.display_value.qty = this.qty;
@@ -167,7 +167,7 @@ export default {
 			}
 			return uoms;
 		}
-	}
+	},
 }
 </script>
 

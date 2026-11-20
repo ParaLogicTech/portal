@@ -35,11 +35,11 @@ const CartController = {
 		},
 
 		handle_qty_change(row) {
-			cart.update_item_qty(row.item_code, row.qty, row.uom);
+			cart.update_item_qty(row.item_code, row.qty, row.uom, row.name);
 		},
 
 		handle_item_removed(row) {
-			cart.update_item_qty(row.item_code, 0);
+			cart.update_item_qty(row.item_code, 0, null, row.name);
 		},
 
 		handle_cart_value_change(field, value) {

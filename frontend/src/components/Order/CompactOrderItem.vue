@@ -123,6 +123,7 @@ import QtyField from "@/components/Fields/QtyField.vue";
 import {item_list, are_item_prices_hidden} from "@/data/items";
 import {Popover, Button} from "frappe-ui";
 import OrderItemRate from "@/components/Order/OrderItemRate.vue";
+import {cart} from "@/data/cart";
 
 export default {
 	name: "CompactOrderItem",
@@ -235,7 +236,8 @@ export default {
 		},
 
 		refresh_view() {
-			this.$refs.qty_field?.refresh();
+			let force = cart.has_mix_and_match_free_item(this.row);
+			this.$refs.qty_field?.refresh(force);
 		},
 
 		reset_slide() {
@@ -268,11 +270,8 @@ export default {
 			if (this.read_only) {
 				return false;
 			}
-			if (this.row.is_free_item) {
-				return false;
-			}
-			return true;
-		}
+			return cart.can_edit_qty(this.row);
+		},
 	},
 }
 </script>

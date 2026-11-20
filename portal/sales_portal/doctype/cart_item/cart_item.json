@@ -417,8 +417,7 @@
    "fieldname": "is_free_item",
    "fieldtype": "Check",
    "label": "Is Free Item",
-   "print_hide": 1,
-   "read_only": 1
+   "print_hide": 1
   },
   {
    "fieldname": "column_break_19",
@@ -1036,15 +1035,18 @@
    "read_only": 1
   }
  ],
+ "grid_page_length": 500,
  "istable": 1,
  "links": [],
- "modified": "2024-07-19 06:58:36.088929",
+ "modified": "2026-11-19 06:26:34.104219",
  "modified_by": "Administrator",
  "module": "Sales Portal",
  "name": "Cart Item",
  "naming_rule": "Random",
  "owner": "Administrator",
  "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],

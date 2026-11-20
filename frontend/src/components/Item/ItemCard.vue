@@ -71,7 +71,7 @@
 						<div class="p-2">
 							<ItemCartStatus
 								:item="item"
-								:hide_qty="true"
+								:hide_qty="!has_multiple_rows"
 							/>
 						</div>
 					</div>
@@ -168,7 +168,11 @@ export default {
 		refresh_view() {
 			this.qty = this.cart_qty;
 			this.uom = this.cart_uom;
-			this.$nextTick(() => this.$refs.qty_field?.refresh());
+
+			this.$nextTick(() => {
+				let force = cart.has_mix_and_match_free_item(this.cart_row);
+				this.$refs.qty_field?.refresh(force);
+			});
 		},
 
 		handle_click() {
@@ -190,7 +194,7 @@ export default {
 		},
 
 		handle_qty_change() {
-			this.$emit("qty-changed", this.item, this.qty, this.uom);
+			this.$emit("qty-changed", this.item, this.qty, this.uom, this.cart_row?.name);
 		},
 
 		handle_arrow_up() {
@@ -224,7 +228,21 @@ export default {
 		},
 
 		cart_row() {
-			return (this.cart_doc?.items || []).find(d => d.item_code == this.item.name);
+			let rows = this.cart_rows;
+			let priority_rows = rows.filter(row => !row.is_free_item);
+			if (priority_rows.length) {
+				return priority_rows[0];
+			} else {
+				return rows[0];
+			}
+		},
+
+		has_multiple_rows() {
+			return this.cart_rows.length > 1;
+		},
+
+		cart_rows() {
+			return (this.cart_doc?.items || []).filter(d => d.item_code == this.item.name);
 		},
 
 		uoms() {
@@ -234,6 +252,10 @@ export default {
 		is_in_cart_queue() {
 			return !!cart.items_in_queue.find(item_code => item_code == this.item.name);
 		},
-	}
+	},
+
+	mounted() {
+		this.refresh_view();
+	},
 }
 </script>

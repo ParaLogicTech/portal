@@ -4,7 +4,12 @@ from frappe.utils import getdate, flt, cast, cint
 from portal.sales_portal.doctype.cart.cart import validate_item_uom, make_sales_order
 from erpnext.stock.get_item_details import get_conversion_factor
 from portal.permissions import is_system_user, are_item_prices_hidden, remove_prices_from_transaction
-from portal.utils import set_thumbnail_for_line_items, get_sales_portal_company
+from portal.utils import (
+	set_thumbnail_for_line_items,
+	get_sales_portal_company,
+	set_is_mix_and_match_for_line_items,
+	set_print_pricing_rule_descriptions,
+)
 
 
 @frappe.whitelist()
@@ -101,6 +106,7 @@ def change_cart_customer(customer, cart_id):
 		row.price_list_rate = None
 		row.rate = None
 		row.discount_percentage = None
+		row.discount_amount = None
 		row.margin_rate_or_amount = None
 		row.pricing_rules = None
 
@@ -114,6 +120,7 @@ def update_item_qty(
 	uom=None,
 	customer=None,
 	cart_id=None,
+	row_id=None,
 ):
 	# Validate arguments
 	if not item_code:
@@ -124,12 +131,12 @@ def update_item_qty(
 	cart_doc = get_cart_doc(customer, cart_id)
 	cart_doc.validate_can_modify()
 
-	_update_item_qty(cart_doc, item_code, qty, uom)
+	_update_item_qty(cart_doc, item_code, qty, uom, row_id=row_id)
 
 	return update_cart(cart_doc)
 
 
-def _update_item_qty(cart_doc, item_code, qty, uom):
+def _update_item_qty(cart_doc, item_code, qty, uom, row_id=None):
 	qty = flt(qty)
 	qty = max(qty, 0)
 
@@ -138,7 +145,7 @@ def _update_item_qty(cart_doc, item_code, qty, uom):
 
 	if qty > 0:
 		# Add Item or Change Qty/UOM
-		row = cart_doc.get_item_row(item_code, add_row_if_missing=True)
+		row = cart_doc.get_item_row(item_code, add_row_if_missing=True, row_id=row_id)
 		row.qty = qty
 		if uom:
 			row.uom = uom
@@ -153,6 +160,7 @@ def _update_item_qty(cart_doc, item_code, qty, uom):
 			row.price_list_rate = None
 			row.rate = None
 			row.discount_percentage = None
+			row.discount_amount = None
 			row.margin_rate_or_amount = None
 	else:
 		# Remove Item
@@ -166,6 +174,7 @@ def update_item_value(
 	value,
 	customer=None,
 	cart_id=None,
+	row_id=None,
 ):
 	allowed_fields = ["rate", "discount_percentage"]
 	meta = frappe.get_meta("Cart Item")
@@ -175,13 +184,13 @@ def update_item_value(
 	cart_doc = get_cart_doc(customer, cart_id)
 	cart_doc.validate_can_modify()
 
-	_update_item_value(cart_doc, item_code, fieldname, value)
+	_update_item_value(cart_doc, item_code, fieldname, value, row_id=row_id)
 
 	return update_cart(cart_doc)
 
 
-def _update_item_value(cart_doc, item_code, fieldname, value):
-	row = cart_doc.get_item_row(item_code, add_row_if_missing=True)
+def _update_item_value(cart_doc, item_code, fieldname, value, row_id=None):
+	row = cart_doc.get_item_row(item_code, add_row_if_missing=True, row_id=row_id)
 	if not row:
 		return
 
@@ -196,6 +205,7 @@ def _update_item_value(cart_doc, item_code, fieldname, value):
 		if flt(row.price_list_rate):
 			if flt(row.rate) > flt(row.price_list_rate):
 				row.discount_percentage = 0
+				row.discount_amount = 0
 				row.margin_type = "Amount"
 				row.margin_rate_or_amount = flt(
 					row.rate - row.price_list_rate,
@@ -210,6 +220,7 @@ def _update_item_value(cart_doc, item_code, fieldname, value):
 	elif fieldname == "discount_percentage":
 		row.rate = None
 		row.margin_rate_or_amount = None
+		row.discount_amount = None
 
 
 @frappe.whitelist()
@@ -263,9 +274,13 @@ def reorder_items(sales_order, customer=None, cart_id=None):
 
 	no_of_items_added = 0
 	for d in sales_order_doc.get("items"):
-		if d.item_code and not cart_doc.get_item_row(d.item_code):
-			_update_item_qty(cart_doc, d.item_code, d.qty, d.uom)
-			no_of_items_added += 1
+		if not d.item_code:
+			continue
+		if cart_doc.get_item_row(d.item_code):
+			continue
+
+		_update_item_qty(cart_doc, d.item_code, d.qty, d.uom)
+		no_of_items_added += 1
 
 	out = update_cart(cart_doc)
 	out['no_of_items_added'] = no_of_items_added
@@ -325,11 +340,13 @@ def get_output(cart_doc):
 	if are_item_prices_hidden(cart_doc.customer):
 		remove_prices_from_transaction(cart_doc)
 
-	cart_doc = cart_doc.as_dict()
-	set_thumbnail_for_line_items(cart_doc)
+	cart_dict = cart_doc.as_dict()
+	set_thumbnail_for_line_items(cart_dict)
+	set_is_mix_and_match_for_line_items(cart_dict)
+	set_print_pricing_rule_descriptions(cart_doc, cart_dict)
 
 	return {
-		"doc": cart_doc,
+		"doc": cart_dict,
 		"addresses": get_customer_addresses(cart_doc.customer),
 		"contacts": get_customer_contacts(cart_doc.customer),
 	}

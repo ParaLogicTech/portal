@@ -7,7 +7,7 @@
 	</div>
 	<div
 		v-else-if="column.key == 'item_name'"
-		class="flex items-center gap-2 h-[45px] overflow-hidden text-gray-900 text-2xs @4xl:text-sm"
+		class="flex items-center gap-2 h-[45px] overflow-hidden"
 	>
 		<ItemImage
 			:item="item"
@@ -18,7 +18,17 @@
 			rounded="rounded"
 			font="text-xs"
 		/>
-		<div class="text-ellipsis">{{ row.item_name }}</div>
+		<div class="text-ellipsis">
+			<div class="text-gray-900 text-2xs @4xl:text-sm">
+				{{ row.item_name }}
+			</div>
+			<div
+				v-for="description in row.print_pricing_rule_descriptions || []"
+				class="text-green-800 text-2xs @4xl:text-sm !font-normal"
+			>
+				{{ description }}
+			</div>
+		</div>
 	</div>
 	<div v-else-if="column.key == 'qty' && editable">
 		<QtyField
@@ -84,9 +94,9 @@ import {item_list} from "@/data/items";
 import ItemImage from "@/components/Item/ItemImage.vue";
 import CurrencyField from "@/components/Fields/CurrencyField.vue";
 import PercentField from "@/components/Fields/PercentField.vue";
-import {settings} from "@/data/settings";
 import ReorderItemButton from "@/components/Order/ReorderItemButton.vue";
 import OrderItemRate from "@/components/Order/OrderItemRate.vue";
+import {cart} from "@/data/cart";
 
 export default {
 	name: "OrderRowItem",
@@ -122,7 +132,8 @@ export default {
 		},
 
 		refresh_view() {
-			this.$refs.qty_field?.refresh();
+			let force = cart.has_mix_and_match_free_item(this.row);
+			this.$refs.qty_field?.refresh(force);
 			this.$refs.rate_field?.refresh();
 			this.$refs.discount_percentage_field?.refresh();
 		},
@@ -174,13 +185,13 @@ export default {
 				return false;
 			}
 
-			if (this.row.is_free_item) {
-				return false;
+			if (this.column.key == "qty" && !cart.can_edit_qty(this.row)) {
+				return false
 			}
 
 			if (
 				["price_list_rate", "rate", "discount_percentage"].includes(this.column.key)
-				&& !settings.value.is_system_user
+				&& !cart.can_edit_rate(this.row)
 			) {
 				return false;
 			}

@@ -88,13 +88,13 @@ export default {
 			}
 		},
 
-		async handle_qty_change(item, qty, uom) {
+		async handle_qty_change(item, qty, uom, row_id=null) {
 			if (!cart.customer_or_cart_selected()) {
 				alert_select_customer(true);
 				return;
 			}
 
-			await cart.update_item_qty(item.item_code, qty, uom);
+			await cart.update_item_qty(item.item_code, qty, uom, row_id);
 		},
 
 		async handle_item_group_selected(item_group) {

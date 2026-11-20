@@ -8,7 +8,11 @@ from portal.permissions import (
 	remove_prices_from_transaction,
 	remove_prices_from_dict,
 )
-from portal.utils import set_thumbnail_for_line_items
+from portal.utils import (
+	set_thumbnail_for_line_items,
+	set_is_mix_and_match_for_line_items,
+	set_print_pricing_rule_descriptions,
+)
 from frappe.client import get_list
 
 
@@ -109,6 +113,8 @@ def get_output(doc):
 
 	out.doc = out.doc.as_dict()
 	set_thumbnail_for_line_items(out.doc)
+	set_is_mix_and_match_for_line_items(out.doc)
+	set_print_pricing_rule_descriptions(doc, out.doc)
 
 	return out
 

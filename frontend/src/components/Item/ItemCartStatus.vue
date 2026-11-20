@@ -5,7 +5,7 @@
 	>
 		<Check class="h-3.5 w-3.5 mr-1 inline" stroke-width="1.8px"/>
 		<span>In Cart</span>
-		<span v-if="!hide_qty">: {{ cart_qty }} {{ cart_uom }}</span>
+		<span v-if="!hide_qty">: {{ cart_qty }} {{ cart_uom || "" }}</span>
 	</div>
 </template>
 
@@ -31,13 +31,27 @@ export default {
 			let rows = cart.get_rows_by_item(this.item.name) || [];
 			let qty = 0;
 			for (let row of rows) {
-				qty += flt(row.qty);
+				if (this.use_stock_qty) {
+					qty += flt(row.stock_qty);
+				} else {
+					qty += flt(row.qty);
+				}
 			}
 			return format_number(qty);
 		},
 
 		cart_uom() {
-			return cart.get_row_by_item(this.item.name)?.uom;
+			if (this.use_stock_qty) {
+				return cart.get_row_by_item(this.item.name)?.stock_uom;
+			} else {
+				return cart.get_row_by_item(this.item.name)?.uom;
+			}
+		},
+
+		use_stock_qty() {
+			let rows = cart.get_rows_by_item(this.item.name) || [];
+			let uoms = [...new Set(rows.map(row => row.uom))];
+			return uoms.length > 1;
 		},
 
 		is_in_cart() {
